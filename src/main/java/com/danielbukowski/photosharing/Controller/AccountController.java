@@ -9,7 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @AllArgsConstructor
@@ -31,8 +33,10 @@ public class AccountController {
     }
 
     @PostMapping
-    public ResponseEntity<Long> createAccount(@Valid @RequestBody AccountRegisterRequest accountRegisterRequest) {
-        return new ResponseEntity<>(accountService.createAccount(accountRegisterRequest), HttpStatus.CREATED);
+    public ResponseEntity<Object> createAccount(@RequestBody @Valid AccountRegisterRequest accountRegisterRequest) {
+        Long accountId = accountService.createAccount(accountRegisterRequest);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/" + accountId).build().toUri();
+        return ResponseEntity.created(uri).build();
     }
 
     @DeleteMapping("{id}")
