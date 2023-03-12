@@ -26,7 +26,7 @@ public class AccountService {
 
     private AccountDto fromAccountToAccountDto(Account account) {
         return AccountDto.builder()
-                .login(account.getLogin())
+                .login(account.getEmail())
                 .password(account.getPassword())
                 .build();
     }
@@ -41,8 +41,12 @@ public class AccountService {
     }
 
     public Long createAccount(AccountRegisterRequest accountRegisterRequest) {
+
+        if (accountRepository.findByEmail(accountRegisterRequest.getEmail()).isPresent())
+            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Account with this email already exists");
+
         var accountToSave = new Account();
-        accountToSave.setLogin(accountRegisterRequest.getLogin());
+        accountToSave.setEmail(accountRegisterRequest.getEmail());
         accountToSave.setPassword(accountRegisterRequest.getPassword());
 
         return accountRepository.save(accountToSave).getId();
