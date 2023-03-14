@@ -6,6 +6,7 @@ import com.danielbukowski.photosharing.Entity.Account;
 import com.danielbukowski.photosharing.Repository.AccountRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -16,6 +17,7 @@ import java.util.List;
 public class AccountService {
 
     private final AccountRepository accountRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public List<AccountDto> getAccounts() {
         return accountRepository.findAll()
@@ -47,7 +49,8 @@ public class AccountService {
 
         var accountToSave = new Account();
         accountToSave.setEmail(accountRegisterRequest.getEmail());
-        accountToSave.setPassword(accountRegisterRequest.getPassword());
+        accountToSave.setPassword(passwordEncoder.encode(accountRegisterRequest.getPassword()));
+
 
         return accountRepository.save(accountToSave).getId();
     }

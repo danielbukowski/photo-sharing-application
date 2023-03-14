@@ -33,7 +33,7 @@ public class AccountController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> createAccount(@RequestBody @Valid AccountRegisterRequest accountRegisterRequest) {
+    public ResponseEntity<Object> postAccount(@RequestBody @Valid AccountRegisterRequest accountRegisterRequest) {
         Long accountId = accountService.createAccount(accountRegisterRequest);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/" + accountId).build().toUri();
         return ResponseEntity.created(uri).build();
