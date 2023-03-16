@@ -5,10 +5,8 @@ import com.danielbukowski.photosharing.Dto.AccountRegisterRequest;
 import com.danielbukowski.photosharing.Entity.Account;
 import com.danielbukowski.photosharing.Repository.AccountRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -36,8 +34,7 @@ public class AccountService {
     public AccountDto getAccountById(Long id) {
         return accountRepository.findById(id)
                 .map(this::fromAccountToAccountDto)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
+                .orElseThrow(() -> new RuntimeException(
                         "A user with this id doesn't exist")
                 );
     }
@@ -45,11 +42,11 @@ public class AccountService {
     public Long createAccount(AccountRegisterRequest accountRegisterRequest) {
 
         if (accountRepository.findByEmail(accountRegisterRequest.getEmail()).isPresent())
-            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Account with this email already exists");
+            throw new RuntimeException("Account with this email already exists");
 
         var accountToSave = new Account();
         accountToSave.setEmail(accountRegisterRequest.getEmail());
-        accountToSave.setPassword(passwordEncoder.encode(accountRegisterRequest.getPassword()));
+        accountToSave.setPassword(passwordEncoder.encode(accountRegisterRequest.getPassword().trim()));
 
 
         return accountRepository.save(accountToSave).getId();
