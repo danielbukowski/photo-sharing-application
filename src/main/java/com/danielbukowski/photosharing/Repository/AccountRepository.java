@@ -11,6 +11,6 @@ import java.util.Optional;
 public interface AccountRepository extends JpaRepository<Account, Long> {
 
 
-    @Query(name = "SELECT a FROM Account a WHERE a.email = ':email'")
-    Optional<Account> findByEmail(String email);
+    @Query(name = "SELECT a FROM Account a WHERE LOWER(a.email) = LOWER(:email)")
+    Optional<Account> findByEmailIgnoreCase(String email);
 }

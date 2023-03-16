@@ -1,4 +1,4 @@
-package com.danielbukowski.photosharing.Config;
+package com.danielbukowski.photosharing.Handler;
 
 
 import com.danielbukowski.photosharing.Dto.ExceptionResponse;
