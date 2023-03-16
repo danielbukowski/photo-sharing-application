@@ -41,7 +41,7 @@ public class AccountService {
 
     public Long createAccount(AccountRegisterRequest accountRegisterRequest) {
 
-        if (accountRepository.findByEmail(accountRegisterRequest.getEmail()).isPresent())
+        if (accountRepository.findByEmailIgnoreCase(accountRegisterRequest.getEmail()).isPresent())
             throw new RuntimeException("Account with this email already exists");
 
         var accountToSave = new Account();

@@ -1,11 +1,14 @@
 package com.danielbukowski.photosharing.Config;
 
+import com.danielbukowski.photosharing.Handler.AuthenticationEntryPointHandler;
+import com.danielbukowski.photosharing.Handler.AuthorizationDeniedHandler;
 import com.danielbukowski.photosharing.Service.UserDetailsService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -21,16 +24,28 @@ public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
 
+    private final AuthenticationEntryPointHandler authenticationEntryPointHandler;
+    private final AuthorizationDeniedHandler authorizationDeniedHandler;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .csrf(AbstractHttpConfigurer::disable)
+                .httpBasic()
+                .and()
                 .authenticationProvider(authProvider())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/api/v1/accounts").permitAll()
                         .anyRequest().authenticated()
                 )
+                .exceptionHandling(exceptionHandling -> {
+                    exceptionHandling
+                            .authenticationEntryPoint(authenticationEntryPointHandler)
+                            .accessDeniedHandler(authorizationDeniedHandler);
+                })
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors()
+                .and()
                 .build();
     }
 
