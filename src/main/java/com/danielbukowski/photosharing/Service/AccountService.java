@@ -4,6 +4,7 @@ import com.danielbukowski.photosharing.Dto.AccountDto;
 import com.danielbukowski.photosharing.Dto.AccountRegisterRequest;
 import com.danielbukowski.photosharing.Dto.ChangePasswordRequest;
 import com.danielbukowski.photosharing.Entity.Account;
+import com.danielbukowski.photosharing.Exception.AccountNotFoundException;
 import com.danielbukowski.photosharing.Mapper.AccountMapper;
 import com.danielbukowski.photosharing.Repository.AccountRepository;
 import jakarta.transaction.Transactional;
@@ -32,8 +33,8 @@ public class AccountService {
     public AccountDto getAccountById(Long id) {
         return accountRepository.findById(id)
                 .map(accountMapper::fromAccountToAccountDto)
-                .orElseThrow(() -> new RuntimeException(
-                        "A user with this id doesn't exist")
+                .orElseThrow(() -> new AccountNotFoundException(
+                        "An account with this id doesn't exist")
                 );
     }
 
@@ -51,7 +52,7 @@ public class AccountService {
     @Transactional
     public void deleteAccountById(Long id) {
         if (accountRepository.findById(id).isEmpty())
-            throw new RuntimeException("A user with this id doesn't exist");
+            throw new AccountNotFoundException("An account with this id doesn't exist");
 
         accountRepository.deleteById(id);
     }
