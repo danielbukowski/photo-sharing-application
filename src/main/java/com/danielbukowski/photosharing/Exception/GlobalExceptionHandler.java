@@ -18,6 +18,21 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler({AccountNotFoundException.class})
+    public ResponseEntity<?> handleAccountNotFoundException(AccountNotFoundException ex) {
+        var bodyResponse = ExceptionResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.NOT_FOUND.getReasonPhrase())
+                .reason(ex.getMessage())
+                .path(ServletUriComponentsBuilder.fromCurrentRequest().toUriString())
+                .build();
+
+        return new ResponseEntity<>(
+                bodyResponse,
+                HttpStatus.NOT_FOUND
+        );
+    }
+
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<?> handleRuntimeException(RuntimeException ex) {
         var bodyResponse = ExceptionResponse.builder()
@@ -33,8 +48,9 @@ public class GlobalExceptionHandler {
         );
     }
 
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+    public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         Map<String, List<String>> foundedFieldErrors = new HashMap<>();
 
         for (var field : ex.getBindingResult().getFieldErrors()) {
