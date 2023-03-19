@@ -17,7 +17,6 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Table(name = "accounts")
 public class Account implements UserDetails {
-
     @Id
     @GeneratedValue(
             strategy = GenerationType.IDENTITY

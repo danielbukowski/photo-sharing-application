@@ -8,7 +8,6 @@ import lombok.Data;
 @Builder
 public class AccountDto {
 
-
     private final String login;
 
     private final String password;
