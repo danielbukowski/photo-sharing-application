@@ -1,4 +1,4 @@
-package com.danielbukowski.photosharing.Dto;
+package com.danielbukowski.photosharing.Exception;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 public class ExceptionResponse {
-
 
     private String status;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")

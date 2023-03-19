@@ -12,11 +12,10 @@ import java.util.Map;
 @Builder
 public class ValidationExceptionResponse{
 
-
     private String status;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private LocalDateTime timestamp;
     private String reason;
-    private final Map<String, List<String>> fieldName;
+    private final Map<String, List<String>> fieldNames;
     private String path;
 }

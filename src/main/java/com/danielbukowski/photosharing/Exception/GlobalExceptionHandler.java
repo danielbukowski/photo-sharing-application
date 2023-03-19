@@ -1,7 +1,6 @@
-package com.danielbukowski.photosharing.Handler;
+package com.danielbukowski.photosharing.Exception;
 
 
-import com.danielbukowski.photosharing.Dto.ExceptionResponse;
 import com.danielbukowski.photosharing.Dto.ValidationExceptionResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +18,8 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<?> handleRuntimeException(RuntimeException ex) {
-        
         var bodyResponse = ExceptionResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.BAD_REQUEST.getReasonPhrase())
@@ -35,7 +32,6 @@ public class GlobalExceptionHandler {
                 HttpStatus.BAD_REQUEST
         );
     }
-
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
@@ -50,7 +46,7 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.BAD_REQUEST.getReasonPhrase())
                 .path(ServletUriComponentsBuilder.fromCurrentRequest().toUriString())
-                .fieldName(foundedFieldErrors)
+                .fieldNames(foundedFieldErrors)
                 .reason("The fields have not meet the requirements")
                 .build();
         return new ResponseEntity<>(
