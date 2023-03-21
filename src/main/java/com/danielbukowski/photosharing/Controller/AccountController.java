@@ -14,6 +14,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 @AllArgsConstructor
 @Validated
@@ -29,19 +30,19 @@ public class AccountController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<AccountDto> getAccountById(@PathVariable Long id) {
+    public ResponseEntity<AccountDto> getAccountById(@PathVariable UUID id) {
         return ResponseEntity.ok(accountService.getAccountById(id));
     }
 
     @PostMapping
     public ResponseEntity<?> createAccount(@RequestBody @Valid AccountRegisterRequest accountRegisterRequest) {
-        Long accountId = accountService.createAccount(accountRegisterRequest);
+        UUID accountId = accountService.createAccount(accountRegisterRequest);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/" + accountId).build().toUri();
         return ResponseEntity.created(uri).build();
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<?> deleteAccountById(@PathVariable Long id) {
+    public ResponseEntity<?> deleteAccountById(@PathVariable UUID id) {
         accountService.deleteAccountById(id);
         return ResponseEntity.noContent().build();
     }

@@ -1,6 +1,7 @@
+
 CREATE TABLE accounts (
-    id INTEGER primary key generated always as identity,
-    email TEXT NOT NULL,
-    password TEXT NOT NULL,
-    unique (email)
+   id UUID,
+   email VARCHAR(255) UNIQUE NOT NULL,
+   password VARCHAR(255) NOT NULL,
+   CONSTRAINT pk_accounts PRIMARY KEY (id)
 );
