@@ -10,7 +10,7 @@ public class AccountMapper {
     public AccountDto fromAccountToAccountDto(Account account) {
         return AccountDto.builder()
                 .id(account.getId())
-                .login(account.getEmail())
+                .email(account.getEmail())
                 .password(account.getPassword())
                 .build();
     }

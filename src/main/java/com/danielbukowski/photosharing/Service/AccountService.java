@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @AllArgsConstructor
 @Service
@@ -30,7 +31,7 @@ public class AccountService {
     }
 
 
-    public AccountDto getAccountById(Long id) {
+    public AccountDto getAccountById(UUID id) {
         return accountRepository.findById(id)
                 .map(accountMapper::fromAccountToAccountDto)
                 .orElseThrow(() -> new AccountNotFoundException(
@@ -39,7 +40,7 @@ public class AccountService {
     }
 
     @Transactional
-    public Long createAccount(AccountRegisterRequest accountRegisterRequest) {
+    public UUID createAccount(AccountRegisterRequest accountRegisterRequest) {
         if (accountRepository.findByEmailIgnoreCase(accountRegisterRequest.getEmail()).isPresent())
             throw new RuntimeException("An account with this email already exists");
 
@@ -50,7 +51,7 @@ public class AccountService {
     }
 
     @Transactional
-    public void deleteAccountById(Long id) {
+    public void deleteAccountById(UUID id) {
         if (accountRepository.findById(id).isEmpty())
             throw new AccountNotFoundException("An account with this id doesn't exist");
 

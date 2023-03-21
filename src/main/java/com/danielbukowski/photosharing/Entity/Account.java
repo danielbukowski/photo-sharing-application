@@ -9,19 +9,21 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 @Getter
 @Setter
 @ToString
 @RequiredArgsConstructor
+@AllArgsConstructor
 @Table(name = "accounts")
 public class Account implements UserDetails {
     @Id
     @GeneratedValue(
-            strategy = GenerationType.IDENTITY
+            strategy = GenerationType.UUID
     )
-    private Long id;
+    private UUID id;
 
 
     @Column(name = "email", unique = true, nullable = false)
