@@ -11,6 +11,6 @@ import java.util.UUID;
 public class AccountDto {
     private final UUID id;
     private final String email;
-    private final String password;
+
 
 }

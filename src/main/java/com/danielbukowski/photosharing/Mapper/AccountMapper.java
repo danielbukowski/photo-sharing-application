@@ -11,7 +11,6 @@ public class AccountMapper {
         return AccountDto.builder()
                 .id(account.getId())
                 .email(account.getEmail())
-                .password(account.getPassword())
                 .build();
     }
 }
