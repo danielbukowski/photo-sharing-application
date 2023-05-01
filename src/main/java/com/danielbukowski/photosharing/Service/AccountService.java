@@ -41,12 +41,12 @@ public class AccountService {
 
     @Transactional
     public UUID createAccount(AccountRegisterRequest accountRegisterRequest) {
-        if (accountRepository.findByEmailIgnoreCase(accountRegisterRequest.getEmail()).isPresent())
+        if (accountRepository.findByEmailIgnoreCase(accountRegisterRequest.email()).isPresent())
             throw new RuntimeException("An account with this email already exists");
 
         var accountToSave = new Account();
-        accountToSave.setEmail(accountRegisterRequest.getEmail());
-        accountToSave.setPassword(passwordEncoder.encode(accountRegisterRequest.getPassword().trim()));
+        accountToSave.setEmail(accountRegisterRequest.email());
+        accountToSave.setPassword(passwordEncoder.encode(accountRegisterRequest.password().trim()));
         return accountRepository.save(accountToSave).getId();
     }
 
@@ -62,7 +62,7 @@ public class AccountService {
     public void changePassword(String email, ChangePasswordRequest changePasswordRequest) {
         var account = accountRepository.getByEmailIgnoreCase(email);
         String oldHashedPassword = account.getPassword();
-        String newPassword = changePasswordRequest.getNewPassword();
+        String newPassword = changePasswordRequest.newPassword();
 
         if (passwordEncoder.matches(newPassword, oldHashedPassword))
             throw new RuntimeException("The old password should not be the same as the new one");

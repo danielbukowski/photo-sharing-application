@@ -22,7 +22,6 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
-
     private final AuthenticationEntryPointHandler authenticationEntryPointHandler;
     private final AuthorizationDeniedHandler authorizationDeniedHandler;
 
