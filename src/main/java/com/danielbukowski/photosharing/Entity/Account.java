@@ -19,16 +19,15 @@ import java.util.UUID;
 @AllArgsConstructor
 @Table(name = "accounts")
 public class Account implements UserDetails {
+
     @Id
     @GeneratedValue(
             strategy = GenerationType.UUID
     )
     private UUID id;
 
-
     @Column(name = "email", unique = true, nullable = false)
     private String email;
-
 
     @Column(name = "password", nullable = false)
     private String password;
@@ -47,7 +46,6 @@ public class Account implements UserDetails {
     public String getUsername() {
         return this.email;
     }
-
 
     @Override
     public boolean isAccountNonExpired() {

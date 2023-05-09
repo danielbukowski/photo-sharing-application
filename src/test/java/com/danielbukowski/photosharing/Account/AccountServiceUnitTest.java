@@ -1,10 +1,11 @@
-package com.danielbukowski.photosharing.Service;
+package com.danielbukowski.photosharing.Account;
 
 import com.danielbukowski.photosharing.Dto.AccountRegisterRequest;
 import com.danielbukowski.photosharing.Entity.Account;
 import com.danielbukowski.photosharing.Exception.AccountNotFoundException;
 import com.danielbukowski.photosharing.Mapper.AccountMapper;
 import com.danielbukowski.photosharing.Repository.AccountRepository;
+import com.danielbukowski.photosharing.Service.AccountService;
 import com.github.javafaker.Faker;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,20 +25,16 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class AccountServiceUnitTest {
 
-
     private final Faker faker = new Faker();
-
     @InjectMocks
     private AccountService accountService;
     @Mock
     private AccountRepository accountRepository;
     @Spy
-    private PasswordEncoder passwordEncoder;
-    @Spy
     private AccountMapper accountMapper;
 
     @Test
-    void should_thrown_exception_when_register_request_contains_email_that_already_exists_in_accounts() {
+    public void shouldThrownExceptionWhenRegisterRequestContainsEmailThatAlreadyExistsInDatabase() {
         //given
         var alreadyExistingEmailInAccounts = "myemail@mail.com";
         Account account = new Account(
@@ -61,11 +57,10 @@ class AccountServiceUnitTest {
                 "An account with this email already exists",
                 thrownException.getMessage()
         );
-
     }
 
     @Test
-    void should_return_all_account_list() {
+    public void shouldReturnAllAccountsWhenThereAreTwoAccountsInDatabase() {
         //given
         var account1 = new Account();
         account1.setPassword(faker.internet().password());
@@ -79,27 +74,25 @@ class AccountServiceUnitTest {
 
         var accountList = List.of(account1, account2);
 
-
         var exceptedResult = accountList
                 .stream()
                 .map(accountMapper::fromAccountToAccountDto)
                 .toList();
+
         //when
         when(accountRepository.findAll()).thenReturn(accountList);
         var resultAccountList = accountService.getAccounts();
 
         //then
-        assertEquals(resultAccountList.size(), 2);
+        assertEquals(2, resultAccountList.size());
         assertTrue(resultAccountList.containsAll(exceptedResult));
 
     }
 
-
     @Test
-    void should_throw_exception_when_account_is_not_found() {
+    public void shouldThrowExceptionWhenAccountIsNotFound() {
         //given
         var id = new UUID(0, 0);
-
 
         //when
         when(accountRepository.findById(Mockito.any(UUID.class))).thenReturn(
@@ -116,17 +109,15 @@ class AccountServiceUnitTest {
     }
 
     @Test
-    void should_thrown_exception_when_method_delete_by_account_id_is_called_and_account_with_id_doesnt_exist() {
+    public void shouldThrownExceptionWhenMethodDeleteByAccountIdIsCalledAndThereIsNotAccountInDatabase() {
         //given
         var id = new UUID(1,1);
 
-
         //when
+        when(accountRepository.findById(Mockito.any(UUID.class))).thenReturn(Optional.empty());
         var resultException = assertThrows(AccountNotFoundException.class,
                 () -> accountService.deleteAccountById(id));
         //then
         assertEquals("An account with this id doesn't exist", resultException.getMessage());
     }
-
-
 }

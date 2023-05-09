@@ -1,8 +1,8 @@
-package com.danielbukowski.photosharing.Mapper;
+package com.danielbukowski.photosharing.Account;
 
 import com.danielbukowski.photosharing.Dto.AccountDto;
 import com.danielbukowski.photosharing.Entity.Account;
-import org.junit.jupiter.api.DisplayName;
+import com.danielbukowski.photosharing.Mapper.AccountMapper;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
@@ -11,10 +11,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class AccountMapperUnitTest {
 
-
     @Test
-    @DisplayName("Should map from account to accountDto")
-    void ShouldMapAccountToAccountDto() {
+    void shouldMapAccountToAccountDto() {
         //given
         AccountMapper accountMapper = new AccountMapper();
         var account = new Account();
@@ -27,7 +25,6 @@ class AccountMapperUnitTest {
                 .id(account.getId())
                 .email(account.getEmail())
                 .build();
-        
 
         //when
         var actualAccountDto = accountMapper.fromAccountToAccountDto(account);

@@ -1,6 +1,7 @@
-package com.danielbukowski.photosharing.Repository;
+package com.danielbukowski.photosharing.Account;
 
 import com.danielbukowski.photosharing.Entity.Account;
+import com.danielbukowski.photosharing.Repository.AccountRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +25,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ActiveProfiles("test")
 class AccountRepositoryTest {
 
-
     @Container
-    static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:alpine");
+    private static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:alpine");
     @Autowired
     private AccountRepository accountRepository;
 
     @DynamicPropertySource
-    static void setupContainer(DynamicPropertyRegistry registry) {
+    public static void setupContainer(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url", postgreSQLContainer::getJdbcUrl);
         registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
         registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
@@ -43,9 +43,11 @@ class AccountRepositoryTest {
         Account account = new Account();
         account.setPassword("password");
         account.setEmail("email@gmail.com");
+
         //when
         accountRepository.save(account);
         List<Account> accountsInDatabase = accountRepository.findAll();
+
         //then
         Assertions.assertThat(accountsInDatabase).hasSize(1);
     }
@@ -56,9 +58,11 @@ class AccountRepositoryTest {
         Account account = new Account();
         account.setPassword("password");
         account.setEmail("myemail@gmail.com");
+
         //when
         accountRepository.save(account);
         Optional<Account> expectedAccount = accountRepository.findByEmailIgnoreCase("myemail@gmail.com");
+
         //then
         assertTrue(expectedAccount.isPresent());
     }
@@ -69,9 +73,11 @@ class AccountRepositoryTest {
         Account account = new Account();
         account.setPassword("password");
         account.setEmail("myemail@gmail.com");
+
         //when
         accountRepository.save(account);
         Optional<Account> expectedAccount = accountRepository.findByEmailIgnoreCase("MYEMAIL@gmail.com");
+
         //then
         assertTrue(expectedAccount.isPresent());
     }

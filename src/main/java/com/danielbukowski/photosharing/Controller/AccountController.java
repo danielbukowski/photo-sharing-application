@@ -47,7 +47,7 @@ public class AccountController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping
+    @PatchMapping("/password")
     public ResponseEntity<?> changePassword(Authentication authentication,
                                             @Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
         accountService.changePassword(authentication.getName(), changePasswordRequest);

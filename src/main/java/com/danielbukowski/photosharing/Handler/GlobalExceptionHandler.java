@@ -1,6 +1,7 @@
-package com.danielbukowski.photosharing.Exception;
+package com.danielbukowski.photosharing.Handler;
 
 
+import com.danielbukowski.photosharing.Dto.ExceptionResponse;
 import com.danielbukowski.photosharing.Dto.ValidationExceptionResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,21 +18,6 @@ import java.util.Map;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-
-    @ExceptionHandler({AccountNotFoundException.class})
-    public ResponseEntity<?> handleAccountNotFoundException(AccountNotFoundException ex) {
-        var bodyResponse = ExceptionResponse.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.NOT_FOUND.getReasonPhrase())
-                .reason(ex.getMessage())
-                .path(ServletUriComponentsBuilder.fromCurrentRequest().toUriString())
-                .build();
-
-        return new ResponseEntity<>(
-                bodyResponse,
-                HttpStatus.NOT_FOUND
-        );
-    }
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<?> handleRuntimeException(RuntimeException ex) {
