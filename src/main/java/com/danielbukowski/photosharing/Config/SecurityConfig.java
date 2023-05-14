@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -22,16 +23,13 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
-
     private final AuthenticationEntryPointHandler authenticationEntryPointHandler;
     private final AuthorizationDeniedHandler authorizationDeniedHandler;
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .httpBasic()
-                .and()
-                .authenticationProvider(authProvider())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/api/v1/accounts").permitAll()
                         .anyRequest().authenticated()
@@ -41,8 +39,13 @@ public class SecurityConfig {
                             .authenticationEntryPoint(authenticationEntryPointHandler)
                             .accessDeniedHandler(authorizationDeniedHandler);
                 })
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session -> {
+                    session.maximumSessions(1).maxSessionsPreventsLogin(false);
+                    session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
+                })
+                .authenticationProvider(authProvider())
                 .csrf(AbstractHttpConfigurer::disable)
+                .httpBasic(Customizer.withDefaults())
                 .build();
     }
 
@@ -58,4 +61,6 @@ public class SecurityConfig {
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
+
+
 }

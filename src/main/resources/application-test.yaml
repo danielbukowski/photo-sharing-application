@@ -4,6 +4,7 @@ spring:
       ddl-auto: validate
   flyway:
     enabled: true
-
+  session:
+    store-type: none
 
 
