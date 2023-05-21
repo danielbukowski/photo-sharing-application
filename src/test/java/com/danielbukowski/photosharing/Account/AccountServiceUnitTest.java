@@ -34,7 +34,7 @@ class AccountServiceUnitTest {
     private AccountMapper accountMapper;
 
     @Test
-    public void shouldThrownExceptionWhenRegisterRequestContainsEmailThatAlreadyExistsInDatabase() {
+    void shouldThrownExceptionWhenRegisterRequestContainsEmailThatAlreadyExistsInDatabase() {
         //given
         var alreadyExistingEmailInAccounts = "myemail@mail.com";
         Account account = new Account(
@@ -60,7 +60,7 @@ class AccountServiceUnitTest {
     }
 
     @Test
-    public void shouldReturnAllAccountsWhenThereAreTwoAccountsInDatabase() {
+    void shouldReturnAllAccountsWhenThereAreTwoAccountsInDatabase() {
         //given
         var account1 = new Account();
         account1.setPassword(faker.internet().password());
@@ -90,7 +90,7 @@ class AccountServiceUnitTest {
     }
 
     @Test
-    public void shouldThrowExceptionWhenAccountIsNotFound() {
+    void shouldThrowExceptionWhenAccountIsNotFound() {
         //given
         var id = new UUID(0, 0);
 
@@ -109,7 +109,7 @@ class AccountServiceUnitTest {
     }
 
     @Test
-    public void shouldThrownExceptionWhenMethodDeleteByAccountIdIsCalledAndThereIsNotAccountInDatabase() {
+    void shouldThrownExceptionWhenMethodDeleteByAccountIdIsCalledAndThereIsNotAccountInDatabase() {
         //given
         var id = new UUID(1,1);
 

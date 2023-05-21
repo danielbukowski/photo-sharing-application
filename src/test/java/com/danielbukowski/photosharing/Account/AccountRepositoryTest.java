@@ -38,7 +38,7 @@ class AccountRepositoryTest {
     }
 
     @Test
-    public void shouldSaveAccountWhenAccountDoesNotExistInDatabase() {
+    void shouldSaveAccountWhenAccountDoesNotExistInDatabase() {
         //given
         Account account = new Account();
         account.setPassword("password");
@@ -53,7 +53,7 @@ class AccountRepositoryTest {
     }
 
     @Test
-    public void shouldFindAccountByEmailIgnoreCasesWhenAccountExistsInDatabase() {
+    void shouldFindAccountByEmailIgnoreCasesWhenAccountExistsInDatabase() {
         //given
         Account account = new Account();
         account.setPassword("password");
@@ -68,7 +68,7 @@ class AccountRepositoryTest {
     }
 
     @Test
-    public void shouldFindAccountByEmailIgnoreCasesWhenEmailLetterCaseIsDifferent() {
+    void shouldFindAccountByEmailIgnoreCasesWhenEmailLetterCaseIsDifferent() {
         //given
         Account account = new Account();
         account.setPassword("password");

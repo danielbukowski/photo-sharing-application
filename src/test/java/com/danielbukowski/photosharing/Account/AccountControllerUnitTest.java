@@ -44,7 +44,7 @@ class AccountControllerUnitTest {
     private AccountService accountService;
 
     @Test
-    public void shouldReturnStatusOkWhenMethodGetAccountsIsCalled() throws Exception {
+    void shouldReturnStatusOkWhenMethodGetAccountsIsCalled() throws Exception {
         //given
         AccountDto accountDto1 = AccountDto.builder()
                 .id(new UUID(0, 0))
@@ -68,7 +68,7 @@ class AccountControllerUnitTest {
     }
 
     @Test
-    public void shouldReturnStatusOkWhenMethodGetAccountById() throws Exception {
+    void shouldReturnStatusOkWhenMethodGetAccountById() throws Exception {
         //given
         AccountDto accountDto = AccountDto.builder()
                 .id(new UUID(0, 0))
@@ -87,7 +87,7 @@ class AccountControllerUnitTest {
     }
 
     @Test
-    public void shouldReturnStatusBadRequestWhenFieldsAreEmpty() throws Exception {
+    void shouldReturnStatusBadRequestWhenFieldsAreEmpty() throws Exception {
         //given
         AccountRegisterRequest accountRegisterRequest = new AccountRegisterRequest("", "");
 
@@ -137,7 +137,7 @@ class AccountControllerUnitTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"email.com", "email@.com", "@gmail.com", "email@@gmail.com", "email@gmail."})
-    public void shouldReturnStatusBadRequestWhenFieldEmailDoesNotMatchEmailPattern(String email) throws Exception {
+    void shouldReturnStatusBadRequestWhenFieldEmailDoesNotMatchEmailPattern(String email) throws Exception {
         //then
         mockMvc.perform(
                         post("/api/v1/accounts")
@@ -161,7 +161,7 @@ class AccountControllerUnitTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"", "a", "aaaaaaa7", "aaaa!3A", "aaaaa!3", "aaaa!aA", "aaaaa3A"})
-    public void shouldReturnStatusBadRequestWhenFieldPasswordIsInvalid(String password) throws Exception {
+    void shouldReturnStatusBadRequestWhenFieldPasswordIsInvalid(String password) throws Exception {
         //then
         mockMvc.perform(
                         post("/api/v1/accounts")
