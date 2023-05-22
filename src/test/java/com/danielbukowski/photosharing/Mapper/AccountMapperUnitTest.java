@@ -1,8 +1,7 @@
-package com.danielbukowski.photosharing.Account;
+package com.danielbukowski.photosharing.Mapper;
 
 import com.danielbukowski.photosharing.Dto.AccountDto;
 import com.danielbukowski.photosharing.Entity.Account;
-import com.danielbukowski.photosharing.Mapper.AccountMapper;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;

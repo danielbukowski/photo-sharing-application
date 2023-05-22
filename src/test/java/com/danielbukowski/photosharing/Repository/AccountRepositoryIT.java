@@ -1,7 +1,6 @@
-package com.danielbukowski.photosharing.Account;
+package com.danielbukowski.photosharing.Repository;
 
 import com.danielbukowski.photosharing.Entity.Account;
-import com.danielbukowski.photosharing.Repository.AccountRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
-class AccountRepositoryTest {
+class AccountRepositoryIT {
 
     @Container
     private static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:alpine");
@@ -38,7 +37,7 @@ class AccountRepositoryTest {
     }
 
     @Test
-    public void shouldSaveAccountWhenAccountDoesNotExistInDatabase() {
+    void shouldSaveAccountWhenAccountDoesNotExistInDatabase() {
         //given
         Account account = new Account();
         account.setPassword("password");
@@ -53,7 +52,7 @@ class AccountRepositoryTest {
     }
 
     @Test
-    public void shouldFindAccountByEmailIgnoreCasesWhenAccountExistsInDatabase() {
+    void shouldFindAccountByEmailIgnoreCasesWhenAccountExistsInDatabase() {
         //given
         Account account = new Account();
         account.setPassword("password");
@@ -68,7 +67,7 @@ class AccountRepositoryTest {
     }
 
     @Test
-    public void shouldFindAccountByEmailIgnoreCasesWhenEmailLetterCaseIsDifferent() {
+    void shouldFindAccountByEmailIgnoreCasesWhenEmailLetterCaseIsDifferent() {
         //given
         Account account = new Account();
         account.setPassword("password");

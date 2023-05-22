@@ -1,11 +1,10 @@
-package com.danielbukowski.photosharing.Account;
+package com.danielbukowski.photosharing.Service;
 
 import com.danielbukowski.photosharing.Dto.AccountRegisterRequest;
 import com.danielbukowski.photosharing.Entity.Account;
 import com.danielbukowski.photosharing.Exception.AccountNotFoundException;
 import com.danielbukowski.photosharing.Mapper.AccountMapper;
 import com.danielbukowski.photosharing.Repository.AccountRepository;
-import com.danielbukowski.photosharing.Service.AccountService;
 import com.github.javafaker.Faker;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,7 +33,7 @@ class AccountServiceUnitTest {
     private AccountMapper accountMapper;
 
     @Test
-    public void shouldThrownExceptionWhenRegisterRequestContainsEmailThatAlreadyExistsInDatabase() {
+    void shouldThrownExceptionWhenRegisterRequestContainsEmailThatAlreadyExistsInDatabase() {
         //given
         var alreadyExistingEmailInAccounts = "myemail@mail.com";
         Account account = new Account(
@@ -60,7 +59,7 @@ class AccountServiceUnitTest {
     }
 
     @Test
-    public void shouldReturnAllAccountsWhenThereAreTwoAccountsInDatabase() {
+    void shouldReturnAllAccountsWhenThereAreTwoAccountsInDatabase() {
         //given
         var account1 = new Account();
         account1.setPassword(faker.internet().password());
@@ -90,7 +89,7 @@ class AccountServiceUnitTest {
     }
 
     @Test
-    public void shouldThrowExceptionWhenAccountIsNotFound() {
+    void shouldThrowExceptionWhenAccountIsNotFound() {
         //given
         var id = new UUID(0, 0);
 
@@ -109,7 +108,7 @@ class AccountServiceUnitTest {
     }
 
     @Test
-    public void shouldThrownExceptionWhenMethodDeleteByAccountIdIsCalledAndThereIsNotAccountInDatabase() {
+    void shouldThrownExceptionWhenMethodDeleteByAccountIdIsCalledAndThereIsNotAccountInDatabase() {
         //given
         var id = new UUID(1,1);
 
