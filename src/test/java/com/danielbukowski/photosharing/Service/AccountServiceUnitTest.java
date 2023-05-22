@@ -1,11 +1,10 @@
-package com.danielbukowski.photosharing.Account;
+package com.danielbukowski.photosharing.Service;
 
 import com.danielbukowski.photosharing.Dto.AccountRegisterRequest;
 import com.danielbukowski.photosharing.Entity.Account;
 import com.danielbukowski.photosharing.Exception.AccountNotFoundException;
 import com.danielbukowski.photosharing.Mapper.AccountMapper;
 import com.danielbukowski.photosharing.Repository.AccountRepository;
-import com.danielbukowski.photosharing.Service.AccountService;
 import com.github.javafaker.Faker;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

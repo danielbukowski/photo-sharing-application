@@ -1,6 +1,5 @@
-package com.danielbukowski.photosharing.Account;
+package com.danielbukowski.photosharing.Controller;
 
-import com.danielbukowski.photosharing.Controller.AccountController;
 import com.danielbukowski.photosharing.Dto.AccountDto;
 import com.danielbukowski.photosharing.Dto.AccountRegisterRequest;
 import com.danielbukowski.photosharing.Service.AccountService;
@@ -25,7 +24,8 @@ import java.util.UUID;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
