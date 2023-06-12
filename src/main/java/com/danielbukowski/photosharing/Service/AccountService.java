@@ -4,13 +4,18 @@ import com.danielbukowski.photosharing.Dto.AccountDto;
 import com.danielbukowski.photosharing.Dto.AccountRegisterRequest;
 import com.danielbukowski.photosharing.Dto.ChangePasswordRequest;
 import com.danielbukowski.photosharing.Entity.Account;
+import com.danielbukowski.photosharing.Entity.Image;
+import com.danielbukowski.photosharing.Enum.FileExtension;
 import com.danielbukowski.photosharing.Exception.AccountNotFoundException;
 import com.danielbukowski.photosharing.Mapper.AccountMapper;
 import com.danielbukowski.photosharing.Repository.AccountRepository;
+import com.danielbukowski.photosharing.Repository.ImageRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.apache.commons.io.FilenameUtils;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,6 +27,8 @@ public class AccountService {
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
     private final AccountMapper accountMapper;
+    private final S3Service s3Service;
+    private final ImageRepository imageRepository;
 
     public List<AccountDto> getAccounts() {
         return accountRepository.findAll()
@@ -68,5 +75,30 @@ public class AccountService {
             throw new RuntimeException("The old password should not be the same as the new one");
 
         account.setPassword(passwordEncoder.encode(newPassword));
+    }
+
+    @Transactional
+    public UUID saveImageToAccount(MultipartFile image, String username) {
+        var account = accountRepository.findByEmailIgnoreCase(username)
+                .orElseThrow(() -> new RuntimeException("Couldnt't find an account"));
+
+        System.out.println(FilenameUtils.getExtension(image.getOriginalFilename()));
+        System.out.println(FilenameUtils.getName(image.getOriginalFilename()));
+
+        String[] imageName = image.getOriginalFilename().split("\\.");
+        Image savedImageWithId = imageRepository.save(Image.builder()
+                .title(imageName[0])
+                .fileExtension(FileExtension.getFromString(imageName[1]))
+                .build());
+        savedImageWithId.setPath("images/%s/%s".formatted(account.getId(), savedImageWithId.getId()));
+        account.addImageToAccount(savedImageWithId);
+
+        s3Service.saveImageToS3(account.getId(), savedImageWithId.getId(), image);
+        return savedImageWithId.getId();
+
+    }
+
+    public byte[] getImageFromAccount(UUID accountId, UUID imageId) {
+        return s3Service.getImageFromS3(accountId, imageId);
     }
 }
