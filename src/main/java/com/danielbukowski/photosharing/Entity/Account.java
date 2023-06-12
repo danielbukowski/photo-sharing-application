@@ -6,16 +6,14 @@ import org.hibernate.Hibernate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
+@Builder
+@NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "accounts")
 public class Account implements UserDetails {
@@ -31,6 +29,19 @@ public class Account implements UserDetails {
 
     @Column(name = "password", nullable = false)
     private String password;
+
+    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.REMOVE})
+    @JoinColumn(name = "account_id")
+    @ToString.Exclude
+    private List<Image> images = new ArrayList<>();
+
+    public void addImageToAccount(Image image) {
+        images.add(image);
+    }
+
+    public void removeImageToAccount(Image image) {
+        images.remove(image);
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
