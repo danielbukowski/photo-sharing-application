@@ -36,11 +36,11 @@ class AccountServiceUnitTest {
     void shouldThrownExceptionWhenRegisterRequestContainsEmailThatAlreadyExistsInDatabase() {
         //given
         var alreadyExistingEmailInAccounts = "myemail@mail.com";
-        Account account = new Account(
-                new UUID(0, 0),
-                alreadyExistingEmailInAccounts,
-                "password123"
-        );
+        Account account = Account.builder()
+                .id(new UUID(0, 0))
+                .email(alreadyExistingEmailInAccounts)
+                .password("password123")
+                .build();
         var accountRegisterRequest = new AccountRegisterRequest(alreadyExistingEmailInAccounts, "password123");
 
         //when
