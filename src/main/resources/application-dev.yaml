@@ -14,5 +14,9 @@ spring:
   session:
     timeout: 1h
     store-type: redis
-
+s3:
+  url: "http://localhost:8333"
+  bucket_name: "accounts_data"
+  access_key: "any"
+  secret_key: "any"
 
