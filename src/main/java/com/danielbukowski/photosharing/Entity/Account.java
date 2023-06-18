@@ -2,7 +2,6 @@ package com.danielbukowski.photosharing.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.Hibernate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -11,7 +10,6 @@ import java.util.*;
 @Entity
 @Getter
 @Setter
-@ToString
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,22 +22,30 @@ public class Account implements UserDetails {
     )
     private UUID id;
 
-    @Column(name = "email", unique = true, nullable = false)
+    @Column(
+            unique = true,
+            nullable = false
+    )
     private String email;
 
-    @Column(name = "password", nullable = false)
+    @Column(
+            nullable = false
+    )
     private String password;
 
-    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.REMOVE})
-    @JoinColumn(name = "account_id")
-    @ToString.Exclude
+    @OneToMany(
+            mappedBy = "account",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     private List<Image> images = new ArrayList<>();
 
     public void addImageToAccount(Image image) {
         images.add(image);
+        image.setAccount(this);
     }
 
-    public void removeImageToAccount(Image image) {
+    public void removeImageFromAccount(Image image) {
         images.remove(image);
     }
 
@@ -81,13 +87,13 @@ public class Account implements UserDetails {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         Account account = (Account) o;
-        return getId() != null && Objects.equals(getId(), account.getId());
+        return Objects.equals(id, account.id);
     }
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return Objects.hash(super.hashCode(), id);
     }
 }
