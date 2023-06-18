@@ -19,4 +19,13 @@ s3:
   bucket_name: "accounts_data"
   access_key: "any"
   secret_key: "any"
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
 
