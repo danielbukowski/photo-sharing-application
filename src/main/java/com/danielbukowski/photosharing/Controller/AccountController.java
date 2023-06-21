@@ -3,11 +3,15 @@ package com.danielbukowski.photosharing.Controller;
 import com.danielbukowski.photosharing.Dto.AccountDto;
 import com.danielbukowski.photosharing.Dto.AccountRegisterRequest;
 import com.danielbukowski.photosharing.Dto.ChangePasswordRequest;
+import com.danielbukowski.photosharing.Dto.ImageDto;
 import com.danielbukowski.photosharing.Entity.Account;
 import com.danielbukowski.photosharing.Service.AccountService;
 import com.danielbukowski.photosharing.Validator.Image;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
@@ -65,14 +68,33 @@ public class AccountController {
         UUID imageId = accountService.saveImageToAccount(image, account.getUsername());
         return ResponseEntity
                 .created(
-                        URI.create("http://localhost:8080/api/v1/accounts/%s/images/%s".formatted(account.getId(), imageId)))
-                .build();
+                        ServletUriComponentsBuilder
+                                .fromCurrentContextPath()
+                                .path("/api/v1/accounts/images/%s".formatted(imageId))
+                                .build()
+                                .toUri()
+                ).build();
     }
 
-    @GetMapping("/{accountId}/images/{imageId}")
-    public ResponseEntity<byte[]> getImageFromAccount(@PathVariable UUID accountId,
-                                                      @PathVariable UUID imageId) {
-        return ResponseEntity.ok(accountService.getImageFromAccount(accountId, imageId));
+    @GetMapping("/images/{imageId}")
+    public ResponseEntity<byte[]> getImageFromAccount(@PathVariable UUID imageId,
+                                                      @AuthenticationPrincipal Account account) {
+        ImageDto imageDto = accountService.getImageFromAccount(account, imageId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(
+                        MediaType.parseMediaType("image/%s".formatted(imageDto.extension()))
+                )
+                .body(imageDto.data());
+    }
+
+    @DeleteMapping("/images/{imageId}")
+    public ResponseEntity<?> deleteImageFromAccount(@PathVariable UUID imageId,
+                                                    @AuthenticationPrincipal Account account) {
+        accountService.deleteImageFromAccount(account, imageId);
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 
 
