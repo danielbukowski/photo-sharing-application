@@ -9,8 +9,10 @@ import org.springframework.context.annotation.Configuration;
 @Data
 @ConfigurationProperties(prefix = "s3")
 public class S3Properties {
+
     private String url;
     private String bucketName;
     private String accessKey;
     private String secretKey;
+
 }
