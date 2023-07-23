@@ -1,12 +1,12 @@
 package com.danielbukowski.photosharing.Entity;
 
 
-import com.danielbukowski.photosharing.Enum.FileExtension;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -19,18 +19,13 @@ import java.util.UUID;
 @AllArgsConstructor
 @Table(name = "images")
 @EntityListeners(AuditingEntityListener.class)
-public class Image {
+public class Image implements Serializable {
 
     @Id
     @GeneratedValue(
             strategy = GenerationType.UUID
     )
     private UUID id;
-
-    @Column(
-            unique = true
-    )
-    private String path;
 
     @Column(
             updatable = false,
@@ -42,21 +37,23 @@ public class Image {
             updatable = false,
             nullable = false
     )
-    @Enumerated(EnumType.STRING)
-    private FileExtension extension;
+    private String contentType;
 
     @CreatedDate
     @Column(
             updatable = false,
             nullable = false
     )
-    private LocalDateTime createdDate;
+    private LocalDateTime createDate;
 
     @ManyToOne(
             fetch = FetchType.LAZY,
             optional = false
     )
-    @JoinColumn(name = "account_id")
+    @JoinColumn(
+            name = "account_id",
+            nullable = false
+    )
     private Account account;
 
     @Override
@@ -71,4 +68,5 @@ public class Image {
     public int hashCode() {
         return Objects.hash(super.hashCode(), id);
     }
+
 }

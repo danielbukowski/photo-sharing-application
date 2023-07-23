@@ -14,4 +14,5 @@ public @interface Image {
     String message() default "Invalid file extension. Only [JPEG, PNG] extensions are supported";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
+
 }

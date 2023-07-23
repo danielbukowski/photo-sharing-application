@@ -1,6 +1,5 @@
 package com.danielbukowski.photosharing.Handler;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
@@ -19,4 +18,5 @@ public class AuthenticationEntryPointHandler implements AuthenticationEntryPoint
                          AuthenticationException authException) throws IOException {
         response.sendError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized");
     }
+
 }

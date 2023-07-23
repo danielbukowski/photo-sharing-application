@@ -5,5 +5,5 @@ import lombok.Builder;
 @Builder
 public record ImageDto (
         byte[] data,
-        String extension) {
+        String contentType) {
 }

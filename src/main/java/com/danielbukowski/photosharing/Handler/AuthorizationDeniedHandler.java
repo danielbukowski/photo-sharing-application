@@ -18,4 +18,5 @@ public class AuthorizationDeniedHandler implements AccessDeniedHandler {
                        AccessDeniedException accessDeniedException) throws IOException {
         response.sendError(HttpStatus.FORBIDDEN.value(), "You don't have access to this resource");
     }
+
 }
