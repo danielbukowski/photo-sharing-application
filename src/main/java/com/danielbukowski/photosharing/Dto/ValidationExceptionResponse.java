@@ -10,9 +10,9 @@ import java.util.Map;
 
 @Builder
 public record ValidationExceptionResponse(
-        String status,
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
         LocalDateTime timestamp,
+        int status,
         String reason,
         Map<String, List<String>> fieldNames,
         String path) {
