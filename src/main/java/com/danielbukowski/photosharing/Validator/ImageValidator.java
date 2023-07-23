@@ -38,17 +38,18 @@ public class ImageValidator implements ConstraintValidator<Image, MultipartFile>
     @SneakyThrows
     private boolean isFileTypeValid(MultipartFile multipartFile) {
         FileExtension fileType = getFileType(multipartFile.getBytes());
-        return fileType.equals(PNG) || fileType.equals(JPEG);
+        return fileType != null && (fileType.equals(PNG) || fileType.equals(JPEG));
     }
 
     // Checks Magic Bytes in a file
     private FileExtension getFileType(byte[] fileData) {
-        // Checks signature ‰P
+        // Finds '‰P' signature
         if (Byte.toUnsignedInt(fileData[0]) == 0x89 && Byte.toUnsignedInt(fileData[1]) == 0x50)
             return PNG;
-            // Checks signature ÿØ
+            // Finds 'ÿØ' signature
         else if (Byte.toUnsignedInt(fileData[0]) == 0xFF && Byte.toUnsignedInt(fileData[1]) == 0xD8)
             return JPEG;
-        throw new RuntimeException("Unknown file type extension");
+        return null;
     }
+
 }
