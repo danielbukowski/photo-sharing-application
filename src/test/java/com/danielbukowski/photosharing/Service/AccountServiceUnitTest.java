@@ -201,7 +201,7 @@ class AccountServiceUnitTest {
         //given
         var accountId = new UUID(2, 2);
         var imageId = new UUID(3, 3);
-        given(imageRepository.findById(eq(imageId)))
+        given(imageRepository.findByImageIdAndAccountId(imageId, accountId))
                 .willReturn(Optional.empty());
 
         //when
@@ -235,7 +235,7 @@ class AccountServiceUnitTest {
                                 .build()
                 )
                 .build();
-        given(imageRepository.findById(imageId))
+        given(imageRepository.findByImageIdAndAccountId(imageId, accountId))
                 .willReturn(Optional.of(image));
         var imageInBytes = new byte[]{};
         given(s3Service.getImageFromS3(accountId, imageId))
