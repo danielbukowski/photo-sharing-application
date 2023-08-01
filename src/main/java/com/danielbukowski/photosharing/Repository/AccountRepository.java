@@ -44,7 +44,6 @@ public interface AccountRepository extends JpaRepository<Account, UUID> {
 
     @Query(
             "SELECT COUNT(a) > 0 " +
-            "THEN true ELSE false END " +
             "FROM Account a " +
             "WHERE LOWER(a.email) = LOWER(:email)"
     )
