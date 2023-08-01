@@ -7,6 +7,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.*;
 
+import static jakarta.persistence.CascadeType.*;
+
 @Entity
 @Getter
 @Setter
@@ -35,19 +37,9 @@ public class Account implements UserDetails {
 
     @OneToMany(
             mappedBy = "account",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
+            cascade = {REFRESH, MERGE, PERSIST}
     )
     private List<Image> images = new ArrayList<>();
-
-    public void addImageToAccount(Image image) {
-        images.add(image);
-        image.setAccount(this);
-    }
-
-    public void removeImageFromAccount(Image image) {
-        images.remove(image);
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -96,4 +88,5 @@ public class Account implements UserDetails {
     public int hashCode() {
         return Objects.hash(super.hashCode(), id);
     }
+
 }
