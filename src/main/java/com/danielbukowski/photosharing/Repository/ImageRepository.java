@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -20,4 +21,12 @@ public interface ImageRepository extends JpaRepository<Image, UUID> {
     )
     void deleteByAccountId(UUID accountId);
 
+
+    @Query(
+            "SELECT i " +
+            "FROM Image i " +
+            "WHERE i.id = :imageId " +
+            "AND i.account.id = :accountId"
+    )
+    Optional<Image> findByImageIdAndAccountId(UUID imageId, UUID accountId);
 }
