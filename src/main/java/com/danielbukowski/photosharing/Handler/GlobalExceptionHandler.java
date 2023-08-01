@@ -6,6 +6,8 @@ import com.danielbukowski.photosharing.Dto.ValidationExceptionResponse;
 import com.danielbukowski.photosharing.Exception.AccountAlreadyExistsException;
 import com.danielbukowski.photosharing.Exception.AccountNotFoundException;
 import com.danielbukowski.photosharing.Exception.ImageNotFoundException;
+import com.danielbukowski.photosharing.Exception.InvalidPasswordException;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -23,50 +25,49 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handleExceptions(RuntimeException ex) {
-        var bodyResponse = ExceptionResponse.builder()
+    public ResponseEntity<?> handleAnyException() {
+        var responseBody = ExceptionResponse.builder()
                 .timestamp(LocalDateTime.now())
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.name())
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .reason(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
                 .path(ServletUriComponentsBuilder.fromCurrentRequest().toUriString())
                 .build();
 
         return new ResponseEntity<>(
-                bodyResponse,
+                responseBody,
                 HttpStatus.INTERNAL_SERVER_ERROR
         );
     }
 
-    @ExceptionHandler(AccountAlreadyExistsException.class)
+    @ExceptionHandler({AccountAlreadyExistsException.class, InvalidPasswordException.class})
     public ResponseEntity<?> handleBadRequestExceptions(RuntimeException ex) {
-        var bodyResponse = ExceptionResponse.builder()
+        var responseBody = ExceptionResponse.builder()
                 .timestamp(LocalDateTime.now())
-                .status(HttpStatus.BAD_REQUEST.name())
+                .status(HttpStatus.BAD_REQUEST.value())
                 .reason(ex.getMessage())
                 .path(ServletUriComponentsBuilder.fromCurrentRequest().toUriString())
                 .build();
 
         return new ResponseEntity<>(
-                bodyResponse,
+                responseBody,
                 HttpStatus.BAD_REQUEST
         );
     }
 
     @ExceptionHandler({AccountNotFoundException.class, ImageNotFoundException.class})
     public ResponseEntity<?> handleNotFoundExceptions(RuntimeException ex) {
-        var bodyResponse = ExceptionResponse.builder()
+        var responseBody = ExceptionResponse.builder()
                 .timestamp(LocalDateTime.now())
-                .status(HttpStatus.NOT_FOUND.getReasonPhrase())
+                .status(HttpStatus.NOT_FOUND.value())
                 .reason(ex.getMessage())
                 .path(ServletUriComponentsBuilder.fromCurrentRequest().toUriString())
                 .build();
 
         return new ResponseEntity<>(
-                bodyResponse,
+                responseBody,
                 HttpStatus.NOT_FOUND
         );
     }
-
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
@@ -77,15 +78,32 @@ public class GlobalExceptionHandler {
             fieldValue.add(field.getDefaultMessage());
         }
 
-        var bodyResponse = ValidationExceptionResponse.builder()
+        var responseBody = ValidationExceptionResponse.builder()
                 .timestamp(LocalDateTime.now())
-                .status(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .status(HttpStatus.BAD_REQUEST.value())
                 .path(ServletUriComponentsBuilder.fromCurrentRequest().toUriString())
                 .fieldNames(foundedFieldErrors)
-                .reason("The fields have not meet the requirements")
+                .reason("The fields did not meet the requirements")
                 .build();
         return new ResponseEntity<>(
-                bodyResponse, HttpStatus.BAD_REQUEST
+                responseBody,
+                HttpStatus.BAD_REQUEST
         );
     }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<?> handleConstraintViolationException(ConstraintViolationException ex) {
+        var responseBody = ExceptionResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .reason(ex.getMessage())
+                .path(ServletUriComponentsBuilder.fromCurrentRequest().toUriString())
+                .build();
+
+        return new ResponseEntity<>(
+                responseBody,
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
 }
