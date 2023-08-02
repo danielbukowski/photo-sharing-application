@@ -52,7 +52,7 @@ public class AccountService {
 
     @Transactional
     public void deleteAccountById(UUID accountId) {
-        log.info("Deleting an account with an id {}", accountId);
+        log.info("Deleting an account with id {}", accountId);
         imageRepository.deleteByAccountId(accountId);
         accountRepository.deleteById(accountId);
         s3Service.deleteAllImagesFromS3(accountId);
@@ -88,10 +88,10 @@ public class AccountService {
     }
 
     public ImageDto getImageFromAccount(UUID accountId, UUID imageId) {
-        log.info("Getting an image with an id {}", imageId);
+        log.info("Getting an image with id {}", imageId);
         Image image = imageRepository.findByImageIdAndAccountId(imageId, accountId)
                 .orElseThrow(() -> {
-                    log.error("Failed to find an image with an id {}", imageId);
+                    log.error("Failed to find an image with id {}", imageId);
                     return new ImageNotFoundException(
                             IMAGE_NOT_FOUND.getMessage());
                 });
@@ -102,7 +102,7 @@ public class AccountService {
 
     @Transactional
     public void deleteImageFromAccount(UUID accountId, UUID imageId) {
-        log.info("Deleting an image with an id {}", imageId);
+        log.info("Deleting an image with id {}", imageId);
         s3Service.deleteImageFromS3(accountId, imageId);
         imageRepository.deleteById(imageId);
     }
