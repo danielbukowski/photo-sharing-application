@@ -1,5 +1,8 @@
 spring:
   jpa:
+    properties:
+      hibernate:
+        generate_statistics: true
     hibernate:
       ddl-auto: validate
   datasource:
@@ -23,9 +26,5 @@ logging:
   level:
     org:
       hibernate:
+        stat: DEBUG
         SQL: DEBUG
-        type:
-          descriptor:
-            sql:
-              BasicBinder: TRACE
-
