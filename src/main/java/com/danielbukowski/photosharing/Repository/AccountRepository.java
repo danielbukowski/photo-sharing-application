@@ -32,16 +32,6 @@ public interface AccountRepository extends JpaRepository<Account, UUID> {
     @EntityGraph(attributePaths = { "images" })
     Optional<Account> findByEmailIgnoreCase(String email);
 
-    @Override
-    @Query(
-            "SELECT a, i " +
-            "FROM Account a " +
-            "LEFT JOIN FETCH a.images i " +
-            "WHERE a.id = :id"
-    )
-    @EntityGraph(attributePaths = { "images" })
-    Optional<Account> findById(UUID id);
-
     @Query(
             "SELECT COUNT(a) > 0 " +
             "FROM Account a " +
