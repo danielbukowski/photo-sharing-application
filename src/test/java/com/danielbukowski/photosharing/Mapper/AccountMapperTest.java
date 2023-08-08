@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class AccountMapperUnitTest {
+class AccountMapperTest {
 
     private final Faker faker = new Faker();
     private final AccountMapper accountMapper = new AccountMapper();

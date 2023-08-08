@@ -33,7 +33,7 @@ import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
-class AccountServiceUnitTest {
+class AccountServiceTest {
 
     private final Faker faker = new Faker();
     @InjectMocks
