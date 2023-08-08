@@ -1,24 +1,25 @@
 package com.danielbukowski.photosharing.Service;
 
 
+import com.danielbukowski.photosharing.Exception.ImageNotFoundException;
 import com.danielbukowski.photosharing.Property.S3Properties;
 import lombok.AllArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.GetObjectRequest;
-import software.amazon.awssdk.services.s3.model.GetObjectResponse;
-import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.*;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class S3Service {
 
     private static final String IMAGES_PATH = "images/%s/%s";
@@ -26,20 +27,22 @@ public class S3Service {
     private final S3Properties s3Properties;
 
     public byte[] getImageFromS3(UUID accountId, UUID imageId) {
-        ResponseInputStream<GetObjectResponse> object = s3Client.getObject(
-                GetObjectRequest.builder()
-                        .bucket(s3Properties.getBucketName())
-                        .key(IMAGES_PATH.formatted(accountId, imageId))
-                        .build()
-        );
+        log.info("Getting an image with id {}", imageId);
         try {
-            return object.readAllBytes();
-        } catch (IOException e) {
-            throw new RuntimeException("Couldn't find an image in the account with id [%s]".formatted(accountId));
+            return s3Client.getObject(
+                    GetObjectRequest.builder()
+                            .bucket(s3Properties.getBucketName())
+                            .key(IMAGES_PATH.formatted(accountId, imageId))
+                            .build()
+            ).readAllBytes();
+        } catch (IOException | S3Exception e) {
+            log.error("Could not get an image with id {}", imageId, e);
+            throw new ImageNotFoundException("Could not find an image");
         }
     }
 
     public void saveImageToS3(UUID accountId, UUID imageId, MultipartFile image) {
+        log.info("Trying to save an image with id {}", imageId);
         try {
             s3Client.putObject(
                     PutObjectRequest.builder()
@@ -47,9 +50,65 @@ public class S3Service {
                             .key(IMAGES_PATH.formatted(accountId, imageId))
                             .build(),
                     RequestBody.fromBytes(image.getBytes())
+
             );
-        } catch (IOException e) {
-            throw new RuntimeException("Couldn't save an image");
+        } catch (IOException | S3Exception e) {
+            log.error("Could not save an image with id {}", imageId, e);
+            throw S3Exception
+                    .builder()
+                    .message("Could not save an image")
+                    .build();
+        }
+    }
+
+    public void deleteImageFromS3(UUID accountId, UUID imageId) {
+        log.info("Deleting an image with id {}", imageId);
+        try {
+            s3Client.deleteObject(
+                    DeleteObjectRequest.builder()
+                            .bucket(s3Properties.getBucketName())
+                            .key(IMAGES_PATH.formatted(accountId, imageId))
+                            .build()
+            );
+        } catch (S3Exception e) {
+            log.error("Could not delete an image with id {}", imageId);
+            throw S3Exception
+                    .builder()
+                    .message("Could not delete an image")
+                    .build();
+        }
+    }
+
+    private List<ObjectIdentifier> getAllImagesFromS3(UUID accountId) {
+        return s3Client.listObjects(
+                        ListObjectsRequest.builder()
+                                .bucket(s3Properties.getBucketName())
+                                .prefix("images/%s".formatted(accountId))
+                                .build()
+                ).contents()
+                .stream()
+                .map(o -> ObjectIdentifier.builder().key(o.key()).build())
+                .toList();
+    }
+
+    public void deleteAllImagesFromS3(UUID accountId) {
+        log.info("Deleting all images from an account with id {}", accountId);
+        try {
+            s3Client.deleteObjects(
+                    DeleteObjectsRequest.builder()
+                            .delete(Delete.builder()
+                                    .objects(getAllImagesFromS3(accountId))
+                                    .build()
+                            )
+                            .bucket(s3Properties.getBucketName())
+                            .build()
+            );
+        } catch (S3Exception e) {
+            log.error("Could not save all images from an account with id {}", accountId);
+            throw S3Exception
+                    .builder()
+                    .message("Could not delete images")
+                    .build();
         }
     }
 
