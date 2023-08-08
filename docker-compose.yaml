@@ -26,3 +26,17 @@ services:
     ports:
       - "6379:6379"
     restart: on-failure
+
+  s3:
+    image: chrislusf/seaweedfs
+    volumes:
+      - seaweedfs:/seaweedfs
+    ports:
+      - "8333:8333"
+    command:
+    - "server -s3"
+#    When this container starts go to the terminal
+#    and type  echo 's3.configure -access_key any -secret_key any -user admin -actions Admin -apply' | weed shell
+
+volumes:
+  seaweedfs:

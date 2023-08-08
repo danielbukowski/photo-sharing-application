@@ -9,8 +9,8 @@ public class AccountMapper {
 
     public AccountDto fromAccountToAccountDto(Account account) {
         return AccountDto.builder()
-                .id(account.getId())
                 .email(account.getEmail())
                 .build();
     }
+
 }

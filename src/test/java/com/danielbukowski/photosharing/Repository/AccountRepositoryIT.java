@@ -1,25 +1,27 @@
 package com.danielbukowski.photosharing.Repository;
 
 import com.danielbukowski.photosharing.Entity.Account;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.context.jdbc.Sql;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
+@Sql("classpath:db/populate_test_data.sql")
 @Testcontainers
 @DataJpaTest
+@EnableJpaAuditing
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
 class AccountRepositoryIT {
@@ -37,47 +39,100 @@ class AccountRepositoryIT {
     }
 
     @Test
-    void shouldSaveAccountWhenAccountDoesNotExistInDatabase() {
-        //given
-        Account account = new Account();
-        account.setPassword("password");
-        account.setEmail("email@gmail.com");
-
-        //when
-        accountRepository.save(account);
-        List<Account> accountsInDatabase = accountRepository.findAll();
-
-        //then
-        Assertions.assertThat(accountsInDatabase).hasSize(1);
+    public void checkInitiatedTestData() {
+        assertEquals(2, accountRepository.findAll().size());
     }
 
     @Test
-    void shouldFindAccountByEmailIgnoreCasesWhenAccountExistsInDatabase() {
+    void UpdatePasswordById_AccountExists_ChangePasswordAccount() {
         //given
-        Account account = new Account();
-        account.setPassword("password");
-        account.setEmail("myemail@gmail.com");
+        var password = "myNewPassword";
+        var accountId = UUID.fromString("4e280c33-518e-444f-a541-0cc4b14b5b05");
 
         //when
-        accountRepository.save(account);
-        Optional<Account> expectedAccount = accountRepository.findByEmailIgnoreCase("myemail@gmail.com");
+        accountRepository.updatePasswordById(password, accountId);
 
         //then
-        assertTrue(expectedAccount.isPresent());
+        var account = accountRepository.getById(accountId);
+        assertEquals(password, account.getPassword());
+
+        //Checks if other account's password was not changed
+        assertEquals("ca44tSs!!", accountRepository.getById(UUID.fromString("6d1afd8a-f8cf-4dd9-b105-fd4b9f81a8eb")).getPassword());
     }
 
     @Test
-    void shouldFindAccountByEmailIgnoreCasesWhenEmailLetterCaseIsDifferent() {
+    void UpdatePasswordById_AccountDoesNotExist_DoNotChangeAnyPasswordAccount() {
         //given
-        Account account = new Account();
-        account.setPassword("password");
-        account.setEmail("myemail@gmail.com");
+        var password = "myNewPassword";
+        var accountId = UUID.fromString("5f280c33-518e-444f-a541-0cc4b14b5b05");
 
         //when
-        accountRepository.save(account);
-        Optional<Account> expectedAccount = accountRepository.findByEmailIgnoreCase("MYEMAIL@gmail.com");
+        accountRepository.updatePasswordById(password, accountId);
 
         //then
-        assertTrue(expectedAccount.isPresent());
+        for (Account account : accountRepository.findAll()) {
+            assertNotEquals(password, account.getPassword());
+        }
     }
+
+    @Test
+    void FindByEmailIgnoreCase_EmailIsExactlyTheSame_FindsAccount() {
+        //given
+        var email = "iLoveDogs@gmail.com";
+        //when
+        var expectedResult = accountRepository.findByEmailIgnoreCase(email);
+        //then
+        assertTrue(expectedResult.isPresent());
+    }
+
+    @Test
+    void FindByEmailIgnoreCase_EmailIsInDifferentCase_FindsAccount() {
+        //given
+        var email = "iLoveDOGS@gmail.com";
+        //when
+        var expectedResult = accountRepository.findByEmailIgnoreCase(email);
+        //then
+        assertTrue(expectedResult.isPresent());
+    }
+
+    @Test
+    void FindByEmailIgnoreCase_EmailDoesNotExist_DoesNotFindAccount() {
+        //given
+        var email = "iLoveDucks@gmail.com";
+        //when
+        var expectedResult = accountRepository.findByEmailIgnoreCase(email);
+        //then
+        assertTrue(expectedResult.isEmpty());
+    }
+
+    @Test
+    void ExistsByEmailIgnoreCase_EmailIsExactlyTheSame_FindsAccount() {
+        //given
+        var email = "iLoveDogs@gmail.com";
+        //when
+        var expectedResult = accountRepository.existsByEmailIgnoreCase(email);
+        //then
+        assertTrue(expectedResult);
+    }
+
+    @Test
+    void ExistsByEmailIgnoreCase_EmailIsInDifferentCase_FindsAccount() {
+        //given
+        var email = "iLoveDOGS@gmail.com";
+        //when
+        var expectedResult = accountRepository.existsByEmailIgnoreCase(email);
+        //then
+        assertTrue(expectedResult);
+    }
+
+    @Test
+    void ExistsByEmailIgnoreCase_EmailDoesNotExist_DoesNotFindAccount() {
+        //given
+        var email = "iLoveDucks@gmail.com";
+        //when
+        var expectedResult = accountRepository.existsByEmailIgnoreCase(email);
+        //then
+        assertFalse(expectedResult);
+    }
+
 }

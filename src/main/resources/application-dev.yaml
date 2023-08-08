@@ -1,5 +1,8 @@
 spring:
   jpa:
+    properties:
+      hibernate:
+        generate_statistics: true
     hibernate:
       ddl-auto: validate
   datasource:
@@ -14,5 +17,14 @@ spring:
   session:
     timeout: 1h
     store-type: redis
-
-
+s3:
+  url: "http://localhost:8333"
+  bucket_name: "accounts_data"
+  access_key: "any"
+  secret_key: "any"
+logging:
+  level:
+    org:
+      hibernate:
+        stat: DEBUG
+        SQL: DEBUG

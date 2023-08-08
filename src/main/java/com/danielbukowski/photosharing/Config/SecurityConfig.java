@@ -26,12 +26,11 @@ public class SecurityConfig {
     private final AuthenticationEntryPointHandler authenticationEntryPointHandler;
     private final AuthorizationDeniedHandler authorizationDeniedHandler;
 
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/api/v1/accounts").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v2/accounts").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exceptionHandling -> {
@@ -42,6 +41,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> {
                     session.maximumSessions(1).maxSessionsPreventsLogin(false);
                     session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
+                    session.sessionFixation().newSession();
                 })
                 .authenticationProvider(authProvider())
                 .csrf(AbstractHttpConfigurer::disable)
@@ -61,6 +61,5 @@ public class SecurityConfig {
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
-
 
 }

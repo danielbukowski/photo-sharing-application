@@ -2,20 +2,18 @@ package com.danielbukowski.photosharing.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.Hibernate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
+
+import static jakarta.persistence.CascadeType.*;
 
 @Entity
 @Getter
 @Setter
-@ToString
-@RequiredArgsConstructor
+@Builder
+@NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "accounts")
 public class Account implements UserDetails {
@@ -26,11 +24,22 @@ public class Account implements UserDetails {
     )
     private UUID id;
 
-    @Column(name = "email", unique = true, nullable = false)
+    @Column(
+            unique = true,
+            nullable = false
+    )
     private String email;
 
-    @Column(name = "password", nullable = false)
+    @Column(
+            nullable = false
+    )
     private String password;
+
+    @OneToMany(
+            mappedBy = "account",
+            cascade = {REFRESH, MERGE, PERSIST}
+    )
+    private List<Image> images = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -70,13 +79,14 @@ public class Account implements UserDetails {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         Account account = (Account) o;
-        return getId() != null && Objects.equals(getId(), account.getId());
+        return Objects.equals(id, account.id);
     }
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return Objects.hash(super.hashCode(), id);
     }
+
 }

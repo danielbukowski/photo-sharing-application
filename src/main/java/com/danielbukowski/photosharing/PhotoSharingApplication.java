@@ -8,7 +8,6 @@ public class PhotoSharingApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(PhotoSharingApplication.class, args);
-
 	}
 
 }
