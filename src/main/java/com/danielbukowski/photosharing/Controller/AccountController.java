@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -42,6 +43,7 @@ public class AccountController {
     }
 
     @DeleteMapping
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> deleteAccount(@AuthenticationPrincipal Account account,
                                            HttpServletRequest request) {
         accountService.deleteAccountById(account.getId());
@@ -50,6 +52,7 @@ public class AccountController {
     }
 
     @PatchMapping("/password")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> changeAccountPassword(@AuthenticationPrincipal Account account,
                                                    @Valid @RequestBody ChangePasswordRequest changePasswordRequest,
                                                    HttpServletRequest request) {
@@ -59,6 +62,7 @@ public class AccountController {
     }
 
     @PostMapping("/images")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> addImageToAccount(@AuthenticationPrincipal Account account,
                                                @Valid @Image MultipartFile image) {
         UUID imageId = accountService.saveImageToAccount(image, account);
@@ -73,6 +77,7 @@ public class AccountController {
     }
 
     @GetMapping("/images/{imageId}")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<byte[]> getImageFromAccount(@AuthenticationPrincipal Account account,
                                                       @PathVariable UUID imageId) {
         ImageDto imageDto = accountService.getImageFromAccount(account.getId(), imageId);
@@ -83,6 +88,7 @@ public class AccountController {
     }
 
     @DeleteMapping("/images/{imageId}")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> deleteImageFromAccount(@AuthenticationPrincipal Account account,
                                                     @PathVariable UUID imageId) {
         accountService.deleteImageFromAccount(account.getId(), imageId);
