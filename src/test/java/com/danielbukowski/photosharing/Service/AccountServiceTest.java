@@ -5,6 +5,7 @@ import com.danielbukowski.photosharing.Dto.ChangePasswordRequest;
 import com.danielbukowski.photosharing.Dto.ImageDto;
 import com.danielbukowski.photosharing.Entity.Account;
 import com.danielbukowski.photosharing.Entity.Image;
+import com.danielbukowski.photosharing.Entity.Role;
 import com.danielbukowski.photosharing.Enum.ExceptionMessageResponse;
 import com.danielbukowski.photosharing.Exception.AccountAlreadyExistsException;
 import com.danielbukowski.photosharing.Exception.ImageNotFoundException;
@@ -12,6 +13,7 @@ import com.danielbukowski.photosharing.Exception.InvalidPasswordException;
 import com.danielbukowski.photosharing.Mapper.ImageMapper;
 import com.danielbukowski.photosharing.Repository.AccountRepository;
 import com.danielbukowski.photosharing.Repository.ImageRepository;
+import com.danielbukowski.photosharing.Repository.RoleRepository;
 import com.github.javafaker.Faker;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,6 +50,8 @@ class AccountServiceTest {
     private S3Service s3Service;
     @Mock
     private ImageRepository imageRepository;
+    @Mock
+    private RoleRepository roleRepository;
 
     @Test
     void CreateAccount_AccountAlreadyExists_ThrowsException() {
@@ -76,8 +80,13 @@ class AccountServiceTest {
     void CreateAccount_AccountDoesNotExist_ReturnsId() {
         //given
         var email = faker.internet().emailAddress();
+        var role = new Role();
+        role.setName("USER");
         var password = faker.internet().password();
         var accountRegisterRequest = new AccountRegisterRequest(email, password);
+        given(roleRepository.getByName("USER"))
+                .willReturn(role);
+
         given(accountRepository.save(any(Account.class))
         ).willReturn(Account.builder()
                 .id(new UUID(1, 1))
@@ -85,6 +94,7 @@ class AccountServiceTest {
                 .email(email)
                 .build()
         );
+
 
         //when
         var actualId = accountService.createAccount(accountRegisterRequest);
