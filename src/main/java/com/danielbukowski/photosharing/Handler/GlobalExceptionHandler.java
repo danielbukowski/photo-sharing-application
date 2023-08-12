@@ -10,6 +10,7 @@ import com.danielbukowski.photosharing.Exception.InvalidPasswordException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -103,6 +104,21 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(
                 responseBody,
                 HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<?> handleAccessDeniedException() {
+        var responseBody = ExceptionResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.FORBIDDEN.value())
+                .reason("You don't have access to this resource")
+                .path(ServletUriComponentsBuilder.fromCurrentRequest().toUriString())
+                .build();
+
+        return new ResponseEntity<>(
+                responseBody,
+                HttpStatus.FORBIDDEN
         );
     }
 
