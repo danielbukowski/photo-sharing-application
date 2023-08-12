@@ -11,6 +11,7 @@ import com.danielbukowski.photosharing.Exception.InvalidPasswordException;
 import com.danielbukowski.photosharing.Mapper.ImageMapper;
 import com.danielbukowski.photosharing.Repository.AccountRepository;
 import com.danielbukowski.photosharing.Repository.ImageRepository;
+import com.danielbukowski.photosharing.Repository.RoleRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
@@ -33,6 +34,7 @@ public class AccountService {
     private final ImageMapper imageMapper;
     private final S3Service s3Service;
     private final ImageRepository imageRepository;
+    private final RoleRepository roleRepository;
 
     @Transactional
     public UUID createAccount(AccountRegisterRequest accountRegisterRequest) {
@@ -47,6 +49,7 @@ public class AccountService {
         Account accountToSave = new Account();
         accountToSave.setEmail(accountRegisterRequest.email());
         accountToSave.setPassword(passwordEncoder.encode(accountRegisterRequest.password().trim()));
+        accountToSave.addRole(roleRepository.getByName("USER"));
         return accountRepository.save(accountToSave).getId();
     }
 
