@@ -42,6 +42,18 @@ public class AccountController {
                 ).build();
     }
 
+    @PostMapping("/email-verification")
+    public ResponseEntity<?> verifyAccountByEmailVerificationToken(@RequestParam UUID token) {
+        emailVerificationTokenService.verifyEmailVerificationToken(token);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/email-verification")
+    public ResponseEntity<?> resendEmailVerificationToken(@AuthenticationPrincipal Account account) {
+        emailVerificationTokenService.resendEmailVerificationToken(account);
+        return ResponseEntity.noContent().build();
+    }
+
     @DeleteMapping
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> deleteAccount(@AuthenticationPrincipal Account account,
