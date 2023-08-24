@@ -26,7 +26,6 @@ services:
     ports:
       - "6379:6379"
     restart: on-failure
-
   s3:
     image: chrislusf/seaweedfs
     volumes:
@@ -37,6 +36,15 @@ services:
     - "server -s3"
 #    When this container starts go to the terminal
 #    and type  echo 's3.configure -access_key any -secret_key any -user admin -actions Admin -apply' | weed shell
-
+  greenmail:
+    image: greenmail/standalone:latest
+    volumes:
+      - greenmail:/greenmail
+    environment:
+      - JAVA_OPTS=-Dgreenmail.verbose -Dgreenmail.users=user:pwd
+    ports:
+      - 3025:3025 # SMTP
+      - 8082:8080 # API
+      - 3110:3110 # POP3
 volumes:
   seaweedfs:
