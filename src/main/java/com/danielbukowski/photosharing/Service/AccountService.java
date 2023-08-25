@@ -83,6 +83,7 @@ public class AccountService {
         Image savedImageWithId = imageRepository.save(Image.builder()
                 .title(FilenameUtils.getBaseName(image.getOriginalFilename()))
                 .contentType(image.getContentType())
+                .creationDate(LocalDateTime.now(clock))
                 .account(account)
                 .build());
 

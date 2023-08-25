@@ -3,8 +3,6 @@ package com.danielbukowski.photosharing.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -18,7 +16,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "images")
-@EntityListeners(AuditingEntityListener.class)
 public class Image implements Serializable {
 
     @Id
@@ -39,12 +36,11 @@ public class Image implements Serializable {
     )
     private String contentType;
 
-    @CreatedDate
     @Column(
             updatable = false,
             nullable = false
     )
-    private LocalDateTime createDate;
+    private LocalDateTime creationDate;
 
     @ManyToOne(
             fetch = FetchType.LAZY,
