@@ -3,10 +3,7 @@ package com.danielbukowski.photosharing.Handler;
 
 import com.danielbukowski.photosharing.Dto.ExceptionResponse;
 import com.danielbukowski.photosharing.Dto.ValidationExceptionResponse;
-import com.danielbukowski.photosharing.Exception.AccountAlreadyExistsException;
-import com.danielbukowski.photosharing.Exception.AccountNotFoundException;
-import com.danielbukowski.photosharing.Exception.ImageNotFoundException;
-import com.danielbukowski.photosharing.Exception.InvalidPasswordException;
+import com.danielbukowski.photosharing.Exception.*;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +37,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler({AccountAlreadyExistsException.class, InvalidPasswordException.class})
+    @ExceptionHandler({AccountAlreadyExistsException.class, InvalidPasswordException.class, BadVerificationTokenException.class})
     public ResponseEntity<?> handleBadRequestExceptions(RuntimeException ex) {
         var responseBody = ExceptionResponse.builder()
                 .timestamp(LocalDateTime.now())
