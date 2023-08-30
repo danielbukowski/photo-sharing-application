@@ -5,9 +5,11 @@ import com.danielbukowski.photosharing.Dto.ChangePasswordRequest;
 import com.danielbukowski.photosharing.Dto.ImageDto;
 import com.danielbukowski.photosharing.Entity.Account;
 import com.danielbukowski.photosharing.Exception.AccountAlreadyExistsException;
+import com.danielbukowski.photosharing.Exception.BadVerificationTokenException;
 import com.danielbukowski.photosharing.Exception.ImageNotFoundException;
 import com.danielbukowski.photosharing.Exception.InvalidPasswordException;
 import com.danielbukowski.photosharing.Service.AccountService;
+import com.danielbukowski.photosharing.Service.EmailVerificationTokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -30,6 +32,7 @@ import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -47,6 +50,8 @@ class AccountControllerIT {
     private MockMvc mockMvc;
     @MockBean
     private AccountService accountService;
+    @MockBean
+    private EmailVerificationTokenService emailVerificationTokenService;
     @Mock
     private Account account;
 
@@ -191,6 +196,64 @@ class AccountControllerIT {
     }
 
     @Test
+    void VerifyAccountByToken_ServiceThrowsNoException_Returns204HttpStatusCode() throws Exception {
+        //given
+        var token = new UUID(0, 0);
+
+        //when
+        mockMvc.perform(post("/api/v2/accounts/email-verification")
+                .with(csrf())
+                .param("token", token.toString())
+                .with(user(account)
+                ))
+                //then
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void VerifyAccountByToken_ServiceThrowsException_Returns400HttpStatusCode() throws Exception {
+        //given
+        var token = new UUID(0, 0);
+        doThrow(new BadVerificationTokenException("This token has already expired"))
+                .when(emailVerificationTokenService).verifyEmailVerificationToken(token);
+
+        //when
+        mockMvc.perform(post("/api/v2/accounts/email-verification")
+                .with(csrf())
+                .param("token", token.toString())
+                .with(user(account)
+                ))
+                //then
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void ResendEmailVerificationToken_AccountIsAlreadyVerified_Returns400HttpStatusCode() throws Exception {
+        //given
+        doThrow(new BadVerificationTokenException("An account has been already verified"))
+                .when(emailVerificationTokenService).resendEmailVerificationToken(account);
+
+        //when
+        mockMvc.perform(put("/api/v2/accounts/email-verification")
+                        .with(csrf())
+
+                        .with(user(account)
+                        ))
+                //then
+                .andExpect(status().isBadRequest());
+    }
+    @Test
+    void ResendEmailVerificationToken_AccountIsNotVerified_Returns204HttpStatusCode() throws Exception {
+        //when
+        mockMvc.perform(put("/api/v2/accounts/email-verification")
+                        .with(csrf())
+                        .with(user(account)
+                        ))
+                //then
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
     void DeleteAccount_SendsRequest_Returns204HttpStatusCode() throws Exception {
         //given
         given(account.getId())
@@ -246,7 +309,7 @@ class AccountControllerIT {
                 "image",
                 "myimage.jpeg",
                 MediaType.MULTIPART_FORM_DATA_VALUE,
-                new byte[] {}
+                new byte[]{}
         );
         given(accountService.saveImageToAccount(eq(image), any(Account.class)))
                 .willReturn(new UUID(1, 1));

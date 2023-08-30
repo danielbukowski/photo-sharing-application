@@ -45,7 +45,7 @@ public class AccountController {
     }
 
     @PostMapping("/email-verification")
-    public ResponseEntity<?> verifyAccountByEmailVerificationToken(@RequestParam UUID token) {
+    public ResponseEntity<?> verifyAccountByToken(@RequestParam UUID token) {
         emailVerificationTokenService.verifyEmailVerificationToken(token);
         return ResponseEntity
                 .noContent()
