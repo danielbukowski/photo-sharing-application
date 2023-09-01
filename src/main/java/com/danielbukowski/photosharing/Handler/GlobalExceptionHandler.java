@@ -12,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import software.amazon.awssdk.services.s3.model.S3Exception;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler({AccountAlreadyExistsException.class, InvalidPasswordException.class, BadVerificationTokenException.class})
+    @ExceptionHandler({AccountAlreadyExistsException.class, InvalidPasswordException.class, BadVerificationTokenException.class, S3Exception.class})
     public ResponseEntity<?> handleBadRequestExceptions(RuntimeException ex) {
         var responseBody = ExceptionResponse.builder()
                 .timestamp(LocalDateTime.now())

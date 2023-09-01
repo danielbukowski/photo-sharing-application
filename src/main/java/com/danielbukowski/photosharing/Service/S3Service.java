@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -41,6 +42,7 @@ public class S3Service {
         }
     }
 
+    @Transactional
     public void saveImageToS3(UUID accountId, UUID imageId, MultipartFile image) {
         log.info("Trying to save an image with id {}", imageId);
         try {
@@ -50,7 +52,6 @@ public class S3Service {
                             .key(IMAGES_PATH.formatted(accountId, imageId))
                             .build(),
                     RequestBody.fromBytes(image.getBytes())
-
             );
         } catch (IOException | S3Exception e) {
             log.error("Could not save an image with id {}", imageId, e);
@@ -61,6 +62,7 @@ public class S3Service {
         }
     }
 
+    @Transactional
     public void deleteImageFromS3(UUID accountId, UUID imageId) {
         log.info("Deleting an image with id {}", imageId);
         try {
@@ -91,6 +93,7 @@ public class S3Service {
                 .toList();
     }
 
+    @Transactional
     public void deleteAllImagesFromS3(UUID accountId) {
         log.info("Deleting all images from an account with id {}", accountId);
         try {
