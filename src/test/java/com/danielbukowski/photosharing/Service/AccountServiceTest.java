@@ -58,6 +58,7 @@ class AccountServiceTest {
     private ImageRepository imageRepository;
     @Mock
     private RoleRepository roleRepository;
+
     @Mock
     private Clock clock;
 
@@ -71,7 +72,6 @@ class AccountServiceTest {
             0,
             ZoneId.of("GMT")
     );
-
 
     @Test
     void CreateAccount_AccountAlreadyExists_ThrowsException() {
