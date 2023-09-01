@@ -22,6 +22,7 @@ public class EmailVerificationTokenService {
     private final Clock clock;
     private final AccountRepository accountRepository;
 
+    @Transactional
     public UUID createEmailVerificationTokenToAccount(Account account) {
        return emailVerificationTokenRepository.save(
                 EmailVerificationToken
