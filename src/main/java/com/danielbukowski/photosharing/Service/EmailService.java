@@ -18,13 +18,14 @@ import java.util.UUID;
 @AllArgsConstructor
 public class EmailService {
 
+    private static final String HOST = "http://localhost:8080";
     private final JavaMailSender emailSender;
 
     @Async
     public void sendEmailVerificationMessage(String emailTo, UUID verificationToken) {
         //The link doesn't because the browser sends a GET request
         //Just copy the link and send a POST request via Postman
-        String link = "http://localhost:8080/api/v2/accounts/email-verification?token=" + verificationToken;
+        String link = HOST + "/api/v2/accounts/email-verification?token=" + verificationToken;
         String text = """
                 Hi %s!<br>
                                 
