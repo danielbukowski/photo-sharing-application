@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static com.danielbukowski.photosharing.Enum.ExceptionMessageResponse.*;
@@ -35,6 +37,9 @@ public class AccountService {
     private final S3Service s3Service;
     private final ImageRepository imageRepository;
     private final RoleRepository roleRepository;
+    private final EmailService emailService;
+    private final EmailVerificationTokenService emailVerificationTokenService;
+    private final Clock clock;
 
     @Transactional
     public UUID createAccount(AccountRegisterRequest accountRegisterRequest) {
@@ -50,7 +55,12 @@ public class AccountService {
         accountToSave.setEmail(accountRegisterRequest.email());
         accountToSave.setPassword(passwordEncoder.encode(accountRegisterRequest.password().trim()));
         accountToSave.addRole(roleRepository.getByName("USER"));
-        return accountRepository.save(accountToSave).getId();
+        Account savedAccount = accountRepository.save(accountToSave);
+
+        var emailVerificationToken = emailVerificationTokenService.createEmailVerificationTokenToAccount(savedAccount);
+        emailService.sendEmailVerificationMessage(accountRegisterRequest.email(), emailVerificationToken);
+
+        return savedAccount.getId();
     }
 
     @Transactional
@@ -83,6 +93,7 @@ public class AccountService {
         Image savedImageWithId = imageRepository.save(Image.builder()
                 .title(FilenameUtils.getBaseName(image.getOriginalFilename()))
                 .contentType(image.getContentType())
+                .creationDate(LocalDateTime.now(clock))
                 .account(account)
                 .build());
 

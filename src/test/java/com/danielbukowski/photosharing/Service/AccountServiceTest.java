@@ -23,6 +23,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.Clock;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -31,8 +34,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AccountServiceTest {
@@ -40,6 +42,10 @@ class AccountServiceTest {
     private final Faker faker = new Faker();
     @InjectMocks
     private AccountService accountService;
+    @Mock
+    private EmailVerificationTokenService emailVerificationTokenService;
+    @Mock
+    private EmailService emailService;
     @Mock
     private AccountRepository accountRepository;
     @Mock
@@ -52,6 +58,20 @@ class AccountServiceTest {
     private ImageRepository imageRepository;
     @Mock
     private RoleRepository roleRepository;
+
+    @Mock
+    private Clock clock;
+
+    private final ZonedDateTime now = ZonedDateTime.of(
+            2023,
+            6,
+            7,
+            21,
+            37,
+            0,
+            0,
+            ZoneId.of("GMT")
+    );
 
     @Test
     void CreateAccount_AccountAlreadyExists_ThrowsException() {
@@ -178,6 +198,8 @@ class AccountServiceTest {
     @Test
     void SaveImageToAccount_ImageIsSaved_ReturnsId() {
         //given
+        when(clock.instant()).thenReturn(now.toInstant());
+        when(clock.getZone()).thenReturn(now.getZone());
         var multipartFile = new MockMultipartFile(
                 "myImage",
                 "myImage",
@@ -195,11 +217,11 @@ class AccountServiceTest {
                 );
 
         //when
-        var resultImageId = accountService.saveImageToAccount(multipartFile, account);
+        var actualImageId = accountService.saveImageToAccount(multipartFile, account);
 
         //then
         assertEquals(
-                new UUID(2, 2), resultImageId
+                new UUID(2, 2), actualImageId
         );
         then(s3Service).should(times(1))
                 .saveImageToS3(any(), any(), any()

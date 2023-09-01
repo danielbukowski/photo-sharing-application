@@ -22,8 +22,7 @@ public interface ImageRepository extends JpaRepository<Image, UUID> {
     void deleteByAccountId(UUID accountId);
 
     @Query(
-            "SELECT i " +
-            "FROM Image i " +
+            "SELECT i FROM Image i " +
             "WHERE i.id = :imageId " +
             "AND i.account.id = :accountId"
     )

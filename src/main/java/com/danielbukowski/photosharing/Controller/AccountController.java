@@ -5,6 +5,7 @@ import com.danielbukowski.photosharing.Dto.ChangePasswordRequest;
 import com.danielbukowski.photosharing.Dto.ImageDto;
 import com.danielbukowski.photosharing.Entity.Account;
 import com.danielbukowski.photosharing.Service.AccountService;
+import com.danielbukowski.photosharing.Service.EmailVerificationTokenService;
 import com.danielbukowski.photosharing.Validator.Image;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -28,6 +29,7 @@ import java.util.UUID;
 public class AccountController {
 
     private final AccountService accountService;
+    private final EmailVerificationTokenService emailVerificationTokenService;
 
     @PostMapping
     public ResponseEntity<?> createAccount(@RequestBody @Valid AccountRegisterRequest accountRegisterRequest) {
@@ -42,13 +44,31 @@ public class AccountController {
                 ).build();
     }
 
+    @PostMapping("/email-verification")
+    public ResponseEntity<?> verifyAccountByToken(@RequestParam UUID token) {
+        emailVerificationTokenService.verifyEmailVerificationToken(token);
+        return ResponseEntity
+                .noContent()
+                .build();
+    }
+
+    @PutMapping("/email-verification")
+    public ResponseEntity<?> resendEmailVerificationToken(@AuthenticationPrincipal Account account) {
+        emailVerificationTokenService.resendEmailVerificationToken(account);
+        return ResponseEntity
+                .noContent()
+                .build();
+    }
+
     @DeleteMapping
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> deleteAccount(@AuthenticationPrincipal Account account,
                                            HttpServletRequest request) {
         accountService.deleteAccountById(account.getId());
         request.getSession().invalidate();
-        return ResponseEntity.noContent().build();
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 
     @PatchMapping("/password")
@@ -58,7 +78,9 @@ public class AccountController {
                                                    HttpServletRequest request) {
         accountService.changeAccountPassword(account, changePasswordRequest);
         request.getSession().invalidate();
-        return ResponseEntity.noContent().build();
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 
     @PostMapping("/images")

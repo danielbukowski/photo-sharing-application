@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -35,11 +34,6 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/v2/accounts").permitAll()
                         .anyRequest().authenticated()
                 )
-                .exceptionHandling(exceptionHandling -> {
-                    exceptionHandling
-                            .authenticationEntryPoint(authenticationEntryPointHandler)
-                            .accessDeniedHandler(authorizationDeniedHandler);
-                })
                 .sessionManagement(session -> {
                     session.maximumSessions(1).maxSessionsPreventsLogin(false);
                     session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
@@ -47,7 +41,8 @@ public class SecurityConfig {
                 })
                 .authenticationProvider(authProvider())
                 .csrf(AbstractHttpConfigurer::disable)
-                .httpBasic(Customizer.withDefaults())
+                .httpBasic(h -> h.authenticationEntryPoint(authenticationEntryPointHandler))
+                .exceptionHandling(eH -> eH.accessDeniedHandler(authorizationDeniedHandler))
                 .build();
     }
 

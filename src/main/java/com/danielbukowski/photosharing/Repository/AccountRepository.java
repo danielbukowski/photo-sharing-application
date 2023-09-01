@@ -40,4 +40,12 @@ public interface AccountRepository extends JpaRepository<Account, UUID> {
     )
     boolean existsByEmailIgnoreCase(String email);
 
+    @Query(
+            "SELECT COUNT(a) > 0 " +
+            "FROM Account a " +
+            "WHERE LOWER(a.email) = LOWER(:email) " +
+            "AND a.isEmailVerified = true"
+    )
+    boolean isAccountEmailVerified(String email);
+
 }

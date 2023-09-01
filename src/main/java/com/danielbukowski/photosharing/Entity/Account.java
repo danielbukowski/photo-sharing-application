@@ -8,7 +8,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.*;
 
-import static jakarta.persistence.CascadeType.*;
+import static jakarta.persistence.CascadeType.MERGE;
+import static jakarta.persistence.CascadeType.PERSIST;
 
 @Entity
 @Getter
@@ -36,14 +37,16 @@ public class Account implements UserDetails {
     )
     private String password;
 
+    private boolean isEmailVerified;
+
     @OneToMany(
             mappedBy = "account",
-            cascade = {REFRESH, MERGE, PERSIST}
+            cascade = PERSIST
     )
     private List<Image> images = new ArrayList<>();
 
     @ManyToMany(
-            cascade = {CascadeType.MERGE, CascadeType.PERSIST}
+            cascade = {MERGE, PERSIST}
     )
     @JoinTable(
             name = "accounts_roles",

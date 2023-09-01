@@ -3,10 +3,7 @@ package com.danielbukowski.photosharing.Handler;
 
 import com.danielbukowski.photosharing.Dto.ExceptionResponse;
 import com.danielbukowski.photosharing.Dto.ValidationExceptionResponse;
-import com.danielbukowski.photosharing.Exception.AccountAlreadyExistsException;
-import com.danielbukowski.photosharing.Exception.AccountNotFoundException;
-import com.danielbukowski.photosharing.Exception.ImageNotFoundException;
-import com.danielbukowski.photosharing.Exception.InvalidPasswordException;
+import com.danielbukowski.photosharing.Exception.*;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import software.amazon.awssdk.services.s3.model.S3Exception;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -40,7 +38,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler({AccountAlreadyExistsException.class, InvalidPasswordException.class})
+    @ExceptionHandler({AccountAlreadyExistsException.class, InvalidPasswordException.class, BadVerificationTokenException.class, S3Exception.class})
     public ResponseEntity<?> handleBadRequestExceptions(RuntimeException ex) {
         var responseBody = ExceptionResponse.builder()
                 .timestamp(LocalDateTime.now())

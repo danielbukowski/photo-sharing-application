@@ -17,7 +17,7 @@ class ImageMapperTest {
         // given
         byte[] data = new byte[]{};
         Image image = Image.builder()
-                .createDate(LocalDateTime.now())
+                .creationDate(LocalDateTime.now())
                 .contentType(MediaType.IMAGE_JPEG_VALUE)
                 .build();
 

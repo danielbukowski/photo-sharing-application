@@ -1,14 +1,28 @@
 spring:
+  mail:
+    password: pwd
+    username: user
+    host: 127.0.0.1
+    port: 3025
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
   jpa:
     properties:
       hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
         generate_statistics: true
     hibernate:
       ddl-auto: validate
+    show-sql: true
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:5432/app_db
-    username: postgres
-    password: password
+    username: root
+    password: root
     driverClassName: org.postgresql.Driver
   redis:
     namespace: spring:session
@@ -22,9 +36,3 @@ s3:
   bucket_name: "accounts_data"
   access_key: "any"
   secret_key: "any"
-logging:
-  level:
-    org:
-      hibernate:
-        stat: DEBUG
-        SQL: DEBUG
