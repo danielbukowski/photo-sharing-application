@@ -15,6 +15,8 @@ import com.danielbukowski.photosharing.Repository.RoleRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -100,7 +102,7 @@ public class AccountService {
         s3Service.saveImageToS3(account.getId(), savedImageWithId.getId(), image);
         return savedImageWithId.getId();
     }
-
+    @Cacheable(cacheNames = "images", key = "#imageId")
     public ImageDto getImageFromAccount(UUID accountId, UUID imageId) {
         log.info("Getting an image with id {}", imageId);
         Image image = imageRepository.findByImageIdAndAccountId(imageId, accountId)
@@ -113,7 +115,7 @@ public class AccountService {
         byte[] imageInBytes = s3Service.getImageFromS3(accountId, imageId);
         return imageMapper.fromImageToImageDto(imageInBytes, image);
     }
-
+    @CacheEvict(cacheNames = "images", key = "#imageId")
     @Transactional
     public void deleteImageFromAccount(UUID accountId, UUID imageId) {
         log.info("Deleting an image with id {}", imageId);
