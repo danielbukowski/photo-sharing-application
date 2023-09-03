@@ -28,7 +28,7 @@ services:
     restart: always
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: root
+      PGADMIN_DEFAULT_PASSWORD: admin
     ports:
       - "5050:80"
     links:
@@ -36,19 +36,22 @@ services:
   redis:
     image: redis:alpine
     restart: on-failure
+    environment:
+      REDIS_PASSWORD: redis
     ports:
       - "6379:6379"
     volumes:
       - redis:/var/lib/redis/data
+    command: /bin/sh -c "redis-server --requirepass $${REDIS_PASSWORD}"
   seaweedfs:
     image: chrislusf/seaweedfs
-    restart: on-failure
+#    restart: on-failure
     volumes:
       - seaweedfs:/var/lib/seaweedfs/data
     ports:
       - "8333:8333"
     command:
-    - "server -s3"
+      - "server -s3"
 #    When this container starts go to the terminal
 #    and type  echo 's3.configure -access_key any -secret_key any -user admin -actions Admin -apply' | weed shell
   greenmail:
