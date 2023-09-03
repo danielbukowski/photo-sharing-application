@@ -2,8 +2,10 @@ package com.danielbukowski.photosharing.Dto;
 
 import lombok.Builder;
 
+import java.io.Serializable;
+
 @Builder
-public record ImageDto (
+public record ImageDto  (
         byte[] data,
-        String contentType) {
+        String contentType) implements Serializable {
 }
