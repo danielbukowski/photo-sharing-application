@@ -59,7 +59,7 @@ public class AccountService {
         log.info("Deleting an account with id {}", accountId);
         imageRepository.deleteByAccountId(accountId);
         accountRepository.deleteById(accountId);
-        s3Service.deleteAllImagesFromS3(accountId);
+        s3Service.deleteAllImagesFromS3WithAccountId(accountId);
     }
 
     @Transactional
