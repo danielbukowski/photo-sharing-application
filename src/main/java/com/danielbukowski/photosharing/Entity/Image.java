@@ -4,8 +4,8 @@ package com.danielbukowski.photosharing.Entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -16,7 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "images")
-public class Image implements Serializable {
+public class Image {
 
     @Id
     @GeneratedValue(
@@ -41,6 +41,11 @@ public class Image implements Serializable {
             nullable = false
     )
     private LocalDateTime creationDate;
+
+    @OneToMany(
+            mappedBy = "image"
+    )
+    private List<Comment> commentList;
 
     @ManyToOne(
             fetch = FetchType.LAZY,
