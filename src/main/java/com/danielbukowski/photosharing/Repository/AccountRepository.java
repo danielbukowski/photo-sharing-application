@@ -26,11 +26,10 @@ public interface AccountRepository extends JpaRepository<Account, UUID> {
     @Query(
             "SELECT DISTINCT a " +
             "FROM Account a " +
-            "LEFT JOIN FETCH a.images i " +
             "LEFT JOIN FETCH a.roles r " +
             "WHERE LOWER(a.email) = LOWER(:email)"
     )
-    @EntityGraph(attributePaths = { "images", "roles" })
+    @EntityGraph(attributePaths = "roles")
     Optional<Account> findByEmailIgnoreCase(String email);
 
     @Query(
