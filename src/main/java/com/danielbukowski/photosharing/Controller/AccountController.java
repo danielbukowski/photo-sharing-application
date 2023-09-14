@@ -2,6 +2,7 @@ package com.danielbukowski.photosharing.Controller;
 
 import com.danielbukowski.photosharing.Dto.AccountRegisterRequest;
 import com.danielbukowski.photosharing.Dto.ChangePasswordRequest;
+import com.danielbukowski.photosharing.Dto.ImagePropertiesRequest;
 import com.danielbukowski.photosharing.Entity.Account;
 import com.danielbukowski.photosharing.Service.AccountService;
 import com.danielbukowski.photosharing.Service.EmailVerificationTokenService;
@@ -85,8 +86,9 @@ public class AccountController {
     @PostMapping("/images")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> saveImageToAccount(@AuthenticationPrincipal Account account,
-                                                @Valid @Image MultipartFile image) {
-        UUID imageId = imageService.saveImageToAccount(image, account);
+                                                @Valid @RequestPart @Image MultipartFile image,
+                                                @Valid @RequestPart ImagePropertiesRequest imageProperties) {
+        UUID imageId = imageService.saveImageToAccount(image, account, imageProperties);
         return ResponseEntity
                 .created(
                         ServletUriComponentsBuilder
