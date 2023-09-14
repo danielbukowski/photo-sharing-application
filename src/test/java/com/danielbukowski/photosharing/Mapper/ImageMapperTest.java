@@ -19,6 +19,7 @@ class ImageMapperTest {
         Image image = Image.builder()
                 .creationDate(LocalDateTime.now())
                 .contentType(MediaType.IMAGE_JPEG_VALUE)
+                .isPrivate(true)
                 .build();
 
         //when
@@ -27,6 +28,7 @@ class ImageMapperTest {
         //then
         assertEquals(data, actualImageDto.data());
         assertEquals(image.getContentType(), actualImageDto.contentType());
+        assertEquals(image.isPrivate(), actualImageDto.isPrivate());
     }
 
 }
