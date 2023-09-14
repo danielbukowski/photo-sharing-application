@@ -4,6 +4,7 @@ CREATE TABLE images (
    title VARCHAR(255) NOT NULL,
    content_type VARCHAR(10) NOT NULL,
    creation_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+   is_private BOOLEAN DEFAULT TRUE NOT NULL,
    CONSTRAINT pk_images PRIMARY KEY (id),
    CONSTRAINT fk_accounts FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE
 );

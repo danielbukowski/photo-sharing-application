@@ -42,6 +42,11 @@ public class Image {
     )
     private LocalDateTime creationDate;
 
+    @Column(
+            nullable = false
+    )
+    private boolean isPrivate;
+
     @OneToMany(
             mappedBy = "image"
     )
