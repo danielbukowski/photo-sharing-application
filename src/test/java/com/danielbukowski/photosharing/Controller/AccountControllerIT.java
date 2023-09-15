@@ -367,6 +367,7 @@ class AccountControllerIT {
         //when
         mockMvc.perform(multipart("/api/v2/accounts/images")
                         .file(image)
+                        .file(jsonImageProperties)
                         .with(csrf())
                 )
                 //then

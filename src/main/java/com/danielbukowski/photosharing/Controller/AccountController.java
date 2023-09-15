@@ -86,8 +86,8 @@ public class AccountController {
     @PostMapping("/images")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> saveImageToAccount(@AuthenticationPrincipal Account account,
-                                                @Valid @RequestPart @Image MultipartFile image,
-                                                @Valid @RequestPart ImagePropertiesRequest imageProperties) {
+                                                @Valid @RequestPart(required = false) @Image MultipartFile image,
+                                                @Valid @RequestPart(required = false) ImagePropertiesRequest imageProperties) {
         UUID imageId = imageService.saveImageToAccount(image, account, imageProperties);
         return ResponseEntity
                 .created(
