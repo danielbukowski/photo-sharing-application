@@ -218,7 +218,7 @@ class CommentServiceTest {
     }
 
     @Test
-    void GetCommentsFromImage_ImageDoesNotBelongToAccount_ThrowsImageNotFoundException() {
+    void GetCommentsFromImage_ImageDoesNotBelongToAccountAndIsPrivate_ThrowsImageNotFoundException() {
         //given
         var imageId = new UUID(1, 1);
         var pageNumber = Integer.valueOf(1);
@@ -227,6 +227,7 @@ class CommentServiceTest {
                 .build();
         given(imageRepository.findById(imageId))
                 .willReturn(Optional.of(Image.builder()
+                                .isPrivate(true)
                         .account(Account.builder()
                                 .id(new UUID(2, 2))
                                 .build()
@@ -247,7 +248,7 @@ class CommentServiceTest {
     }
 
     @Test
-    void GetCommentsFromImage_ImageExistsAndBelongsToAccount_ReturnsSimplePageResponse() {
+    void GetCommentsFromImage_ImageBelongsToAccountAndIsPrivate_ReturnsSimplePageResponse() {
         //given
         var imageId = new UUID(1, 1);
         var pageNumber = Integer.valueOf(1);
@@ -256,6 +257,39 @@ class CommentServiceTest {
                 .build();
         given(imageRepository.findById(imageId))
                 .willReturn(Optional.of(Image.builder()
+                                .isPrivate(true)
+                        .account(Account.builder()
+                                .id(new UUID(4, 4))
+                                .build()
+                        )
+                        .build())
+                );
+        given(commentRepository.getByImageId(PageRequest.of(pageNumber, 20), imageId))
+                .willReturn(new PageImpl<>(
+                        List.of(Comment.builder()
+                                .content("huh")
+                                .build())
+                ));
+        //when
+
+        var expectedResult = commentService.getCommentsFromImage(
+                imageId, pageNumber, account
+        );
+
+        //then
+        assertNotNull(expectedResult);
+    }
+    @Test
+    void GetCommentsFromImage_ImageBelongsToAccountAndIsNotPrivate_ReturnsSimplePageResponse() {
+        //given
+        var imageId = new UUID(1, 1);
+        var pageNumber = Integer.valueOf(1);
+        var account = Account.builder()
+                .id(new UUID(4,4))
+                .build();
+        given(imageRepository.findById(imageId))
+                .willReturn(Optional.of(Image.builder()
+                        .isPrivate(false)
                         .account(Account.builder()
                                 .id(new UUID(4, 4))
                                 .build()

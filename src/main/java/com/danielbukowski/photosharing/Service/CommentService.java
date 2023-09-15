@@ -50,7 +50,7 @@ public class CommentService {
         var expectedImageInDb = imageRepository.findById(imageId)
                 .orElseThrow(() -> new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage()));
 
-        if (!expectedImageInDb.getAccount().equals(account))
+        if (expectedImageInDb.isPrivate() && !expectedImageInDb.getAccount().equals(account))
             throw new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage());
 
         var pageOfComments = commentRepository.getByImageId(PageRequest.of(pageNumber, PAGE_SIZE), imageId);
