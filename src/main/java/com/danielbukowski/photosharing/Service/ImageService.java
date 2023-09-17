@@ -6,6 +6,7 @@ import com.danielbukowski.photosharing.Dto.ImagePropertiesRequest;
 import com.danielbukowski.photosharing.Dto.SimplePageResponse;
 import com.danielbukowski.photosharing.Entity.Account;
 import com.danielbukowski.photosharing.Entity.Image;
+import com.danielbukowski.photosharing.Exception.ImageException;
 import com.danielbukowski.photosharing.Exception.ImageNotFoundException;
 import com.danielbukowski.photosharing.Mapper.ImageMapper;
 import com.danielbukowski.photosharing.Repository.ImageRepository;
@@ -43,27 +44,27 @@ public class ImageService {
 
     @Cacheable(cacheNames = "images", key = "#imageId", unless = "#result.isPrivate")
     public ImageDto getImageById(UUID imageId, Account account) {
-        var imageInDb = imageRepository.findById(imageId)
+        var image = imageRepository.findById(imageId)
                 .orElseThrow(
                         () -> new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage())
                 );
 
-        if (!imageUtils.hasAccessToImage(account, imageInDb))
+        if (!imageUtils.hasAccessToImage(account, image))
             throw new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage());
 
         var imageData =
                 imageUtils.decompressImage(
                         encryptionUtils.decrypt(
                                 s3Service.getImageFromS3(
-                                        imageInDb.getAccount().getId(),
-                                        imageInDb.getId()
+                                        image.getAccount().getId(),
+                                        image.getId()
                                 )
                         )
                 );
 
         return imageMapper.fromImageToImageDto(
                 imageData,
-                imageInDb
+                image
         );
     }
 
@@ -125,4 +126,46 @@ public class ImageService {
                 pageOfImages.isLast()
         );
     }
+
+    @Transactional
+    public void addLikeToImage(UUID imageId, Account account) {
+        var image = imageRepository.findById(imageId)
+                .orElseThrow(
+                        () -> new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage())
+                );
+
+        if (!imageUtils.hasAccessToImage(account, image))
+            throw new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage());
+
+        if(image.getLikes().stream().anyMatch(a -> a.equals(account)))
+            throw new ImageException("You have already liked this image");
+
+        image.getLikes().add(account);
+    }
+
+    public int getNumberOfLikesFromImage(UUID imageId, Account account) {
+        var image = imageRepository.findById(imageId)
+                .orElseThrow(
+                        () -> new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage())
+                );
+
+        if (!imageUtils.hasAccessToImage(account, image))
+            throw new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage());
+
+        return image.getLikes().size();
+    }
+
+    @Transactional
+    public void removeLikeFromImage(UUID imageId, Account account) {
+        var image = imageRepository.findById(imageId)
+                .orElseThrow(
+                        () -> new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage())
+                );
+
+        if (!imageUtils.hasAccessToImage(account, image))
+            throw new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage());
+
+        image.getLikes().removeIf((a) -> a.getId().equals(account.getId()));
+    }
+
 }
