@@ -1,5 +1,7 @@
 package com.danielbukowski.photosharing.Util;
 
+import com.danielbukowski.photosharing.Entity.Account;
+import com.danielbukowski.photosharing.Entity.Image;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -60,4 +62,9 @@ public class ImageUtils {
             throw new RuntimeException(e);
         }
     }
+
+    public boolean hasAccessToImage(Account account, Image image) {
+        return !image.isPrivate() || image.getAccount().equals(account);
+    }
+
 }

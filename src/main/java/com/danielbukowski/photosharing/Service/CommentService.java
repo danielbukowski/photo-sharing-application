@@ -9,6 +9,7 @@ import com.danielbukowski.photosharing.Exception.ImageNotFoundException;
 import com.danielbukowski.photosharing.Mapper.CommentMapper;
 import com.danielbukowski.photosharing.Repository.CommentRepository;
 import com.danielbukowski.photosharing.Repository.ImageRepository;
+import com.danielbukowski.photosharing.Util.ImageUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -28,13 +29,14 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final ImageRepository imageRepository;
     private final CommentMapper commentMapper;
+    private final ImageUtils imageUtils;
 
     @Transactional
     public Long saveCommentToImage(NewCommentRequest newCommentRequest, UUID imageId, Account account) {
         var image = imageRepository.findById(imageId)
                 .orElseThrow(() -> new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage()));
 
-        if (image.isPrivate() && !image.getAccount().equals(account))
+        if (!imageUtils.hasAccessToImage(account, image))
             throw new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage());
 
         Comment comment = commentRepository.save(Comment.builder()
@@ -47,10 +49,10 @@ public class CommentService {
     }
 
     public SimplePageResponse<CommentDto> getCommentsFromImage(UUID imageId, Integer pageNumber, Account account) {
-        var expectedImageInDb = imageRepository.findById(imageId)
+        var image = imageRepository.findById(imageId)
                 .orElseThrow(() -> new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage()));
 
-        if (expectedImageInDb.isPrivate() && !expectedImageInDb.getAccount().equals(account))
+        if (!imageUtils.hasAccessToImage(account, image))
             throw new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage());
 
         var pageOfComments = commentRepository.getByImageId(PageRequest.of(pageNumber, PAGE_SIZE), imageId);

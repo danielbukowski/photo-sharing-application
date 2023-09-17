@@ -79,7 +79,7 @@ class ImageServiceTest {
     }
 
     @Test
-    void GetImageById_ImageIsPrivateAndDoesNotBelongToAccount_ThrowsImageNotFoundException() {
+    void GetImageById_AccountDoesNotHaveAccessToImage_ThrowsImageNotFoundException() {
         //given
         var imageId = new UUID(1, 1);
         var imageInDb = Image.builder()
@@ -93,6 +93,8 @@ class ImageServiceTest {
                 .build();
         given(imageRepository.findById(imageId))
                 .willReturn(Optional.of(imageInDb));
+        given(imageUtils.hasAccessToImage(account, imageInDb))
+                .willReturn(false);
 
         //when
         var actualException = assertThrows(ImageNotFoundException.class,
@@ -104,7 +106,7 @@ class ImageServiceTest {
     }
 
     @Test
-    void GetImageById_ImageIsPrivateAndBelongsToAccount_ReturnsImageDto() {
+    void GetImageById_AccountDoesHaveAccessToImage_ReturnsImageDto() {
         //given
         var imageId = new UUID(1, 1);
         var imageInDb = Image.builder()
@@ -130,6 +132,8 @@ class ImageServiceTest {
                 .willReturn(data);
         given(imageMapper.fromImageToImageDto(data, imageInDb))
                 .willReturn(ImageDto.builder().build());
+        given(imageUtils.hasAccessToImage(account, imageInDb))
+                .willReturn(true);
 
         //when
         var actualImageDto = imageService.getImageById(imageId, account);
@@ -139,77 +143,7 @@ class ImageServiceTest {
     }
 
     @Test
-    void GetImageById_ImageIsNotPrivateAndBelongsToAccount_ReturnsImageDto() {
-        //given
-        var imageId = new UUID(1, 1);
-        var imageInDb = Image.builder()
-                .id(new UUID(1, 1))
-                .isPrivate(false)
-                .account(Account.builder()
-                        .id(new UUID(2, 2))
-                        .build())
-                .build();
-        var data = new byte[1];
-        var account = Account.builder()
-                .id(new UUID(2, 2))
-                .build();
-        given(imageRepository.findById(imageId))
-                .willReturn(Optional.of(imageInDb));
-
-        given(s3Service.getImageFromS3(new UUID(2, 2),
-                new UUID(1, 1)))
-                .willReturn(data);
-        given(encryptionUtils.decrypt(data))
-                .willReturn(data);
-        given(imageUtils.decompressImage(any()))
-                .willReturn(data);
-        given(imageMapper.fromImageToImageDto(data, imageInDb))
-                .willReturn(ImageDto.builder().build());
-
-        //when
-        var actualImageDto = imageService.getImageById(imageId, account);
-
-        //then
-        assertNotNull(actualImageDto);
-    }
-
-    @Test
-    void GetImageById_ImageIsNotPrivateAndDoesNotBelongToAccount_ReturnsImageDto() {
-        //given
-        var imageId = new UUID(1, 1);
-        var imageInDb = Image.builder()
-                .id(new UUID(1, 1))
-                .isPrivate(false)
-                .account(Account.builder()
-                        .id(new UUID(2, 2))
-                        .build())
-                .build();
-        var data = new byte[1];
-        var account = Account.builder()
-                .id(new UUID(5, 5))
-                .build();
-        given(imageRepository.findById(imageId))
-                .willReturn(Optional.of(imageInDb));
-
-        given(s3Service.getImageFromS3(new UUID(2, 2),
-                new UUID(1, 1)))
-                .willReturn(data);
-        given(encryptionUtils.decrypt(any()))
-                .willReturn(data);
-        given(imageUtils.decompressImage(any()))
-                .willReturn(data);
-        given(imageMapper.fromImageToImageDto(data, imageInDb))
-                .willReturn(ImageDto.builder().build());
-
-        //when
-        var actualImageDto = imageService.getImageById(imageId, account);
-
-        //then
-        assertNotNull(actualImageDto);
-    }
-
-    @Test
-    void SaveImageToAccount_MethodThrowsNotException_ReturnsId() {
+    void SaveImageToAccount_SavesImageToAccount_ReturnsId() {
         //given
         var data = new byte[1];
         var image = new MockMultipartFile(
@@ -247,7 +181,7 @@ class ImageServiceTest {
     }
 
     @Test
-    void DeleteImageFromAccount_MethodThrowsNoException_CallsAllMethods() {
+    void DeleteImageFromAccount_ImageExists_DeletesImage() {
         ///given
         var accountId = new UUID(1, 1);
         var imageId = new UUID(2, 2);

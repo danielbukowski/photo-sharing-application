@@ -48,7 +48,7 @@ public class ImageService {
                         () -> new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage())
                 );
 
-        if (imageInDb.isPrivate() && !imageInDb.getAccount().equals(account))
+        if (!imageUtils.hasAccessToImage(account, imageInDb))
             throw new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage());
 
         var imageData =
