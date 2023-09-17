@@ -9,6 +9,7 @@ import com.danielbukowski.photosharing.Exception.ImageNotFoundException;
 import com.danielbukowski.photosharing.Mapper.CommentMapper;
 import com.danielbukowski.photosharing.Repository.CommentRepository;
 import com.danielbukowski.photosharing.Repository.ImageRepository;
+import com.danielbukowski.photosharing.Util.ImageUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,6 +24,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -36,6 +38,8 @@ class CommentServiceTest {
     private ImageRepository imageRepository;
     @Mock
     private CommentMapper commentMapper;
+    @Mock
+    private ImageUtils imageUtils;
 
     @Test
     void SaveCommentToImage_ImageDoesNotExist_ThrowsImageNotFoundException(){
@@ -61,23 +65,19 @@ class CommentServiceTest {
     }
 
     @Test
-    void SaveCommentToImage_ImageIsPrivateAndDoesNotBelongToAccount_ThrowsImageNotFoundException(){
+    void SaveCommentToImage_AccountDoesNotHaveAccessToImage_ThrowsImageNotFoundException(){
         //given
         var newCommentRequest = new NewCommentRequest("huh");
         var imageId = new UUID(1,1);
         var account = Account.builder()
-                .id(new UUID(5,5))
                 .build();
         var image = Image.builder()
                 .id(imageId)
-                .isPrivate(true)
-                .account(Account.builder()
-                        .id(new UUID(2,2))
-                        .build()
-                )
                 .build();
         given(imageRepository.findById(imageId))
                 .willReturn(Optional.of(image));
+        given(imageUtils.hasAccessToImage(account, image))
+                .willReturn(false);
 
         //when
         var actualException = assertThrows(
@@ -90,111 +90,6 @@ class CommentServiceTest {
         //then
         assertEquals(
                 ExceptionMessageResponse.IMAGE_NOT_FOUND.getMessage(), actualException.getMessage()
-        );
-    }
-
-    @Test
-    void SaveCommentToImage_ImageIsPrivateAndBelongsToAccount_ReturnsId(){
-        //given
-        var newCommentRequest = new NewCommentRequest("huh");
-        var imageId = new UUID(1,1);
-        var account = Account.builder()
-                .id(new UUID(2,2))
-                .build();
-        var image = Image.builder()
-                .isPrivate(true)
-                .id(imageId)
-                .account(Account.builder()
-                        .id(new UUID(2,2))
-                        .build()
-                )
-                .build();
-        given(imageRepository.findById(imageId))
-                .willReturn(Optional.of(image));
-        given(commentRepository.save(any()))
-                .willReturn(Comment.builder()
-                        .id(1L)
-                        .build()
-                );
-
-        //when
-        var actualId = commentService.saveCommentToImage(
-                newCommentRequest, imageId, account
-        );
-
-        //then
-        assertEquals(
-                1L, actualId
-        );
-    }
-
-    @Test
-    void SaveCommentToImage_ImageIsNotPrivateAndDoesNotBelongToAccount_ReturnsId() {
-        //given
-        var newCommentRequest = new NewCommentRequest("huh");
-        var imageId = new UUID(1,1);
-        var account = Account.builder()
-                .id(new UUID(2,2))
-                .build();
-        var image = Image.builder()
-                .isPrivate(false)
-                .id(imageId)
-                .account(Account.builder()
-                        .id(new UUID(4,4))
-                        .build()
-                )
-                .build();
-        given(imageRepository.findById(imageId))
-                .willReturn(Optional.of(image));
-        given(commentRepository.save(any()))
-                .willReturn(Comment.builder()
-                        .id(1L)
-                        .build()
-                );
-
-        //when
-        var actualId = commentService.saveCommentToImage(
-                newCommentRequest, imageId, account
-        );
-
-        //then
-        assertEquals(
-                1L, actualId
-        );
-    }
-
-    @Test
-    void SaveCommentToImage_ImageIsNotPrivateAndBelongsToAccount_ReturnsId() {
-        //given
-        var newCommentRequest = new NewCommentRequest("huh");
-        var imageId = new UUID(1,1);
-        var account = Account.builder()
-                .id(new UUID(2,2))
-                .build();
-        var image = Image.builder()
-                .isPrivate(false)
-                .id(imageId)
-                .account(Account.builder()
-                        .id(new UUID(2,2))
-                        .build()
-                )
-                .build();
-        given(imageRepository.findById(imageId))
-                .willReturn(Optional.of(image));
-        given(commentRepository.save(any()))
-                .willReturn(Comment.builder()
-                        .id(1L)
-                        .build()
-                );
-
-        //when
-        var actualId = commentService.saveCommentToImage(
-                newCommentRequest, imageId, account
-        );
-
-        //then
-        assertEquals(
-                1L, actualId
         );
     }
 
@@ -218,7 +113,7 @@ class CommentServiceTest {
     }
 
     @Test
-    void GetCommentsFromImage_ImageDoesNotBelongToAccountAndIsPrivate_ThrowsImageNotFoundException() {
+    void GetCommentsFromImage_AccountDoesNotHaveAccessToImage_ThrowsImageNotFoundException() {
         //given
         var imageId = new UUID(1, 1);
         var pageNumber = Integer.valueOf(1);
@@ -234,6 +129,8 @@ class CommentServiceTest {
                         )
                         .build())
                 );
+        given(imageUtils.hasAccessToImage(eq(account), any(Image.class)))
+                .willReturn(false);
 
         //when
         var actualException = assertThrows(ImageNotFoundException.class,
@@ -248,7 +145,7 @@ class CommentServiceTest {
     }
 
     @Test
-    void GetCommentsFromImage_ImageBelongsToAccountAndIsPrivate_ReturnsSimplePageResponse() {
+    void GetCommentsFromImage_AccountHasAccessToImage_ReturnsSimplePageResponse() {
         //given
         var imageId = new UUID(1, 1);
         var pageNumber = Integer.valueOf(1);
@@ -270,40 +167,10 @@ class CommentServiceTest {
                                 .content("huh")
                                 .build())
                 ));
+        given(imageUtils.hasAccessToImage(eq(account), any(Image.class)))
+                .willReturn(true);
+
         //when
-
-        var expectedResult = commentService.getCommentsFromImage(
-                imageId, pageNumber, account
-        );
-
-        //then
-        assertNotNull(expectedResult);
-    }
-    @Test
-    void GetCommentsFromImage_ImageBelongsToAccountAndIsNotPrivate_ReturnsSimplePageResponse() {
-        //given
-        var imageId = new UUID(1, 1);
-        var pageNumber = Integer.valueOf(1);
-        var account = Account.builder()
-                .id(new UUID(4,4))
-                .build();
-        given(imageRepository.findById(imageId))
-                .willReturn(Optional.of(Image.builder()
-                        .isPrivate(false)
-                        .account(Account.builder()
-                                .id(new UUID(4, 4))
-                                .build()
-                        )
-                        .build())
-                );
-        given(commentRepository.getByImageId(PageRequest.of(pageNumber, 20), imageId))
-                .willReturn(new PageImpl<>(
-                        List.of(Comment.builder()
-                                .content("huh")
-                                .build())
-                ));
-        //when
-
         var expectedResult = commentService.getCommentsFromImage(
                 imageId, pageNumber, account
         );

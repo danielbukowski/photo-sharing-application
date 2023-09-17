@@ -82,18 +82,14 @@ class ImageServiceTest {
     void GetImageById_AccountDoesNotHaveAccessToImage_ThrowsImageNotFoundException() {
         //given
         var imageId = new UUID(1, 1);
-        var imageInDb = Image.builder()
+        var image = Image.builder()
                 .isPrivate(true)
-                .account(Account.builder()
-                        .id(new UUID(4, 4))
-                        .build())
                 .build();
         var account = Account.builder()
-                .id(new UUID(2, 2))
                 .build();
         given(imageRepository.findById(imageId))
-                .willReturn(Optional.of(imageInDb));
-        given(imageUtils.hasAccessToImage(account, imageInDb))
+                .willReturn(Optional.of(image));
+        given(imageUtils.hasAccessToImage(account, image))
                 .willReturn(false);
 
         //when
@@ -109,19 +105,16 @@ class ImageServiceTest {
     void GetImageById_AccountDoesHaveAccessToImage_ReturnsImageDto() {
         //given
         var imageId = new UUID(1, 1);
-        var imageInDb = Image.builder()
+        var account = Account.builder()
+                .id(new UUID(2,2))
+                .build();
+        var image = Image.builder()
                 .id(new UUID(1, 1))
-                .isPrivate(true)
-                .account(Account.builder()
-                        .id(new UUID(2, 2))
-                        .build())
+                .account(account)
                 .build();
         var data = new byte[1];
-        var account = Account.builder()
-                .id(new UUID(2, 2))
-                .build();
         given(imageRepository.findById(imageId))
-                .willReturn(Optional.of(imageInDb));
+                .willReturn(Optional.of(image));
 
         given(s3Service.getImageFromS3(new UUID(2, 2),
                 new UUID(1, 1)))
@@ -130,9 +123,9 @@ class ImageServiceTest {
                 .willReturn(data);
         given(imageUtils.decompressImage(any()))
                 .willReturn(data);
-        given(imageMapper.fromImageToImageDto(data, imageInDb))
+        given(imageMapper.fromImageToImageDto(data, image))
                 .willReturn(ImageDto.builder().build());
-        given(imageUtils.hasAccessToImage(account, imageInDb))
+        given(imageUtils.hasAccessToImage(account, image))
                 .willReturn(true);
 
         //when
