@@ -5,6 +5,7 @@ import com.danielbukowski.photosharing.Dto.ImagePropertiesRequest;
 import com.danielbukowski.photosharing.Entity.Account;
 import com.danielbukowski.photosharing.Entity.Image;
 import com.danielbukowski.photosharing.Enum.ExceptionMessageResponse;
+import com.danielbukowski.photosharing.Exception.ImageException;
 import com.danielbukowski.photosharing.Exception.ImageNotFoundException;
 import com.danielbukowski.photosharing.Mapper.ImageMapper;
 import com.danielbukowski.photosharing.Repository.ImageRepository;
@@ -23,15 +24,12 @@ import org.springframework.mock.web.MockMultipartFile;
 import java.time.Clock;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ImageServiceTest {
@@ -71,7 +69,8 @@ class ImageServiceTest {
                 .willReturn(Optional.empty());
 
         //when
-        var actualException = assertThrows(ImageNotFoundException.class,
+        var actualException = assertThrows(
+                ImageNotFoundException.class,
                 () -> imageService.getImageById(imageId, account)
         );
         //then
@@ -106,7 +105,7 @@ class ImageServiceTest {
         //given
         var imageId = new UUID(1, 1);
         var account = Account.builder()
-                .id(new UUID(2,2))
+                .id(new UUID(2, 2))
                 .build();
         var image = Image.builder()
                 .id(new UUID(1, 1))
@@ -196,10 +195,10 @@ class ImageServiceTest {
         given(imageRepository.findAll(any(PageRequest.class)))
                 .willReturn(
                         new PageImpl<>(List.of(
-                                        Image.builder()
-                                                .id(new UUID(3, 3))
-                                                .build()
-                                ))
+                                Image.builder()
+                                        .id(new UUID(3, 3))
+                                        .build()
+                        ))
                 );
 
         //when
@@ -209,6 +208,236 @@ class ImageServiceTest {
 
         //then
         assertNotNull(actualSimplePageResponse);
+    }
+
+    @Test
+    void AddLikeToImage_ImageDoesNotExist_ThrowsImageNotFoundException() {
+        //given
+        var imageId = new UUID(1, 1);
+        var account = Account.builder().build();
+        given(imageRepository.findById(imageId))
+                .willReturn(Optional.empty());
+
+        //when
+        var actualException = Assertions.assertThrows(
+                ImageNotFoundException.class,
+                () -> imageService.addLikeToImage(imageId, account)
+        );
+
+        //then
+        assertEquals(ExceptionMessageResponse.IMAGE_NOT_FOUND.getMessage(),
+                actualException.getMessage());
+    }
+
+    @Test
+    void AddLikeToImage_AccountDoesNotHaveAccessToImage_ThrowsImageNotFoundException() {
+        //given
+        var imageId = new UUID(1, 1);
+        var image = Image.builder()
+                .id(imageId)
+                .build();
+        var account = Account.builder().build();
+        given(imageRepository.findById(imageId))
+                .willReturn(Optional.of(image));
+        given(imageUtils.hasAccessToImage(account, image))
+                .willReturn(false);
+
+        //when
+        var actualException = Assertions.assertThrows(
+                ImageNotFoundException.class,
+                () -> imageService.addLikeToImage(imageId, account)
+        );
+
+        //then
+        assertEquals(ExceptionMessageResponse.IMAGE_NOT_FOUND.getMessage(),
+                actualException.getMessage());
+    }
+
+    @Test
+    void AddLikeToImage_AccountAlreadyLikedImage_ThrowsImageException() {
+        //given
+        var imageId = new UUID(1, 1);
+        var account = Account.builder()
+                .id(new UUID(2, 2))
+                .build();
+        var image = Image.builder()
+                .id(imageId)
+                .likes(Set.of(account))
+                .build();
+        given(imageRepository.findById(imageId))
+                .willReturn(Optional.of(image));
+        given(imageUtils.hasAccessToImage(account, image))
+                .willReturn(true);
+
+        //when
+        var actualException = Assertions.assertThrows(
+                ImageException.class,
+                () -> imageService.addLikeToImage(imageId, account)
+        );
+
+        //then
+        assertEquals("You have already liked this image",
+                actualException.getMessage());
+    }
+
+    @Test
+    void AddLikeToImage_AccountDidNotLikeImage_ServiceAddsLikeToImage() {
+        //given
+        var imageId = new UUID(1, 1);
+        var account = Account.builder()
+                .id(new UUID(2, 2))
+                .build();
+        var image = Image.builder()
+                .id(imageId)
+                .likes(new HashSet<>())
+                .build();
+        given(imageRepository.findById(imageId))
+                .willReturn(Optional.of(image));
+        given(imageUtils.hasAccessToImage(account, image))
+                .willReturn(true);
+
+        //when
+        imageService.addLikeToImage(imageId, account);
+
+        //then
+        assertEquals(1, image.getLikes().size());
+    }
+
+    @Test
+    void GetNumberOfLikesFromImage_ImageDoesNotExist_ThrowsImageNotFoundException() {
+        //given
+        var imageId = new UUID(1, 1);
+        var account = Account.builder().build();
+        given(imageRepository.findById(imageId))
+                .willReturn(Optional.empty());
+
+        //when
+        var actualException = Assertions.assertThrows(
+                ImageNotFoundException.class,
+                () -> imageService.getNumberOfLikesFromImage(imageId, account)
+        );
+
+        //then
+        assertEquals(ExceptionMessageResponse.IMAGE_NOT_FOUND.getMessage(),
+                actualException.getMessage());
+    }
+
+    @Test
+    void GetNumberOfLikesFromImage_DoesNotHaveAccessToImage_ThrowsImageNotFoundException() {
+        //given
+        var imageId = new UUID(1, 1);
+        var image = Image.builder()
+                .id(imageId)
+                .build();
+        var account = Account.builder().build();
+        given(imageRepository.findById(imageId))
+                .willReturn(Optional.of(image));
+
+        //when
+        var actualException = Assertions.assertThrows(
+                ImageNotFoundException.class,
+                () -> imageService.getNumberOfLikesFromImage(imageId, account)
+        );
+
+        //then
+        assertEquals(ExceptionMessageResponse.IMAGE_NOT_FOUND.getMessage(),
+                actualException.getMessage());
+    }
+
+    @Test
+    void GetNumberOfLikesFromImage_FindsAccessibleImage_ReturnsNumberOfLikes() {
+        //given
+        var account = Account.builder().build();
+        Set<Account> likes = new HashSet<>();
+        likes.add(account);
+        var imageId = new UUID(1, 1);
+        var image = Image.builder()
+                .id(imageId)
+                .likes(likes)
+                .build();
+        given(imageRepository.findById(imageId))
+                .willReturn(Optional.of(image));
+        given(imageUtils.hasAccessToImage(account, image))
+                .willReturn(true);
+
+        //when
+        var actualNumberOfLikes = imageService.getNumberOfLikesFromImage(imageId, account);
+
+        //then
+        assertEquals(1, actualNumberOfLikes);
+    }
+
+    @Test
+    void RemoveLikeFromImage_ImageDoesNotExist_ThrowsImageNotFoundException() {
+        //given
+        var imageId = new UUID(1, 1);
+        var account = Account.builder().build();
+        given(imageRepository.findById(imageId))
+                .willReturn(Optional.empty());
+
+        //when
+        var actualException = Assertions.assertThrows(
+                ImageNotFoundException.class,
+                () -> imageService.removeLikeFromImage(imageId, account)
+        );
+
+        //then
+        assertEquals(ExceptionMessageResponse.IMAGE_NOT_FOUND.getMessage(),
+                actualException.getMessage());
+    }
+
+    @Test
+    void RemoveLikeFromImage_DoesNotHaveAccessToImage_ThrowsImageNotFoundException() {
+        //given
+        var imageId = new UUID(1, 1);
+        var image = Image.builder()
+                .id(imageId)
+                .build();
+        var account = Account.builder().build();
+        given(imageRepository.findById(imageId))
+                .willReturn(Optional.of(image));
+        given(imageUtils.hasAccessToImage(account, image))
+                .willReturn(false);
+
+        //when
+        var actualException = Assertions.assertThrows(
+                ImageNotFoundException.class,
+                () -> imageService.removeLikeFromImage(imageId, account)
+        );
+
+        //then
+        assertEquals(ExceptionMessageResponse.IMAGE_NOT_FOUND.getMessage(),
+                actualException.getMessage());
+    }
+
+    @Test
+    void RemoveLikeFromImage_FindsAccessibleImage_RemovesLikeFromImage() {
+        //given
+        var account = Account.builder()
+                .id(new UUID(4,4))
+                .build();
+        Set<Account> likes = new HashSet<>();
+        likes.add(account);
+        likes.add(Account.builder()
+                .id(new UUID(5,5))
+                .build()
+        );
+        var imageId = new UUID(1, 1);
+        var image = Image.builder()
+                .id(imageId)
+                .likes(likes)
+                .build();
+
+        given(imageRepository.findById(imageId))
+                .willReturn(Optional.of(image));
+        given(imageUtils.hasAccessToImage(account, image))
+                .willReturn(true);
+
+        //when
+        imageService.removeLikeFromImage(imageId, account);
+
+        //then
+        assertEquals(1, image.getLikes().size());
     }
 
 }
