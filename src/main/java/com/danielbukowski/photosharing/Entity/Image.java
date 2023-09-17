@@ -45,6 +45,14 @@ public class Image {
     )
     private boolean isPrivate;
 
+    @ManyToMany
+    @JoinTable(
+            name = "image_likes",
+            joinColumns = @JoinColumn(name = "image_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "account_id", referencedColumnName = "id")
+    )
+    private Set<Account> likes = new HashSet<>();
+
     @OneToMany(
             mappedBy = "image"
     )
