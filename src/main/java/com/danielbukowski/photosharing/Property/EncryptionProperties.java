@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @Data
-@ConfigurationProperties(prefix = "encryption")
+@ConfigurationProperties(prefix = "spring.encryption")
 public class EncryptionProperties {
 
     private String password;
