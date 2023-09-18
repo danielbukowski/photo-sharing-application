@@ -7,10 +7,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class ImageMapper {
 
-    public ImageDto fromImageToImageDto(byte[] data, Image image) {
+    public ImageDto fromImageToImageDto(byte[] data, Image metaData) {
         return ImageDto.builder()
                 .data(data)
-                .contentType(image.getContentType())
+                .contentType(metaData.getContentType())
+                .isPrivate(metaData.isPrivate())
                 .build();
     }
 

@@ -38,7 +38,13 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler({AccountAlreadyExistsException.class, InvalidPasswordException.class, BadVerificationTokenException.class, S3Exception.class})
+    @ExceptionHandler(
+            {AccountAlreadyExistsException.class,
+            InvalidPasswordException.class,
+            BadVerificationTokenException.class,
+            S3Exception.class,
+            ImageException.class}
+    )
     public ResponseEntity<?> handleBadRequestExceptions(RuntimeException ex) {
         var responseBody = ExceptionResponse.builder()
                 .timestamp(LocalDateTime.now())
@@ -53,7 +59,10 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler({AccountNotFoundException.class, ImageNotFoundException.class})
+    @ExceptionHandler(
+            {AccountNotFoundException.class,
+            ImageNotFoundException.class}
+    )
     public ResponseEntity<?> handleNotFoundExceptions(RuntimeException ex) {
         var responseBody = ExceptionResponse.builder()
                 .timestamp(LocalDateTime.now())

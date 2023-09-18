@@ -4,11 +4,9 @@ package com.danielbukowski.photosharing.Service;
 import com.danielbukowski.photosharing.Exception.ImageNotFoundException;
 import com.danielbukowski.photosharing.Property.S3Properties;
 import lombok.AllArgsConstructor;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
@@ -43,7 +41,7 @@ public class S3Service {
     }
 
     @Transactional
-    public void saveImageToS3(UUID accountId, UUID imageId, MultipartFile image) {
+    public void saveImageToS3(UUID accountId, UUID imageId, byte[] imageData) {
         log.info("Trying to save an image with id {}", imageId);
         try {
             s3Client.putObject(
@@ -51,9 +49,9 @@ public class S3Service {
                             .bucket(s3Properties.getBucketName())
                             .key(IMAGES_PATH.formatted(accountId, imageId))
                             .build(),
-                    RequestBody.fromBytes(image.getBytes())
+                    RequestBody.fromBytes(imageData)
             );
-        } catch (IOException | S3Exception e) {
+        } catch (S3Exception e) {
             log.error("Could not save an image with id {}", imageId, e);
             throw S3Exception
                     .builder()
@@ -94,7 +92,7 @@ public class S3Service {
     }
 
     @Transactional
-    public void deleteAllImagesFromS3(UUID accountId) {
+    public void deleteAllImagesFromS3WithAccountId(UUID accountId) {
         log.info("Deleting all images from an account with id {}", accountId);
         try {
             s3Client.deleteObjects(

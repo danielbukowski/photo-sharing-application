@@ -5,7 +5,8 @@ import lombok.Builder;
 import java.io.Serializable;
 
 @Builder
-public record ImageDto  (
+public record ImageDto(
         byte[] data,
-        String contentType) implements Serializable {
+        String contentType,
+        boolean isPrivate) implements Serializable {
 }

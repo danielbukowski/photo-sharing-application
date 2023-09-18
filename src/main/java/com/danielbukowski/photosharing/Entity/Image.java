@@ -4,10 +4,8 @@ package com.danielbukowski.photosharing.Entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Getter
@@ -16,7 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "images")
-public class Image implements Serializable {
+public class Image {
 
     @Id
     @GeneratedValue(
@@ -42,6 +40,24 @@ public class Image implements Serializable {
     )
     private LocalDateTime creationDate;
 
+    @Column(
+            nullable = false
+    )
+    private boolean isPrivate;
+
+    @ManyToMany
+    @JoinTable(
+            name = "image_likes",
+            joinColumns = @JoinColumn(name = "image_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "account_id", referencedColumnName = "id")
+    )
+    private Set<Account> likes = new HashSet<>();
+
+    @OneToMany(
+            mappedBy = "image"
+    )
+    private List<Comment> commentList;
+
     @ManyToOne(
             fetch = FetchType.LAZY,
             optional = false
@@ -57,12 +73,11 @@ public class Image implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Image image = (Image) o;
-        return Objects.equals(id, image.id);
+        return id.equals(image.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), id);
+        return Objects.hash(id);
     }
-
 }

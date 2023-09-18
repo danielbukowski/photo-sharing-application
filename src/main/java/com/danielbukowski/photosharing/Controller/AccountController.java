@@ -2,16 +2,15 @@ package com.danielbukowski.photosharing.Controller;
 
 import com.danielbukowski.photosharing.Dto.AccountRegisterRequest;
 import com.danielbukowski.photosharing.Dto.ChangePasswordRequest;
-import com.danielbukowski.photosharing.Dto.ImageDto;
+import com.danielbukowski.photosharing.Dto.ImagePropertiesRequest;
 import com.danielbukowski.photosharing.Entity.Account;
 import com.danielbukowski.photosharing.Service.AccountService;
 import com.danielbukowski.photosharing.Service.EmailVerificationTokenService;
+import com.danielbukowski.photosharing.Service.ImageService;
 import com.danielbukowski.photosharing.Validator.Image;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -30,6 +29,7 @@ public class AccountController {
 
     private final AccountService accountService;
     private final EmailVerificationTokenService emailVerificationTokenService;
+    private final ImageService imageService;
 
     @PostMapping
     public ResponseEntity<?> createAccount(@RequestBody @Valid AccountRegisterRequest accountRegisterRequest) {
@@ -85,35 +85,25 @@ public class AccountController {
 
     @PostMapping("/images")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> addImageToAccount(@AuthenticationPrincipal Account account,
-                                               @Valid @Image MultipartFile image) {
-        UUID imageId = accountService.saveImageToAccount(image, account);
+    public ResponseEntity<?> saveImageToAccount(@AuthenticationPrincipal Account account,
+                                                @Valid @RequestPart(required = false) @Image MultipartFile image,
+                                                @Valid @RequestPart(required = false) ImagePropertiesRequest imageProperties) {
+        UUID imageId = imageService.saveImageToAccount(image, account, imageProperties);
         return ResponseEntity
                 .created(
                         ServletUriComponentsBuilder
                                 .fromCurrentContextPath()
-                                .path("/api/v2/accounts/images/%s".formatted(imageId))
+                                .path("/api/v1/images/%s".formatted(imageId))
                                 .build()
                                 .toUri()
                 ).build();
-    }
-
-    @GetMapping("/images/{imageId}")
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<byte[]> getImageFromAccount(@AuthenticationPrincipal Account account,
-                                                      @PathVariable UUID imageId) {
-        ImageDto imageDto = accountService.getImageFromAccount(account.getId(), imageId);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .contentType(MediaType.valueOf(imageDto.contentType()))
-                .body(imageDto.data());
     }
 
     @DeleteMapping("/images/{imageId}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> deleteImageFromAccount(@AuthenticationPrincipal Account account,
                                                     @PathVariable UUID imageId) {
-        accountService.deleteImageFromAccount(account.getId(), imageId);
+        imageService.deleteImageFromAccount(account.getId(), imageId);
         return ResponseEntity
                 .noContent()
                 .build();

@@ -2,14 +2,14 @@ package com.danielbukowski.photosharing.Controller;
 
 import com.danielbukowski.photosharing.Dto.AccountRegisterRequest;
 import com.danielbukowski.photosharing.Dto.ChangePasswordRequest;
-import com.danielbukowski.photosharing.Dto.ImageDto;
+import com.danielbukowski.photosharing.Dto.ImagePropertiesRequest;
 import com.danielbukowski.photosharing.Entity.Account;
 import com.danielbukowski.photosharing.Exception.AccountAlreadyExistsException;
 import com.danielbukowski.photosharing.Exception.BadVerificationTokenException;
-import com.danielbukowski.photosharing.Exception.ImageNotFoundException;
 import com.danielbukowski.photosharing.Exception.InvalidPasswordException;
 import com.danielbukowski.photosharing.Service.AccountService;
 import com.danielbukowski.photosharing.Service.EmailVerificationTokenService;
+import com.danielbukowski.photosharing.Service.ImageService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -50,6 +50,8 @@ class AccountControllerIT {
     private MockMvc mockMvc;
     @MockBean
     private AccountService accountService;
+    @MockBean
+    private ImageService imageService;
     @MockBean
     private EmailVerificationTokenService emailVerificationTokenService;
     @Mock
@@ -202,10 +204,10 @@ class AccountControllerIT {
 
         //when
         mockMvc.perform(post("/api/v2/accounts/email-verification")
-                .with(csrf())
-                .param("token", token.toString())
-                .with(user(account)
-                ))
+                        .with(csrf())
+                        .param("token", token.toString())
+                        .with(user(account)
+                        ))
                 //then
                 .andExpect(status().isNoContent());
     }
@@ -219,10 +221,10 @@ class AccountControllerIT {
 
         //when
         mockMvc.perform(post("/api/v2/accounts/email-verification")
-                .with(csrf())
-                .param("token", token.toString())
-                .with(user(account)
-                ))
+                        .with(csrf())
+                        .param("token", token.toString())
+                        .with(user(account)
+                        ))
                 //then
                 .andExpect(status().isBadRequest());
     }
@@ -242,6 +244,7 @@ class AccountControllerIT {
                 //then
                 .andExpect(status().isBadRequest());
     }
+
     @Test
     void ResendEmailVerificationToken_AccountIsNotVerified_Returns204HttpStatusCode() throws Exception {
         //when
@@ -302,8 +305,9 @@ class AccountControllerIT {
                 .andExpect(status().isBadRequest());
     }
 
+
     @Test
-    void AddImageToAccount_FileTypeIsNeitherJpegNorPng_Returns404HttpStatusCode() throws Exception {
+    void SaveImageToAccount_FileTypeIsNeitherJpegNorPng_Returns404HttpStatusCode() throws Exception {
         //given
         MockMultipartFile image = new MockMultipartFile(
                 "image",
@@ -311,12 +315,25 @@ class AccountControllerIT {
                 MediaType.MULTIPART_FORM_DATA_VALUE,
                 new byte[]{}
         );
-        given(accountService.saveImageToAccount(eq(image), any(Account.class)))
-                .willReturn(new UUID(1, 1));
+        ImagePropertiesRequest imageProperties = new ImagePropertiesRequest(
+                true,
+                "image"
+        );
+        MockMultipartFile jsonImageProperties = new MockMultipartFile("imageProperties",
+                "imageProperties",
+                "application/json",
+                objectMapper.writeValueAsBytes(imageProperties));
+
+        given(imageService.saveImageToAccount(
+                eq(image),
+                any(Account.class),
+                eq(imageProperties))
+        ).willReturn(new UUID(1, 1));
 
         //when
         mockMvc.perform(multipart("/api/v2/accounts/images")
                         .file(image)
+                        .file(jsonImageProperties)
                         .with(csrf())
                 )
                 //then
@@ -324,7 +341,7 @@ class AccountControllerIT {
     }
 
     @Test
-    void AddImageToAccount_FileExtensionIsNeitherJpegNorPng_Returns404HttpStatusCode() throws Exception {
+    void SaveImageToAccount_FileExtensionIsNeitherJpegNorPng_Returns404HttpStatusCode() throws Exception {
         //given
         MockMultipartFile image = new MockMultipartFile(
                 "image",
@@ -332,12 +349,25 @@ class AccountControllerIT {
                 MediaType.IMAGE_JPEG_VALUE,
                 new byte[]{-1, -40}
         );
-        given(accountService.saveImageToAccount(eq(image), any(Account.class)))
+        ImagePropertiesRequest imageProperties = new ImagePropertiesRequest(
+                true,
+                "image"
+        );
+        MockMultipartFile jsonImageProperties = new MockMultipartFile("imageProperties",
+                "imageProperties",
+                "application/json",
+                objectMapper.writeValueAsBytes(imageProperties));
+
+        given(imageService.saveImageToAccount(
+                eq(image),
+                any(Account.class),
+                eq(imageProperties)))
                 .willReturn(new UUID(1, 1));
 
         //when
         mockMvc.perform(multipart("/api/v2/accounts/images")
                         .file(image)
+                        .file(jsonImageProperties)
                         .with(csrf())
                 )
                 //then
@@ -345,9 +375,9 @@ class AccountControllerIT {
     }
 
     @Test
-    void AddImageToAccount_ImageInRequestBodyIsNull_Returns404HttpStatusCode() throws Exception {
+    void SaveImageToAccount_ImageInRequestBodyIsNull_Returns404HttpStatusCode() throws Exception {
         //given
-        given(accountService.saveImageToAccount(any(), any(Account.class)))
+        given(imageService.saveImageToAccount(any(), any(Account.class), any()))
                 .willReturn(new UUID(1, 1));
 
         //when
@@ -359,7 +389,7 @@ class AccountControllerIT {
     }
 
     @Test
-    void AddImageToAccount_ContentTypeIsNeitherJpegNorPng_Returns404HttpStatusCode() throws Exception {
+    void SaveImageToAccount_ContentTypeIsNeitherJpegNorPng_Returns404HttpStatusCode() throws Exception {
         //given
         MockMultipartFile image = new MockMultipartFile(
                 "image",
@@ -367,22 +397,29 @@ class AccountControllerIT {
                 MediaType.MULTIPART_FORM_DATA_VALUE,
                 new byte[]{-1, -40}
         );
-        given(accountService.saveImageToAccount(eq(image), any(Account.class)))
+        ImagePropertiesRequest imageProperties = new ImagePropertiesRequest(
+                true,
+                "image"
+        );
+        MockMultipartFile jsonImageProperties = new MockMultipartFile("imageProperties",
+                "imageProperties",
+                "application/json",
+                objectMapper.writeValueAsBytes(imageProperties));
+        given(imageService.saveImageToAccount(eq(image), any(Account.class), eq(imageProperties)))
                 .willReturn(new UUID(1, 1));
 
         //when
         mockMvc.perform(multipart("/api/v2/accounts/images")
                         .file(image)
+                        .file(jsonImageProperties)
                         .with(csrf())
                 )
                 //then
                 .andExpect(status().isBadRequest());
     }
 
-    //todo: tests an image with type jpeg and png if it passes
-
     @Test
-    void AddImageToAccount_JpegImageIsSent_Returns200HttpStatusCode() throws Exception {
+    void SaveImageToAccount_JpegImageIsSent_Returns200HttpStatusCode() throws Exception {
         //given
         MockMultipartFile image = new MockMultipartFile(
                 "image",
@@ -390,13 +427,22 @@ class AccountControllerIT {
                 MediaType.IMAGE_JPEG_VALUE,
                 new byte[]{-1, -40}
         );
+        ImagePropertiesRequest imageProperties = new ImagePropertiesRequest(
+                true,
+                "image"
+        );
+        MockMultipartFile jsonImageProperties = new MockMultipartFile("imageProperties",
+                "imageProperties",
+                "application/json",
+                objectMapper.writeValueAsBytes(imageProperties));
 
-        given(accountService.saveImageToAccount(eq(image), any(Account.class)))
+        given(imageService.saveImageToAccount(eq(image), any(Account.class), eq(imageProperties)))
                 .willReturn(new UUID(1, 1));
 
         //when
         mockMvc.perform(multipart("/api/v2/accounts/images")
                         .file(image)
+                        .file(jsonImageProperties)
                         .with(csrf())
                 )
                 //then
@@ -404,7 +450,7 @@ class AccountControllerIT {
     }
 
     @Test
-    void AddImageToAccount_PngImageIsSent_Returns200HttpStatusCode() throws Exception {
+    void SaveImageToAccount_PngImageIsSent_Returns200HttpStatusCode() throws Exception {
         //given
         MockMultipartFile image = new MockMultipartFile(
                 "image",
@@ -412,13 +458,22 @@ class AccountControllerIT {
                 MediaType.IMAGE_PNG_VALUE,
                 new byte[]{-119, 80}
         );
+        ImagePropertiesRequest imageProperties = new ImagePropertiesRequest(
+                true,
+                "image"
+        );
+        MockMultipartFile jsonImageProperties = new MockMultipartFile("imageProperties",
+                "imageProperties",
+                "application/json",
+                objectMapper.writeValueAsBytes(imageProperties));
 
-        given(accountService.saveImageToAccount(eq(image), any(Account.class)))
+        given(imageService.saveImageToAccount(eq(image), any(Account.class), eq(imageProperties)))
                 .willReturn(new UUID(1, 1));
 
         //when
         mockMvc.perform(multipart("/api/v2/accounts/images")
                         .file(image)
+                        .file(jsonImageProperties)
                         .with(csrf())
                 )
                 //then
@@ -426,60 +481,18 @@ class AccountControllerIT {
     }
 
     @Test
-    void GetImageFromAccount_ImageExistsInAccount_Returns200HttpStatusCode() throws Exception {
+    void DeleteImageFromAccount_ImageIdIsNotBlank_Returns204HttpStatusCode() throws Exception {
         //given
-        var imageDto = ImageDto.builder()
-                .contentType(MediaType.IMAGE_JPEG_VALUE)
-                .data(new byte[]{-1, -40})
-                .build();
-        var accountId = new UUID(1, 1);
-        var imageId = new UUID(3, 3);
+        var imageId = new UUID(1, 1);
         given(account.getId())
-                .willReturn(accountId);
-        given(accountService.getImageFromAccount(accountId, imageId))
-                .willReturn(imageDto);
-
+                .willReturn(new UUID(1, 1));
         //when
-        mockMvc.perform(get("/api/v2/accounts/images/{imageId}", imageId)
+        mockMvc.perform(delete("/api/v2/accounts/images/{imageId}", imageId)
+                        .with(csrf())
                         .with(user(account))
-                )
-                //then
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void GetImageFromAccount_ImageDoesNotExistInAccount_Returns404HttpStatusCode() throws Exception {
-        //given
-        var accountId = new UUID(1, 1);
-        var imageId = new UUID(3, 3);
-        given(account.getId())
-                .willReturn(accountId);
-        given(accountService.getImageFromAccount(accountId, imageId))
-                .willThrow(ImageNotFoundException.class);
-
-        //when
-        mockMvc.perform(get("/api/v2/accounts/images/{imageId}", imageId)
-                        .with(user(account))
-                )
-                //then
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void DeleteImageFromAccount_AccountExists_Returns204HttpStatus() throws Exception {
-        //given
-        var accountId = new UUID(1, 1);
-        given(account.getId()).willReturn(accountId);
-        var imageId = new UUID(2, 2);
-
-        //when
-        mockMvc.perform(
-                        delete("/api/v2/accounts/images/{imageId}", imageId)
-                                .with(csrf())
-                                .with(user(account))
                 )
                 //then
                 .andExpect(status().isNoContent());
-    }
 
+    }
 }

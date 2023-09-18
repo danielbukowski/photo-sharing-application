@@ -28,4 +28,13 @@ public interface ImageRepository extends JpaRepository<Image, UUID> {
     )
     Optional<Image> findByImageIdAndAccountId(UUID imageId, UUID accountId);
 
+    @Transactional
+    @Modifying
+    @Query(
+            "DELETE FROM Image i " +
+            "WHERE i.account.id = :accountId " +
+            "AND i.id = :imageId"
+    )
+    void deleteByImageIdAndAccountId(UUID imageId, UUID accountId);
+
 }
