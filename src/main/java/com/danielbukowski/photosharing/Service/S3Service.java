@@ -2,7 +2,6 @@ package com.danielbukowski.photosharing.Service;
 
 
 import com.danielbukowski.photosharing.Exception.ImageNotFoundException;
-import com.danielbukowski.photosharing.Property.S3Properties;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,15 +21,15 @@ import java.util.UUID;
 public class S3Service {
 
     private static final String IMAGES_PATH = "images/%s/%s";
+    private static final String BUCKET_NAME = "account-data";
     private final S3Client s3Client;
-    private final S3Properties s3Properties;
 
     public byte[] getImageFromS3(UUID accountId, UUID imageId) {
         log.info("Getting an image with id {}", imageId);
         try {
             return s3Client.getObject(
                     GetObjectRequest.builder()
-                            .bucket(s3Properties.getBucketName())
+                            .bucket(BUCKET_NAME)
                             .key(IMAGES_PATH.formatted(accountId, imageId))
                             .build()
             ).readAllBytes();
@@ -46,7 +45,7 @@ public class S3Service {
         try {
             s3Client.putObject(
                     PutObjectRequest.builder()
-                            .bucket(s3Properties.getBucketName())
+                            .bucket(BUCKET_NAME)
                             .key(IMAGES_PATH.formatted(accountId, imageId))
                             .build(),
                     RequestBody.fromBytes(imageData)
@@ -66,7 +65,7 @@ public class S3Service {
         try {
             s3Client.deleteObject(
                     DeleteObjectRequest.builder()
-                            .bucket(s3Properties.getBucketName())
+                            .bucket(BUCKET_NAME)
                             .key(IMAGES_PATH.formatted(accountId, imageId))
                             .build()
             );
@@ -82,7 +81,7 @@ public class S3Service {
     private List<ObjectIdentifier> getAllImagesFromS3(UUID accountId) {
         return s3Client.listObjects(
                         ListObjectsRequest.builder()
-                                .bucket(s3Properties.getBucketName())
+                                .bucket(BUCKET_NAME)
                                 .prefix("images/%s".formatted(accountId))
                                 .build()
                 ).contents()
@@ -101,7 +100,7 @@ public class S3Service {
                                     .objects(getAllImagesFromS3(accountId))
                                     .build()
                             )
-                            .bucket(s3Properties.getBucketName())
+                            .bucket(BUCKET_NAME)
                             .build()
             );
         } catch (S3Exception e) {

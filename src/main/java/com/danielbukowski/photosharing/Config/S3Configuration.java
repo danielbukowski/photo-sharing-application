@@ -1,11 +1,9 @@
 package com.danielbukowski.photosharing.Config;
 
 
-import com.danielbukowski.photosharing.Property.S3Properties;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
@@ -15,23 +13,29 @@ import java.net.URI;
 
 
 @Configuration
-@AllArgsConstructor
 public class S3Configuration {
 
-    private final S3Properties s3Properties;
+    @Value("${AWS_SECRET_ACCESS_KEY}")
+    private String secretKey;
+    @Value("${AWS_ACCESS_KEY_ID}")
+    private String accessKey;
+    @Value("${AWS_ENDPOINT_URL}")
+    private String endpoint;
+    @Value("${AWS_REGION}")
+    private String region;
 
     @Bean
-    @Profile("dev")
     public S3Client s3Client() {
         AwsBasicCredentials awsCredits = AwsBasicCredentials.create(
-                s3Properties.getAccessKey(),
-                s3Properties.getSecretKey()
+                accessKey,
+                secretKey
         );
 
         return S3Client.builder()
-                .endpointOverride(URI.create(s3Properties.getUrl()))
+                .forcePathStyle(true)
+                .endpointOverride(URI.create(endpoint))
                 .credentialsProvider(StaticCredentialsProvider.create(awsCredits))
-                .region(Region.AWS_GLOBAL)
+                .region(Region.of(region))
                 .build();
     }
 
