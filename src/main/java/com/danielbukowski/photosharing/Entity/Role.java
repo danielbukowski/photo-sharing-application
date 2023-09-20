@@ -22,6 +22,9 @@ public class Role implements Serializable {
     @GeneratedValue(
             strategy = GenerationType.UUID
     )
+    @Column(
+            name = "role_id"
+    )
     private UUID id;
 
     @Column(

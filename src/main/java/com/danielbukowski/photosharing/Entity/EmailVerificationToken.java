@@ -21,6 +21,9 @@ public class EmailVerificationToken {
     @GeneratedValue(
             strategy = GenerationType.UUID
     )
+    @Column(
+            name = "email_verification_token_id"
+    )
     private UUID id;
 
     @JoinColumn(

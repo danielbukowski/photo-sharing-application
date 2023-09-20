@@ -24,6 +24,9 @@ public class Account implements UserDetails {
     @GeneratedValue(
             strategy = GenerationType.UUID
     )
+    @Column(
+            name = "account_id"
+    )
     private UUID id;
 
     @Column(
@@ -50,8 +53,8 @@ public class Account implements UserDetails {
     )
     @JoinTable(
             name = "accounts_roles",
-            joinColumns = @JoinColumn(name = "account_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
+            joinColumns = @JoinColumn(name = "account_id", nullable = false),
+            inverseJoinColumns = @JoinColumn(name = "role_id", nullable = false)
     )
     private Set<Role> roles = new HashSet<>();
 

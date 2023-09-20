@@ -20,6 +20,9 @@ public class Image {
     @GeneratedValue(
             strategy = GenerationType.UUID
     )
+    @Column(
+            name = "image_id"
+    )
     private UUID id;
 
     @Column(
@@ -47,16 +50,16 @@ public class Image {
 
     @ManyToMany
     @JoinTable(
-            name = "image_likes",
-            joinColumns = @JoinColumn(name = "image_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "account_id", referencedColumnName = "id")
+            name = "images_likes",
+            joinColumns = @JoinColumn(name = "image_id", nullable = false),
+            inverseJoinColumns = @JoinColumn(name = "account_id", nullable = false)
     )
     private Set<Account> likes = new HashSet<>();
 
     @OneToMany(
             mappedBy = "image"
     )
-    private List<Comment> commentList;
+    private List<Comment> comments;
 
     @ManyToOne(
             fetch = FetchType.LAZY,

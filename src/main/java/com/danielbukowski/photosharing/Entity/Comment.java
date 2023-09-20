@@ -17,10 +17,17 @@ import static jakarta.persistence.GenerationType.*;
 public class Comment {
 
     @Id
-    @GeneratedValue(strategy = IDENTITY)
+    @GeneratedValue(
+            strategy = IDENTITY
+    )
+    @Column(
+            name = "comment_id"
+    )
     private Long id;
 
-    @Column(nullable = false)
+    @Column(
+            nullable = false
+    )
     private String content;
 
     @ManyToOne(
@@ -38,7 +45,7 @@ public class Comment {
             optional = false
     )
     @JoinColumn(
-            name = "comment_account_id",
+            name = "account_id",
             nullable = false
     )
     private Account account;
