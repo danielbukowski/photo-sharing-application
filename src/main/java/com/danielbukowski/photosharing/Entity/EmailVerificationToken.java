@@ -42,6 +42,8 @@ public class EmailVerificationToken {
     )
     private LocalDateTime expirationDate;
 
+    private LocalDateTime verifiedAt;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
