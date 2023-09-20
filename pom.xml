@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.danielbukowski</groupId>
     <artifactId>photo-sharing</artifactId>
-    <version>0.11.0-SNAPSHOT</version>
+    <version>0.12.0-SNAPSHOT</version>
     <name>photo-sharing</name>
     <description>Photo Sharing REST API</description>
     <properties>
