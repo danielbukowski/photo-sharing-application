@@ -127,6 +127,29 @@ public class ImageService {
         );
     }
 
+    public SimplePageResponse<UUID> getIdsOfLatestImagesFromAccount(Integer pageNumber, Account account) {
+        var pageOfImages = imageRepository.findAllByAccountId(
+                PageRequest.of(
+                        pageNumber,
+                        PAGE_SIZE,
+                        Sort.by(Sort.Direction.DESC, "creationDate")
+                ),
+                account.getId()
+        );
+
+        return new SimplePageResponse<>(
+                pageOfImages.getNumberOfElements(),
+                pageOfImages
+                        .getContent()
+                        .stream()
+                        .map(Image::getId)
+                        .toList(),
+                pageOfImages.getNumber(),
+                pageOfImages.getTotalPages(),
+                pageOfImages.isLast()
+        );
+    }
+
     @Transactional
     public void addLikeToImage(UUID imageId, Account account) {
         var image = imageRepository.findById(imageId)

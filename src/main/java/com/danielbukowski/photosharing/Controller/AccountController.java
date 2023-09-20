@@ -83,6 +83,16 @@ public class AccountController {
                 .build();
     }
 
+    @GetMapping("/images")
+    @PreAuthorize("hasAuthority('USER:READ')")
+    public ResponseEntity<?> getImagesFromAccount(@AuthenticationPrincipal Account account,
+                                                  @RequestParam(required = false, defaultValue = "0") Integer pageNumber) {
+        pageNumber = Integer.max(0, pageNumber);
+        return ResponseEntity.ok(
+                imageService.getIdsOfLatestImagesFromAccount(pageNumber, account)
+        );
+    }
+
     @PostMapping("/images")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> saveImageToAccount(@AuthenticationPrincipal Account account,
