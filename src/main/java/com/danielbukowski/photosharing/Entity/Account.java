@@ -36,6 +36,16 @@ public class Account implements UserDetails {
     private String email;
 
     @Column(
+            unique = true,
+            nullable = false
+    )
+    private String nickname;
+
+    private String biography;
+
+    private boolean isLocked;
+
+    @Column(
             nullable = false
     )
     private String password;
@@ -87,7 +97,7 @@ public class Account implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return !isLocked;
     }
 
     @Override
