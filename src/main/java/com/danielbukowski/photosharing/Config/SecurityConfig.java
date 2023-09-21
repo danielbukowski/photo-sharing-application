@@ -33,6 +33,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/api/v2/accounts").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/images/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v2/accounts/email-verification").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> {
