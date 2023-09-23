@@ -28,6 +28,7 @@ import java.util.UUID;
 public class AccountController {
 
     private final AccountService accountService;
+    private final PasswordResetTokenService passwordResetTokenService;
     private final EmailVerificationTokenService emailVerificationTokenService;
     private final ImageService imageService;
 
@@ -114,6 +115,23 @@ public class AccountController {
     public ResponseEntity<?> deleteImageFromAccount(@AuthenticationPrincipal Account account,
                                                     @PathVariable UUID imageId) {
         imageService.deleteImageFromAccount(account.getId(), imageId);
+        return ResponseEntity
+                .noContent()
+                .build();
+    }
+
+    @PostMapping("/password-reset")
+    public ResponseEntity<?> createResetPasswordToken(@RequestBody(required = false) @Valid PasswordResetRequest passwordResetRequest) {
+        passwordResetTokenService.createResetPasswordToken(passwordResetRequest);
+        return ResponseEntity
+                .noContent()
+                .build();
+    }
+
+    @PutMapping("/password-reset")
+    public ResponseEntity<?> changePasswordByPasswordResetTokenId(@RequestParam UUID token,
+                                                                  @RequestBody(required = false) @Valid PasswordChangeRequest passwordChangeRequest) {
+        passwordResetTokenService.changePasswordByPasswordResetTokenId(token, passwordChangeRequest);
         return ResponseEntity
                 .noContent()
                 .build();
