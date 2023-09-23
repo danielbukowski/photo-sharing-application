@@ -1,12 +1,11 @@
 package com.danielbukowski.photosharing.Controller;
 
-import com.danielbukowski.photosharing.Dto.AccountRegisterRequest;
-import com.danielbukowski.photosharing.Dto.ChangePasswordRequest;
-import com.danielbukowski.photosharing.Dto.ImagePropertiesRequest;
+import com.danielbukowski.photosharing.Dto.*;
 import com.danielbukowski.photosharing.Entity.Account;
 import com.danielbukowski.photosharing.Service.AccountService;
 import com.danielbukowski.photosharing.Service.EmailVerificationTokenService;
 import com.danielbukowski.photosharing.Service.ImageService;
+import com.danielbukowski.photosharing.Service.PasswordResetTokenService;
 import com.danielbukowski.photosharing.Validator.Image;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -27,13 +26,32 @@ import java.util.UUID;
 @RequestMapping("api/v2/accounts")
 public class AccountController {
 
+    private final ImageService imageService;
     private final AccountService accountService;
     private final PasswordResetTokenService passwordResetTokenService;
     private final EmailVerificationTokenService emailVerificationTokenService;
-    private final ImageService imageService;
+
+
+    @GetMapping
+    @PreAuthorize("hasAuthority('USER:READ')")
+    public ResponseEntity<?> getAccount(@AuthenticationPrincipal Account account) {
+        return ResponseEntity.ok(
+                new SimpleDataResponse<>(accountService.getAccountDetails(account))
+        );
+    }
+
+    @PutMapping
+    @PreAuthorize("hasAuthority('USER:UPDATE')")
+    public ResponseEntity<?> updateAccount(@AuthenticationPrincipal Account account,
+                                           @RequestBody(required = false) @Valid AccountUpdateRequest accountUpdateRequest) {
+        accountService.updateAccount(account, accountUpdateRequest);
+        return ResponseEntity
+                .noContent()
+                .build();
+    }
 
     @PostMapping
-    public ResponseEntity<?> createAccount(@RequestBody @Valid AccountRegisterRequest accountRegisterRequest) {
+    public ResponseEntity<?> createAccount(@RequestBody(required = false) @Valid AccountRegisterRequest accountRegisterRequest) {
         UUID accountId = accountService.createAccount(accountRegisterRequest);
         return ResponseEntity
                 .created(
@@ -62,7 +80,7 @@ public class AccountController {
     }
 
     @DeleteMapping
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAuthority('USER:DELETE')")
     public ResponseEntity<?> deleteAccount(@AuthenticationPrincipal Account account,
                                            HttpServletRequest request) {
         accountService.deleteAccountById(account.getId());
@@ -73,11 +91,11 @@ public class AccountController {
     }
 
     @PatchMapping("/password")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAuthority('USER:UPDATE')")
     public ResponseEntity<?> changeAccountPassword(@AuthenticationPrincipal Account account,
-                                                   @Valid @RequestBody ChangePasswordRequest changePasswordRequest,
+                                                   @Valid @RequestBody(required = false) PasswordChangeRequest passwordChangeRequest,
                                                    HttpServletRequest request) {
-        accountService.changeAccountPassword(account, changePasswordRequest);
+        accountService.changeAccountPassword(account, passwordChangeRequest);
         request.getSession().invalidate();
         return ResponseEntity
                 .noContent()
@@ -95,10 +113,10 @@ public class AccountController {
     }
 
     @PostMapping("/images")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAuthority('USER:CREATE')")
     public ResponseEntity<?> saveImageToAccount(@AuthenticationPrincipal Account account,
-                                                @Valid @RequestPart(required = false) @Image MultipartFile image,
-                                                @Valid @RequestPart(required = false) ImagePropertiesRequest imageProperties) {
+                                                @RequestPart(required = false) @Valid @Image MultipartFile image,
+                                                @RequestPart(required = false) @Valid ImagePropertiesRequest imageProperties) {
         UUID imageId = imageService.saveImageToAccount(image, account, imageProperties);
         return ResponseEntity
                 .created(
@@ -111,7 +129,7 @@ public class AccountController {
     }
 
     @DeleteMapping("/images/{imageId}")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAuthority('USER:DELETE')")
     public ResponseEntity<?> deleteImageFromAccount(@AuthenticationPrincipal Account account,
                                                     @PathVariable UUID imageId) {
         imageService.deleteImageFromAccount(account.getId(), imageId);
