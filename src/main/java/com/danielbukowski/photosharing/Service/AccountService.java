@@ -50,6 +50,8 @@ public class AccountService {
         }
 
         Account accountToSave = new Account();
+        accountToSave.setNickname(accountRegisterRequest.nickname());
+        accountToSave.setLocked(false);
         accountToSave.setEmail(accountRegisterRequest.email());
         accountToSave.setPassword(passwordEncoder.encode(accountRegisterRequest.password().trim()));
         accountToSave.addRole(roleRepository.getByName("USER"));
