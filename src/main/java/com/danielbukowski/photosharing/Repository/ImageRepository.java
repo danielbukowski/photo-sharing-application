@@ -47,4 +47,6 @@ public interface ImageRepository extends JpaRepository<Image, UUID> {
     List<Image> getImagesByAccountId(UUID accountId);
 
     Page<Image> getAllImagesByAccountId(Pageable pageable, UUID accountId);
+
+    Page<Image> findAllByIsPrivateFalse(Pageable pageable);
 }
