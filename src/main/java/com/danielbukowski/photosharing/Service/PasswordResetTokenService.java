@@ -31,7 +31,7 @@ public class PasswordResetTokenService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public void createResetPasswordToken(PasswordResetRequest passwordResetRequest) {
+    public void createPasswordResetToken(PasswordResetRequest passwordResetRequest) {
         Account account = accountRepository.findByEmailIgnoreCase(passwordResetRequest.email())
                 .orElseThrow(
                         () -> new AccountNotFoundException(ACCOUNT_NOT_FOUND.getMessage())

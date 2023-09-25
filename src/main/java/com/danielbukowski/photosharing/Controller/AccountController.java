@@ -138,7 +138,7 @@ public class AccountController {
 
     @PostMapping("/password-reset")
     public ResponseEntity<?> createResetPasswordToken(@RequestBody(required = false) @Valid PasswordResetRequest passwordResetRequest) {
-        passwordResetTokenService.createResetPasswordToken(passwordResetRequest);
+        passwordResetTokenService.createPasswordResetToken(passwordResetRequest);
         return ResponseEntity
                 .noContent()
                 .build();
