@@ -41,14 +41,10 @@ public class AccountService {
 
     @Transactional
     public UUID createAccount(AccountRegisterRequest accountRegisterRequest) {
-        log.info("Creating an account with an email {}", accountRegisterRequest.email());
-        if (accountRepository.existsByEmailIgnoreCase(accountRegisterRequest.email())) {
-            log.error("Found an already existing account in the database with an email {}", accountRegisterRequest.email());
-            throw new AccountAlreadyExistsException(
-                    ACCOUNT_WITH_ALREADY_EXISTING_EMAIL.getMessage()
-            );
-        }
+        if (accountRepository.existsByEmailIgnoreCase(accountRegisterRequest.email()))
+            throw new AccountAlreadyExistsException(ACCOUNT_WITH_ALREADY_EXISTING_EMAIL.getMessage());
 
+        log.info("Creating an account with an email {}", accountRegisterRequest.email());
         Account accountToSave = new Account();
         accountToSave.setNickname(accountRegisterRequest.nickname());
         accountToSave.setLocked(false);
@@ -58,7 +54,7 @@ public class AccountService {
         Account savedAccount = accountRepository.save(accountToSave);
 
         var emailVerificationToken = emailVerificationTokenService.createEmailVerificationTokenToAccount(savedAccount);
-        emailService.sendEmailVerificationMessage(
+        emailService.sendEmailForEmailVerification(
                 accountRegisterRequest.email(),
                 accountRegisterRequest.nickname(),
                 emailVerificationToken
@@ -80,31 +76,26 @@ public class AccountService {
         String oldEncodedPassword = account.getPassword();
         String newPassword = passwordChangeRequest.newPassword();
 
-        if (!passwordEncoder.matches(oldEncodedPassword, passwordChangeRequest.oldPassword())) {
-            log.error("Provided a no matching account password with an email {}", account.getEmail());
-            throw new InvalidPasswordException(
-                    "The old password does not match the account password"
-            );
-        }
+        if (!passwordEncoder.matches(oldEncodedPassword, passwordChangeRequest.oldPassword()))
+            throw new InvalidPasswordException("The old password does not match the account password");
 
-        if (passwordEncoder.matches(newPassword, oldEncodedPassword)) {
-            log.error("Failed try to change an account password with an email {}", account.getEmail());
-            throw new InvalidPasswordException(
-                    PASSWORD_SHOULD_NOT_BE_THE_SAME.getMessage()
-            );
-        }
+        if (passwordEncoder.matches(newPassword, oldEncodedPassword))
+            throw new InvalidPasswordException(PASSWORD_SHOULD_NOT_BE_THE_SAME.getMessage());
 
         accountRepository.updatePasswordById(passwordEncoder.encode(newPassword), account.getId());
     }
 
     public AccountDto getAccountDetails(Account account) {
+        log.info("Getting details of an account with an email {}", account.getEmail());
         var accountDetails = AccountDto.builder();
+
         if (account.isEmailVerified()) {
             accountDetails.accountVerifiedAt(
                     emailVerificationTokenRepository.findByAccountId(
                             account.getId()).get().getVerifiedAt()
             );
         }
+
         List<String> roles = new ArrayList<>();
         List<String> permissions = new ArrayList<>();
         accountDetails.isEmailVerified(account.isEmailVerified())
@@ -131,6 +122,7 @@ public class AccountService {
 
     @Transactional
     public void updateAccount(Account account, AccountUpdateRequest accountUpdateRequest) {
+        log.info("Updating an account with an email {}", account.getEmail());
         account.setNickname(accountUpdateRequest.nickname());
         account.setBiography(accountUpdateRequest.biography());
     }

@@ -9,6 +9,7 @@ import com.danielbukowski.photosharing.Exception.InvalidTokenException;
 import com.danielbukowski.photosharing.Repository.AccountRepository;
 import com.danielbukowski.photosharing.Repository.PasswordResetTokenRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,7 @@ import static com.danielbukowski.photosharing.Enum.ExceptionMessageResponse.ACCO
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class PasswordResetTokenService {
 
     private static final long TOKEN_EXPIRATION_IN_HOURS = 1;
@@ -33,10 +35,9 @@ public class PasswordResetTokenService {
     @Transactional
     public void createPasswordResetToken(PasswordResetRequest passwordResetRequest) {
         Account account = accountRepository.findByEmailIgnoreCase(passwordResetRequest.email())
-                .orElseThrow(
-                        () -> new AccountNotFoundException(ACCOUNT_NOT_FOUND.getMessage())
-                );
+                .orElseThrow(() -> new AccountNotFoundException(ACCOUNT_NOT_FOUND.getMessage()));
 
+        log.info("Creating a password reset token to an account with an email {}", passwordResetRequest.email());
         PasswordResetToken savedToken = passwordResetTokenRepository.save(
                 PasswordResetToken.builder()
                         .expirationDate(LocalDateTime.now(clock).plusHours(TOKEN_EXPIRATION_IN_HOURS))
@@ -44,32 +45,27 @@ public class PasswordResetTokenService {
                         .build()
         );
 
-        emailService.sendEmailWithResetPasswordToken(
+        emailService.sendEmailForPasswordReset(
                 account.getEmail(),
                 account.getNickname(),
                 savedToken.getId()
-
         );
     }
 
     @Transactional
     public void changePasswordByPasswordResetTokenId(UUID passwordResetTokenId, PasswordChangeRequest passwordChangeRequest) {
         PasswordResetToken passwordResetToken = passwordResetTokenRepository.findById(passwordResetTokenId)
-                .orElseThrow(
-                        () -> new InvalidTokenException(
-                                "The provided token is not valid"
-                        )
-                );
+                .orElseThrow(() -> new InvalidTokenException("The provided token is not valid"));
 
-        if(passwordResetToken.isAlreadyUsed() || passwordResetToken.getExpirationDate().isBefore(LocalDateTime.now(clock))) {
+        if (passwordResetToken.isAlreadyUsed() || passwordResetToken.getExpirationDate().isBefore(LocalDateTime.now(clock)))
             throw new InvalidTokenException("The token has expired");
-        }
 
+        log.info("Changing an account password with a password reset token {}", passwordResetToken);
         passwordResetToken.setAlreadyUsed(true);
         Account account = passwordResetToken.getAccount();
         account.setPassword(passwordEncoder.encode(passwordChangeRequest.newPassword()));
 
-        emailService.sendPasswordResetNotification(
+        emailService.sendEmailForPasswordResetNotification(
                 account.getEmail(),
                 account.getNickname()
         );

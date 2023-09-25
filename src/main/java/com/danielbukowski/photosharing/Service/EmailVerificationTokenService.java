@@ -6,6 +6,7 @@ import com.danielbukowski.photosharing.Exception.InvalidTokenException;
 import com.danielbukowski.photosharing.Repository.AccountRepository;
 import com.danielbukowski.photosharing.Repository.EmailVerificationTokenRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +16,7 @@ import java.util.UUID;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class EmailVerificationTokenService {
 
     private final EmailVerificationTokenRepository emailVerificationTokenRepository;
@@ -24,21 +26,20 @@ public class EmailVerificationTokenService {
 
     @Transactional
     public UUID createEmailVerificationTokenToAccount(Account account) {
-       return emailVerificationTokenRepository.save(
-                EmailVerificationToken
-                        .builder()
-                        .account(account)
-                        .expirationDate(LocalDateTime.now(clock).plusHours(4L))
-                        .build())
-               .getId();
+        log.info("Creating an email verification token");
+        return emailVerificationTokenRepository.save(
+                        EmailVerificationToken
+                                .builder()
+                                .account(account)
+                                .expirationDate(LocalDateTime.now(clock).plusHours(4L))
+                                .build())
+                .getId();
     }
 
     @Transactional
     public void verifyEmailVerificationToken(UUID emailVerificationTokenId) {
         var emailVerificationToken = emailVerificationTokenRepository.findById(emailVerificationTokenId)
-                .orElseThrow(
-                        () -> new InvalidTokenException("Invalid email verification token")
-                );
+                .orElseThrow(() -> new InvalidTokenException("Invalid email verification token"));
         var accountFromToken = emailVerificationToken.getAccount();
 
         if (accountFromToken.isEmailVerified())
@@ -47,8 +48,10 @@ public class EmailVerificationTokenService {
         if (emailVerificationToken.getExpirationDate().isBefore(LocalDateTime.now(clock)))
             throw new InvalidTokenException("This token has already expired");
 
+        log.info("Verifying an account by an email verification token {}", emailVerificationTokenId);
         accountFromToken.setEmailVerified(true);
         emailVerificationToken.setVerifiedAt(LocalDateTime.now(clock));
+
         emailService.sendEmailForCompletedRegistration(
                 accountFromToken.getEmail(),
                 accountFromToken.getNickname()
@@ -63,8 +66,9 @@ public class EmailVerificationTokenService {
         emailVerificationTokenRepository.findByAccountId(account.getId())
                 .ifPresent(emailVerificationTokenRepository::delete);
 
+        log.info("Creating an email verification token to account with an email {}", account.getEmail());
         var token = createEmailVerificationTokenToAccount(account);
-        emailService.sendEmailVerificationMessage(
+        emailService.sendEmailForEmailVerification(
                 account.getEmail(),
                 account.getNickname(),
                 token

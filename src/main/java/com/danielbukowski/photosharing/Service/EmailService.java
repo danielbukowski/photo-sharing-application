@@ -1,5 +1,6 @@
 package com.danielbukowski.photosharing.Service;
 
+import com.danielbukowski.photosharing.Exception.EmailSenderException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.AllArgsConstructor;
@@ -21,7 +22,7 @@ public class EmailService {
     private final JavaMailSender emailSender;
 
     @Async
-    public void sendEmailVerificationMessage(String emailTo,  String nickname, UUID verificationToken) {
+    public void sendEmailForEmailVerification(String emailTo, String nickname, UUID verificationToken) {
         String text = """
                 Hi %s!<br><br>
                                 
@@ -37,10 +38,11 @@ public class EmailService {
             helper.setSubject("Please complete your registration");
             helper.setText(text, true);
 
+            log.info("Sending an email verification message to an account with an email {}", emailTo);
             emailSender.send(mimeMessage);
         } catch (MessagingException e) {
-            log.error("failed to send an email for verification", e);
-            throw new RuntimeException("failed to send an email");
+            log.error("Failed to send an email verification message", e);
+            throw new EmailSenderException("Failed to send an email");
         }
     }
 
@@ -61,14 +63,16 @@ public class EmailService {
             helper.setSubject("Thank you for your registration");
             helper.setText(text, true);
 
+            log.info("Sending a completed registration message to an account with an email {}", emailTo);
             emailSender.send(mimeMessage);
         } catch (MessagingException e) {
-            log.error("failed to send an email for completed registration", e);
-            throw new RuntimeException("failed to send an email");
+            log.error("Failed to send a completed registration message", e);
+            throw new EmailSenderException("Failed to send an email");
         }
     }
 
-    public void sendEmailWithResetPasswordToken(String emailTo, String nickname, UUID resetPasswordToken) {
+    @Async
+    public void sendEmailForPasswordReset(String emailTo, String nickname, UUID passwordResetToken) {
         String text = """
                 Hi %s!<br><br>
                                 
@@ -77,7 +81,7 @@ public class EmailService {
                                 
                 Best regards,
                 XYZ
-                """.formatted(nickname, resetPasswordToken);
+                """.formatted(nickname, passwordResetToken);
         try {
             MimeMessage mimeMessage = emailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
@@ -85,14 +89,16 @@ public class EmailService {
             helper.setSubject("Your password reset token is here");
             helper.setText(text, true);
 
+            log.info("Sending a password reset token to an account with an email {}", emailTo);
             emailSender.send(mimeMessage);
         } catch (MessagingException e) {
-            log.error("failed to send an email for completed registration", e);
-            throw new RuntimeException("failed to send an email");
+            log.error("Failed to send a password reset message", e);
+            throw new EmailSenderException("Failed to send an email");
         }
     }
 
-    public void sendPasswordResetNotification(String emailTo, String nickname) {
+    @Async
+    public void sendEmailForPasswordResetNotification(String emailTo, String nickname) {
         String text = """
                 Hi %s!<br><br>
                                 
@@ -108,10 +114,11 @@ public class EmailService {
             helper.setSubject("Your password has changed");
             helper.setText(text, true);
 
+            log.info("Sending a password reset message to an account with an email {}", emailTo);
             emailSender.send(mimeMessage);
         } catch (MessagingException e) {
-            log.error("failed to send an email for completed registration", e);
-            throw new RuntimeException("failed to send an email");
+            log.error("Failed to send a password reset notification message", e);
+            throw new EmailSenderException("Failed to send an email");
         }
     }
 
