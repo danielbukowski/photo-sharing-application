@@ -4,8 +4,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.Length;
 
-public record ChangePasswordRequest(
-        @NotBlank(message = "Should not be empty")
+public record PasswordChangeRequest(
+        @NotBlank(message = "Should not be blank")
+        String oldPassword,
+        @NotBlank(message = "Should not be blank")
         @Length(min = 8, max = 32, message = "Should be 8-32 characters long")
         @Pattern.List({
                 @Pattern(regexp = ".*[a-z].*", message = "Should have one lowercase letter"),
