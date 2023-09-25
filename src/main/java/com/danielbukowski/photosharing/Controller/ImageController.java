@@ -91,8 +91,8 @@ public class ImageController {
                                                        @PathVariable UUID imageId) {
         return ResponseEntity.ok(
                 new SimpleDataResponse<>(
-                        Map.of("likes", imageService.getNumberOfLikesFromImage(imageId, account)
-                ))
+                        Map.of("likes", imageService.getNumberOfLikesFromImage(imageId, account))
+                )
         );
     }
 

@@ -31,7 +31,6 @@ public class AccountController {
     private final PasswordResetTokenService passwordResetTokenService;
     private final EmailVerificationTokenService emailVerificationTokenService;
 
-
     @GetMapping
     @PreAuthorize("hasAuthority('USER:READ')")
     public ResponseEntity<?> getAccount(@AuthenticationPrincipal Account account) {

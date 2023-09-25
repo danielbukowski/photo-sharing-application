@@ -16,9 +16,7 @@ public class UserDetailsService implements org.springframework.security.core.use
     @Override
     public UserDetails loadUserByUsername(String email) {
         return accountRepository.findByEmailIgnoreCase(email)
-                .orElseThrow(
-                        () -> new AccountNotFoundException(ExceptionMessageResponse.ACCOUNT_NOT_FOUND.getMessage())
-                );
+                .orElseThrow(() -> new AccountNotFoundException(ExceptionMessageResponse.ACCOUNT_NOT_FOUND.getMessage()));
     }
 
 }
