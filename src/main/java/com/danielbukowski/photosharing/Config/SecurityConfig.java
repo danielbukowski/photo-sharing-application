@@ -31,9 +31,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/api/v2/accounts").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v3/accounts").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/images/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v2/accounts/email-verification").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v3/accounts/email-verification").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> {

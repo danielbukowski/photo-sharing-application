@@ -23,7 +23,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Validated
 @RestController
-@RequestMapping("api/v2/accounts")
+@RequestMapping("api/v3/accounts")
 public class AccountController {
 
     private final ImageService imageService;
