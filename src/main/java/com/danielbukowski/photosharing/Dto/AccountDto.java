@@ -1,6 +1,7 @@
 package com.danielbukowski.photosharing.Dto;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 
@@ -18,6 +19,7 @@ public record AccountDto (
         String biography,
         boolean isEmailVerified,
         @JsonInclude(JsonInclude.Include.NON_NULL)
+        @JsonFormat(pattern="yyyy-MM-dd HH:mm")
         LocalDateTime accountVerifiedAt,
         int numberOfUploadedImages,
         boolean isLocked,
