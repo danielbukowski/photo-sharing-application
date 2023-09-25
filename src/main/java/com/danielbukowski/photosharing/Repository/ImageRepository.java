@@ -2,11 +2,14 @@ package com.danielbukowski.photosharing.Repository;
 
 import com.danielbukowski.photosharing.Entity.Image;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -37,4 +40,11 @@ public interface ImageRepository extends JpaRepository<Image, UUID> {
     )
     void deleteByImageIdAndAccountId(UUID imageId, UUID accountId);
 
+    @Query(
+            "SELECT i FROM Image i " +
+            "WHERE i.account.id = :accountId"
+    )
+    List<Image> getImagesByAccountId(UUID accountId);
+
+    Page<Image> getAllImagesByAccountId(Pageable pageable, UUID accountId);
 }

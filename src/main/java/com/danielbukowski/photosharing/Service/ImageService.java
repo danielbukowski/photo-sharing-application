@@ -128,7 +128,7 @@ public class ImageService {
     }
 
     public SimplePageResponse<UUID> getIdsOfLatestImagesFromAccount(Integer pageNumber, Account account) {
-        var pageOfImages = imageRepository.findAllByAccountId(
+        var pageOfImages = imageRepository.getAllImagesByAccountId(
                 PageRequest.of(
                         pageNumber,
                         PAGE_SIZE,

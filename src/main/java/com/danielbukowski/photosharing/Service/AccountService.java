@@ -115,7 +115,7 @@ public class AccountService {
                 .roles(roles)
                 .permissions(permissions)
                 .isEmailVerified(account.isEmailVerified())
-                .numberOfUploadedImages(imageRepository.findByAccountId(account.getId()).get().size())
+                .numberOfUploadedImages(imageRepository.getImagesByAccountId(account.getId()).size())
                 .isLocked(account.isLocked());
 
         for (GrantedAuthority authority : account.getAuthorities()) {
