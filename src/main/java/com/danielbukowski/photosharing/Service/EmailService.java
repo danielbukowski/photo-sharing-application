@@ -72,4 +72,51 @@ public class EmailService {
         }
     }
 
+    public void sendEmailWithResetPasswordToken(String emailTo, UUID resetPasswordToken, String nickname) {
+        String text = """
+                Hi %s!<br><br>
+                                
+                You have request a password reset.<br>
+                This is your password reset token: "%s"<br><br>
+                                
+                Best regards,
+                XYZ
+                """.formatted(nickname, resetPasswordToken);
+        try {
+            MimeMessage mimeMessage = emailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+            helper.setTo(emailTo);
+            helper.setSubject("Your password reset token is here");
+            helper.setText(text, true);
+
+            emailSender.send(mimeMessage);
+        } catch (MessagingException e) {
+            log.error("failed to send an email for completed registration", e);
+            throw new RuntimeException("failed to send an email");
+        }
+    }
+
+    public void sendPasswordResetNotification(String emailTo, String nickname) {
+        String text = """
+                Hi %s!<br><br>
+                                
+                Your password has been changed by the password reset token<br><br>
+                                
+                Best regards,
+                XYZ
+                """.formatted(nickname);
+        try {
+            MimeMessage mimeMessage = emailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+            helper.setTo(emailTo);
+            helper.setSubject("Your password has changed");
+            helper.setText(text, true);
+
+            emailSender.send(mimeMessage);
+        } catch (MessagingException e) {
+            log.error("failed to send an email for completed registration", e);
+            throw new RuntimeException("failed to send an email");
+        }
+    }
+
 }
