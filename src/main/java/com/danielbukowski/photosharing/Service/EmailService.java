@@ -18,22 +18,18 @@ import java.util.UUID;
 @AllArgsConstructor
 public class EmailService {
 
-    private static final String HOST = "http://localhost:8080";
     private final JavaMailSender emailSender;
 
     @Async
-    public void sendEmailVerificationMessage(String emailTo, UUID verificationToken) {
-        //The link doesn't because the browser sends a GET request
-        //Just copy the link and send a POST request via Postman
-        String link = HOST + "/api/v2/accounts/email-verification?token=" + verificationToken;
+    public void sendEmailVerificationMessage(String emailTo,  String nickname, UUID verificationToken) {
         String text = """
-                Hi %s!<br>
+                Hi %s!<br><br>
                                 
-                <a href=\"%s\">Click here</a> to complete your registration<br>
-                
+                This is your verification token: "%s" to complete your registration<br><br>
+                                
                 Best regards,
                 XYZ
-                """.formatted(emailTo.split("@")[0], link);
+                """.formatted(nickname, verificationToken);
         try {
             MimeMessage mimeMessage = emailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
@@ -49,15 +45,15 @@ public class EmailService {
     }
 
     @Async
-    public void sendEmailForCompletedRegistration(String emailTo) {
+    public void sendEmailForCompletedRegistration(String emailTo, String nickname) {
         String text = """
-                Hi %s!<br>
-                
-                Your registration has been successful<br>
-                
+                Hi %s!<br><br>
+                                
+                Your registration has been successful<br><br>
+                                
                 Best regards,
                 XYZ
-                """.formatted(emailTo.split("@")[0]);
+                """.formatted(nickname);
         try {
             MimeMessage mimeMessage = emailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
@@ -72,7 +68,7 @@ public class EmailService {
         }
     }
 
-    public void sendEmailWithResetPasswordToken(String emailTo, UUID resetPasswordToken, String nickname) {
+    public void sendEmailWithResetPasswordToken(String emailTo, String nickname, UUID resetPasswordToken) {
         String text = """
                 Hi %s!<br><br>
                                 

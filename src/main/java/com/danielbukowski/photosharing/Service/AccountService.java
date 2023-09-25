@@ -31,6 +31,7 @@ public class AccountService {
     private final RoleRepository roleRepository;
     private final EmailService emailService;
     private final EmailVerificationTokenService emailVerificationTokenService;
+    private final EmailVerificationTokenRepository emailVerificationTokenRepository;
 
     @Transactional
     public UUID createAccount(AccountRegisterRequest accountRegisterRequest) {
@@ -49,8 +50,11 @@ public class AccountService {
         Account savedAccount = accountRepository.save(accountToSave);
 
         var emailVerificationToken = emailVerificationTokenService.createEmailVerificationTokenToAccount(savedAccount);
-        emailService.sendEmailVerificationMessage(accountRegisterRequest.email(), emailVerificationToken);
-
+        emailService.sendEmailVerificationMessage(
+                accountRegisterRequest.email(),
+                accountRegisterRequest.nickname(),
+                emailVerificationToken
+        );
         return savedAccount.getId();
     }
 

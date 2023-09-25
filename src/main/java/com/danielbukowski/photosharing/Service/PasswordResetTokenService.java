@@ -44,9 +44,11 @@ public class PasswordResetTokenService {
                         .build()
         );
 
-        emailService.sendEmailWithResetPasswordToken(account.getEmail(),
-                savedToken.getId(),
-                account.getNickname()
+        emailService.sendEmailWithResetPasswordToken(
+                account.getEmail(),
+                account.getNickname(),
+                savedToken.getId()
+
         );
     }
 

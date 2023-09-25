@@ -48,7 +48,11 @@ public class EmailVerificationTokenService {
             throw new InvalidTokenException("This token has already expired");
 
         accountFromToken.setEmailVerified(true);
-        emailService.sendEmailForCompletedRegistration(accountFromToken.getEmail());
+        emailVerificationToken.setVerifiedAt(LocalDateTime.now(clock));
+        emailService.sendEmailForCompletedRegistration(
+                accountFromToken.getEmail(),
+                accountFromToken.getNickname()
+        );
     }
 
     @Transactional
@@ -60,6 +64,10 @@ public class EmailVerificationTokenService {
                 .ifPresent(emailVerificationTokenRepository::delete);
 
         var token = createEmailVerificationTokenToAccount(account);
-        emailService.sendEmailVerificationMessage(account.getEmail(), token);
+        emailService.sendEmailVerificationMessage(
+                account.getEmail(),
+                account.getNickname(),
+                token
+        );
     }
 }
