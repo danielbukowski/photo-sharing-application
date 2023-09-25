@@ -93,10 +93,8 @@ public class AccountController {
     @PatchMapping("/password")
     @PreAuthorize("hasAuthority('USER:UPDATE')")
     public ResponseEntity<?> changeAccountPassword(@AuthenticationPrincipal Account account,
-                                                   @Valid @RequestBody(required = false) PasswordChangeRequest passwordChangeRequest,
-                                                   HttpServletRequest request) {
+                                                   @Valid @RequestBody(required = false) PasswordChangeRequest passwordChangeRequest) {
         accountService.changeAccountPassword(account, passwordChangeRequest);
-        request.getSession().invalidate();
         return ResponseEntity
                 .noContent()
                 .build();
