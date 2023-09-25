@@ -70,7 +70,7 @@ public class S3Service {
                             .build()
             );
         } catch (S3Exception e) {
-            log.error("Could not delete an image with id {}", imageId);
+            log.error("Could not delete an image with id {}", imageId, e);
             throw S3Exception
                     .builder()
                     .message("Could not delete an image")
@@ -104,7 +104,7 @@ public class S3Service {
                             .build()
             );
         } catch (S3Exception e) {
-            log.error("Could not save all images from an account with id {}", accountId);
+            log.error("Could not save all images from an account with id {}", accountId, e);
             throw S3Exception
                     .builder()
                     .message("Could not delete images")
