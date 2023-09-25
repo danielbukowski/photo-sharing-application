@@ -38,6 +38,7 @@ public class ImageController {
     }
 
     @PostMapping("/{imageId}/comments")
+    @PreAuthorize("hasAuthority('USER:CREATE')")
     public ResponseEntity<?> saveCommentToImage(@AuthenticationPrincipal Account account,
                                                 @PathVariable UUID imageId,
                                                 @Valid @RequestBody NewCommentRequest newCommentRequest) {
@@ -71,6 +72,7 @@ public class ImageController {
     }
 
     @PostMapping("/{imageId}/likes")
+    @PreAuthorize("hasAuthority('USER:UPDATE')")
     public ResponseEntity<?> addLikeToImage(@AuthenticationPrincipal Account account,
                                             @PathVariable UUID imageId) {
         imageService.addLikeToImage(imageId, account);
@@ -95,6 +97,7 @@ public class ImageController {
     }
 
     @DeleteMapping("/{imageId}/likes")
+    @PreAuthorize("hasAuthority('USER:DELETE')")
     public ResponseEntity<?> removeLikeFromImage(@AuthenticationPrincipal Account account,
                                                  @PathVariable UUID imageId) {
         imageService.removeLikeFromImage(imageId, account);
