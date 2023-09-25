@@ -2,6 +2,7 @@ package com.danielbukowski.photosharing.Service;
 
 import com.danielbukowski.photosharing.Dto.AccountDto;
 import com.danielbukowski.photosharing.Dto.AccountRegisterRequest;
+import com.danielbukowski.photosharing.Dto.AccountUpdateRequest;
 import com.danielbukowski.photosharing.Dto.PasswordChangeRequest;
 import com.danielbukowski.photosharing.Entity.Account;
 import com.danielbukowski.photosharing.Exception.AccountAlreadyExistsException;
@@ -124,6 +125,12 @@ public class AccountService {
         }
 
         return accountDetails.build();
+    }
+
+    @Transactional
+    public void updateAccount(Account account, AccountUpdateRequest accountUpdateRequest) {
+        account.setNickname(accountUpdateRequest.nickname());
+        account.setBiography(accountUpdateRequest.biography());
     }
 
 }
