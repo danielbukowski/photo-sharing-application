@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(
             {AccountAlreadyExistsException.class,
             InvalidPasswordException.class,
-            BadVerificationTokenException.class,
+            InvalidTokenException.class,
             S3Exception.class,
             ImageException.class}
     )

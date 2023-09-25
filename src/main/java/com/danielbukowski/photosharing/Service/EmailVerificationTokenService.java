@@ -2,7 +2,7 @@ package com.danielbukowski.photosharing.Service;
 
 import com.danielbukowski.photosharing.Entity.Account;
 import com.danielbukowski.photosharing.Entity.EmailVerificationToken;
-import com.danielbukowski.photosharing.Exception.BadVerificationTokenException;
+import com.danielbukowski.photosharing.Exception.InvalidTokenException;
 import com.danielbukowski.photosharing.Repository.AccountRepository;
 import com.danielbukowski.photosharing.Repository.EmailVerificationTokenRepository;
 import lombok.AllArgsConstructor;
@@ -34,18 +34,18 @@ public class EmailVerificationTokenService {
     }
 
     @Transactional
-    public void verifyEmailVerificationToken(UUID token) {
-        var emailVerificationToken = emailVerificationTokenRepository.findById(token)
+    public void verifyEmailVerificationToken(UUID emailVerificationTokenId) {
+        var emailVerificationToken = emailVerificationTokenRepository.findById(emailVerificationTokenId)
                 .orElseThrow(
-                        () -> new BadVerificationTokenException("Invalid email verification token")
+                        () -> new InvalidTokenException("Invalid email verification token")
                 );
         var accountFromToken = emailVerificationToken.getAccount();
 
         if (accountFromToken.isEmailVerified())
-            throw new BadVerificationTokenException("An account has been already verified");
+            throw new InvalidTokenException("An account has been already verified");
 
         if (emailVerificationToken.getExpirationDate().isBefore(LocalDateTime.now(clock)))
-            throw new BadVerificationTokenException("This token has already expired");
+            throw new InvalidTokenException("This token has already expired");
 
         accountFromToken.setEmailVerified(true);
         emailService.sendEmailForCompletedRegistration(accountFromToken.getEmail());
@@ -54,7 +54,7 @@ public class EmailVerificationTokenService {
     @Transactional
     public void resendEmailVerificationToken(Account account) {
         if (accountRepository.isAccountEmailVerified(account.getEmail()))
-            throw new BadVerificationTokenException("An account has been already verified");
+            throw new InvalidTokenException("An account has been already verified");
 
         emailVerificationTokenRepository.findByAccountId(account.getId())
                 .ifPresent(emailVerificationTokenRepository::delete);
