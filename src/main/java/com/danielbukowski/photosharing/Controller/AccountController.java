@@ -42,7 +42,7 @@ public class AccountController {
     @PutMapping
     @PreAuthorize("hasAuthority('USER:UPDATE')")
     public ResponseEntity<?> updateAccount(@AuthenticationPrincipal Account account,
-                                           @RequestBody(required = false) @Valid AccountUpdateRequest accountUpdateRequest) {
+                                           @RequestBody @Valid AccountUpdateRequest accountUpdateRequest) {
         accountService.updateAccount(account, accountUpdateRequest);
         return ResponseEntity
                 .noContent()
@@ -50,7 +50,7 @@ public class AccountController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createAccount(@RequestBody(required = false) @Valid AccountRegisterRequest accountRegisterRequest) {
+    public ResponseEntity<?> createAccount(@RequestBody @Valid AccountRegisterRequest accountRegisterRequest) {
         UUID accountId = accountService.createAccount(accountRegisterRequest);
         return ResponseEntity
                 .created(
@@ -92,7 +92,7 @@ public class AccountController {
     @PatchMapping("/password")
     @PreAuthorize("hasAuthority('USER:UPDATE')")
     public ResponseEntity<?> changeAccountPassword(@AuthenticationPrincipal Account account,
-                                                   @Valid @RequestBody(required = false) PasswordChangeRequest passwordChangeRequest) {
+                                                   @Valid @RequestBody PasswordChangeRequest passwordChangeRequest) {
         accountService.changeAccountPassword(account, passwordChangeRequest);
         return ResponseEntity
                 .noContent()
@@ -112,8 +112,8 @@ public class AccountController {
     @PostMapping("/images")
     @PreAuthorize("hasAuthority('USER:CREATE')")
     public ResponseEntity<?> saveImageToAccount(@AuthenticationPrincipal Account account,
-                                                @RequestPart(required = false) @Valid @Image MultipartFile image,
-                                                @RequestPart(required = false) @Valid ImagePropertiesRequest imageProperties) {
+                                                @RequestPart @Valid @Image MultipartFile image,
+                                                @RequestPart @Valid ImagePropertiesRequest imageProperties) {
         UUID imageId = imageService.saveImageToAccount(image, account, imageProperties);
         return ResponseEntity
                 .created(
@@ -136,7 +136,7 @@ public class AccountController {
     }
 
     @PostMapping("/password-reset")
-    public ResponseEntity<?> createResetPasswordToken(@RequestBody(required = false) @Valid PasswordResetRequest passwordResetRequest) {
+    public ResponseEntity<?> createResetPasswordToken(@RequestBody @Valid PasswordResetRequest passwordResetRequest) {
         passwordResetTokenService.createPasswordResetToken(passwordResetRequest);
         return ResponseEntity
                 .noContent()
@@ -145,7 +145,7 @@ public class AccountController {
 
     @PutMapping("/password-reset")
     public ResponseEntity<?> changePasswordByPasswordResetTokenId(@RequestParam UUID token,
-                                                                  @RequestBody(required = false) @Valid PasswordChangeRequest passwordChangeRequest) {
+                                                                  @RequestBody @Valid PasswordChangeRequest passwordChangeRequest) {
         passwordResetTokenService.changePasswordByPasswordResetTokenId(token, passwordChangeRequest);
         return ResponseEntity
                 .noContent()
