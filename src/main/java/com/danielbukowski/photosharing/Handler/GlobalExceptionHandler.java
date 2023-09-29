@@ -7,10 +7,14 @@ import com.danielbukowski.photosharing.Exception.*;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 
@@ -35,6 +39,54 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(
                 responseBody,
                 HttpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<?> handleMissingServletRequestParameterException(MissingServletRequestParameterException ex) {
+        var responseBody = ExceptionResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .reason("Required request parameter is missing.")
+                .path(ServletUriComponentsBuilder.fromCurrentRequest().toUriString())
+                .build();
+
+        return new ResponseEntity<>(
+                responseBody,
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<?> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex) {
+        var responseBody = ExceptionResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .reason(ex.getMessage().split(";")[1])
+                .path(ServletUriComponentsBuilder.fromCurrentRequest().toUriString())
+                .build();
+
+        return new ResponseEntity<>(
+                responseBody,
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @ExceptionHandler(
+            {HttpMessageNotReadableException.class,
+            MissingServletRequestPartException.class}
+    )
+    public ResponseEntity<?> handleRequestBodyExceptions(HttpMessageNotReadableException ex) {
+        var responseBody = ExceptionResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .reason("Required request body is missing.")
+                .path(ServletUriComponentsBuilder.fromCurrentRequest().toUriString())
+                .build();
+
+        return new ResponseEntity<>(
+                responseBody,
+                HttpStatus.BAD_REQUEST
         );
     }
 
