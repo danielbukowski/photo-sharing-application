@@ -58,6 +58,7 @@ class AccountControllerIT {
     @MockBean
     private EmailVerificationTokenService emailVerificationTokenService;
 
+    @Test
     public void GetAccount_UserIsNotAuthenticated_Returns401HttpStatusCode() throws Exception {
         //when
         mockMvc.perform(get("/api/v3/accounts"))
@@ -104,8 +105,13 @@ class AccountControllerIT {
     @Test
     @WithUserDetails("userNotEmailVerified")
     public void UpdateAccount_UserIsNotEmailVerified_Returns403HttpStatusCode() throws Exception {
+        //given
+        AccountUpdateRequest accountUpdateRequest = new AccountUpdateRequest("dddd", "");
+
         //when
         mockMvc.perform(put("/api/v3/accounts")
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(accountUpdateRequest))
                 )
                 //then
                 .andExpect(status().is(403));
@@ -270,7 +276,9 @@ class AccountControllerIT {
     @Test
     void DeleteAccount_UserIsNotAuthenticated_Returns401HttpStatusCode() throws Exception {
         //when
-        mockMvc.perform(delete("/api/v3/accounts"))
+        mockMvc.perform(delete("/api/v3/accounts")
+//                        .with(csrf())
+                )
                 //then
                 .andExpect(status().is(401));
     }
@@ -313,8 +321,13 @@ class AccountControllerIT {
     @Test
     @WithUserDetails("userNotEmailVerified")
     void ChangeAccountPassword_UserNotIsEmailVerified_Returns403HttpStatusCode() throws Exception {
+        //given
+        PasswordChangeRequest passwordChangeRequest = new PasswordChangeRequest("0lDp@sswor3", "nN3wDp@sswor3");
+
         //when
-        mockMvc.perform(patch("/api/v3/accounts/password"))
+        mockMvc.perform(patch("/api/v3/accounts/password")
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(passwordChangeRequest)))
                 //then
                 .andExpect(status().is(403));
     }
@@ -407,8 +420,30 @@ class AccountControllerIT {
 
     @Test
     void SaveImageToAccount_UserIsNotAuthenticated_Returns401HttpStatusCode() throws Exception {
+        //given
+        MockMultipartFile image = new MockMultipartFile(
+                "image",
+                "myimage.jpeg",
+                IMAGE_JPEG_VALUE,
+                new byte[]{-1, -40}
+        );
+        ImagePropertiesRequest imageProperties = new ImagePropertiesRequest(
+                true,
+                "image"
+        );
+        MockMultipartFile jsonImageProperties = new MockMultipartFile("imageProperties",
+                "imageProperties",
+                "application/json",
+                objectMapper.writeValueAsBytes(imageProperties));
+
+        given(imageService.saveImageToAccount(eq(image), any(Account.class), eq(imageProperties)))
+                .willReturn(new UUID(1, 1));
+
         //when
-        mockMvc.perform(post("/api/v3/accounts/images"))
+        mockMvc.perform(multipart("/api/v3/accounts/images")
+                        .file(image)
+                        .file(jsonImageProperties)
+                )
                 //then
                 .andExpect(status().is(401));
     }
@@ -416,8 +451,30 @@ class AccountControllerIT {
     @Test
     @WithUserDetails("userNotEmailVerified")
     void SaveImageToAccount_UserIsNotEmailVerified_Returns403HttpStatusCode() throws Exception {
+        //given
+        MockMultipartFile image = new MockMultipartFile(
+                "image",
+                "myimage.jpeg",
+                IMAGE_JPEG_VALUE,
+                new byte[]{-1, -40}
+        );
+        ImagePropertiesRequest imageProperties = new ImagePropertiesRequest(
+                true,
+                "image"
+        );
+        MockMultipartFile jsonImageProperties = new MockMultipartFile("imageProperties",
+                "imageProperties",
+                "application/json",
+                objectMapper.writeValueAsBytes(imageProperties));
+
+        given(imageService.saveImageToAccount(eq(image), any(Account.class), eq(imageProperties)))
+                .willReturn(new UUID(1, 1));
+
         //when
-        mockMvc.perform(post("/api/v3/accounts/images"))
+        mockMvc.perform(multipart("/api/v3/accounts/images")
+                        .file(image)
+                        .file(jsonImageProperties)
+                )
                 //then
                 .andExpect(status().is(403));
     }
@@ -501,8 +558,7 @@ class AccountControllerIT {
         mockMvc.perform(multipart("/api/v3/accounts/images")
                 )
                 //then
-                .andExpect(status().is(400))
-                .andExpect(result -> System.out.println(result.getResponse().getContentAsString()));
+                .andExpect(status().is(400));
     }
 
     @Test
