@@ -12,7 +12,7 @@ class AccountMapperTest {
     private final AccountMapper accountMapper = new AccountMapper();
 
     @Test
-    void FromAccountToAccountDto_MappedFieldsAreTheSame_ReturnsEqualObject() {
+    void FromAccountToAccountDto_MapsObject_ReturnsEqualObject() {
         //given
         var account = Account.builder()
                 .email(faker.internet().emailAddress())
