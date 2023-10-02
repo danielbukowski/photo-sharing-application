@@ -2,7 +2,7 @@ package com.danielbukowski.photosharing.Service;
 
 import com.danielbukowski.photosharing.Entity.Account;
 import com.danielbukowski.photosharing.Entity.EmailVerificationToken;
-import com.danielbukowski.photosharing.Exception.BadVerificationTokenException;
+import com.danielbukowski.photosharing.Exception.InvalidTokenException;
 import com.danielbukowski.photosharing.Repository.AccountRepository;
 import com.danielbukowski.photosharing.Repository.EmailVerificationTokenRepository;
 import org.junit.jupiter.api.Test;
@@ -20,6 +20,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 
@@ -48,7 +49,7 @@ class EmailVerificationTokenServiceTest {
     );
 
     @Test
-    public void VerifyEmailVerificationToken_TokenDoesNotExist_ThrowsException() {
+    void VerifyEmailVerificationToken_TokenDoesNotExist_ThrowsException() {
         //given
         var token = new UUID(1, 1);
         given(emailVerificationTokenRepository.findById(token))
@@ -56,7 +57,7 @@ class EmailVerificationTokenServiceTest {
 
         //when
         var expectedException = assertThrows(
-                BadVerificationTokenException.class,
+                InvalidTokenException.class,
                 () -> emailVerificationTokenService.verifyEmailVerificationToken(token)
         );
 
@@ -65,7 +66,7 @@ class EmailVerificationTokenServiceTest {
     }
 
     @Test
-    public void VerifyEmailVerificationToken_AccountIsAlreadyVerified_ThrowsException() {
+    void VerifyEmailVerificationToken_AccountIsAlreadyVerified_ThrowsException() {
         //given
         var token = new UUID(1, 1);
         var account = Account.builder()
@@ -78,7 +79,7 @@ class EmailVerificationTokenServiceTest {
 
         //when
         var expectedException = assertThrows(
-                BadVerificationTokenException.class,
+                InvalidTokenException.class,
                 () -> emailVerificationTokenService.verifyEmailVerificationToken(token)
         );
 
@@ -87,7 +88,7 @@ class EmailVerificationTokenServiceTest {
     }
 
     @Test
-    public void VerifyEmailVerificationToken_TokenIsExpired_ThrowsException() {
+    void VerifyEmailVerificationToken_TokenIsExpired_ThrowsException() {
         //given
         given(clock.instant()).willReturn(now.toInstant());
         given(clock.getZone()).willReturn(now.getZone());
@@ -103,7 +104,7 @@ class EmailVerificationTokenServiceTest {
 
         //when
         var expectedException = assertThrows(
-                BadVerificationTokenException.class,
+                InvalidTokenException.class,
                 () -> emailVerificationTokenService.verifyEmailVerificationToken(token)
         );
 
@@ -112,13 +113,14 @@ class EmailVerificationTokenServiceTest {
     }
 
     @Test
-    public void VerifyEmailVerificationToken_TokenExpirationEqualsToCurrentTime_VerifiesAccount() {
+    void VerifyEmailVerificationToken_TokenExpirationEqualsToCurrentTime_VerifiesAccount() {
         //given
         given(clock.instant()).willReturn(now.toInstant());
         given(clock.getZone()).willReturn(now.getZone());
         var token = new UUID(1, 1);
         var account = Account.builder()
                 .email("myemail@gmail.com")
+                .nickname("c00l3")
                 .isEmailVerified(false)
                 .build();
         var emailVerificationToken = EmailVerificationToken.builder()
@@ -133,11 +135,14 @@ class EmailVerificationTokenServiceTest {
 
         //then
         assertTrue(account.isEmailVerified());
-        Mockito.verify(emailService, times(1)).sendEmailForCompletedRegistration(Mockito.anyString());
+        Mockito.verify(emailService, times(1)).sendEmailForCompletedRegistration(
+                anyString(),
+                anyString()
+        );
     }
 
     @Test
-    public void VerifyEmailVerificationToken_AccountIsNotVerifiedAndTokenIsNotExpired_VerifiesAccount() {
+    void VerifyEmailVerificationToken_AccountIsNotVerifiedAndTokenIsNotExpired_VerifiesAccount() {
         //given
         given(clock.instant()).willReturn(now.toInstant());
         given(clock.getZone()).willReturn(now.getZone());
@@ -145,6 +150,7 @@ class EmailVerificationTokenServiceTest {
         var account = Account.builder()
                 .email("myemail@gmail.com")
                 .isEmailVerified(false)
+                .nickname("co00l")
                 .build();
         var emailVerificationToken = EmailVerificationToken.builder()
                 .account(account)
@@ -158,11 +164,15 @@ class EmailVerificationTokenServiceTest {
 
         //then
         assertTrue(account.isEmailVerified());
-        Mockito.verify(emailService, times(1)).sendEmailForCompletedRegistration(Mockito.anyString());
+        Mockito.verify(emailService, times(1))
+                .sendEmailForCompletedRegistration(
+                anyString(),
+                        anyString()
+        );
     }
 
     @Test
-    public void ResendEmailVerificationToken_AccountIsAlreadyVerified_ThrowsException() {
+    void ResendEmailVerificationToken_AccountIsAlreadyVerified_ThrowsException() {
         //given
         var account = com.danielbukowski.photosharing.Entity.Account.builder()
                 .email("myemail@gmail.com")
@@ -172,7 +182,7 @@ class EmailVerificationTokenServiceTest {
 
         //when
         var actualException = assertThrows(
-                BadVerificationTokenException.class,
+                InvalidTokenException.class,
                 () -> emailVerificationTokenService.resendEmailVerificationToken(account)
         );
         //then
@@ -180,12 +190,13 @@ class EmailVerificationTokenServiceTest {
     }
 
     @Test
-    public void ResendEmailVerificationToken_AccountIsNotVerified_ResendsEmail() {
+    void ResendEmailVerificationToken_AccountIsNotVerified_ResendsEmail() {
         //given
         given(clock.instant()).willReturn(now.toInstant());
         given(clock.getZone()).willReturn(now.getZone());
         var account = com.danielbukowski.photosharing.Entity.Account.builder()
                 .email("myemail@gmail.com")
+                .nickname("c00l3")
                 .build();
         given(emailVerificationTokenRepository.save(any(EmailVerificationToken.class)))
                 .willReturn(EmailVerificationToken.builder()
@@ -199,7 +210,11 @@ class EmailVerificationTokenServiceTest {
         emailVerificationTokenService.resendEmailVerificationToken(account);
 
         //then
-        Mockito.verify(emailService, times(1)).sendEmailVerificationMessage("myemail@gmail.com", (new UUID(2, 2)));
+        Mockito.verify(emailService, times(1)).sendEmailForEmailVerification(
+                anyString(),
+                anyString(),
+                Mockito.any(UUID.class)
+                );
     }
 
 }

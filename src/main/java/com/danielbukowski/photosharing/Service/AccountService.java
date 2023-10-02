@@ -73,16 +73,16 @@ public class AccountService {
     @Transactional
     public void changeAccountPassword(Account account, PasswordChangeRequest passwordChangeRequest) {
         log.info("Changing an account password with an email {}", account.getEmail());
-        String oldEncodedPassword = account.getPassword();
-        String newPassword = passwordChangeRequest.newPassword();
+        String oldPasswordFromAccount = account.getPassword();
+        String newPasswordFromRequest = passwordChangeRequest.newPassword();
 
-        if (!passwordEncoder.matches(oldEncodedPassword, passwordChangeRequest.oldPassword()))
+        if (!passwordEncoder.matches(oldPasswordFromAccount, passwordChangeRequest.oldPassword()))
             throw new InvalidPasswordException("The old password does not match the account password");
 
-        if (passwordEncoder.matches(newPassword, oldEncodedPassword))
+        if (passwordEncoder.matches(oldPasswordFromAccount, newPasswordFromRequest))
             throw new InvalidPasswordException(PASSWORD_SHOULD_NOT_BE_THE_SAME.getMessage());
 
-        accountRepository.updatePasswordById(passwordEncoder.encode(newPassword), account.getId());
+        accountRepository.updatePasswordById(passwordEncoder.encode(newPasswordFromRequest), account.getId());
     }
 
     public AccountDto getAccountDetails(Account account) {

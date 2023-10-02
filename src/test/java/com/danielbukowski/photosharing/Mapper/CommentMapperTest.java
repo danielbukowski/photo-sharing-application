@@ -11,7 +11,7 @@ class CommentMapperTest {
     private final CommentMapper commentMapper = new CommentMapper();
 
     @Test
-    public void FromCommentToCommentDto_MapsObject_ReturnsEqualObject() {
+    void FromCommentToCommentDto_MapsObject_ReturnsEqualObject() {
         //given
         var comment = Comment.builder()
                 .content("awesome")

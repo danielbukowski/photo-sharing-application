@@ -262,7 +262,7 @@ class ImageControllerIT {
     }
 
     @Test
-    public void AddLikeToImage_AccountIsNotAuthenticated_Returns401HttpStatusCode() throws Exception {
+    void AddLikeToImage_AccountIsNotAuthenticated_Returns401HttpStatusCode() throws Exception {
         //given
         var imageId = new UUID(4,4);
 
@@ -274,7 +274,7 @@ class ImageControllerIT {
 
     @Test
     @WithUserDetails("userNotEmailVerified")
-    public void AddLikeToImage_AccountIsNotEmailVerified_Returns403HttpStatusCode() throws Exception {
+    void AddLikeToImage_AccountIsNotEmailVerified_Returns403HttpStatusCode() throws Exception {
         //given
         var imageId = new UUID(4,4);
 
@@ -286,7 +286,7 @@ class ImageControllerIT {
 
     @Test
     @WithUserDetails("userEmailVerified")
-    public void AddLikeToImage_AccountIsEmailVerified_Returns201HttpStatusCode() throws Exception {
+    void AddLikeToImage_AccountIsEmailVerified_Returns201HttpStatusCode() throws Exception {
         //given
         var imageId = new UUID(4,4);
 
@@ -298,7 +298,7 @@ class ImageControllerIT {
 
     @Test
     @WithUserDetails("userEmailVerified")
-    public void AddLikeToImage_ImageIdIsString_Returns400HttpStatusCode() throws Exception {
+    void AddLikeToImage_ImageIdIsString_Returns400HttpStatusCode() throws Exception {
         //given
         var imageId = "I like uuids";
 
@@ -309,7 +309,7 @@ class ImageControllerIT {
     }
 
     @Test
-    public void getNumberOfLikesFromImage_AccountIsNotAuthenticated_Returns200HttpStatusCode() throws Exception {
+    void getNumberOfLikesFromImage_AccountIsNotAuthenticated_Returns200HttpStatusCode() throws Exception {
         //given
         var imageId = new UUID(4,4);
 
@@ -320,7 +320,7 @@ class ImageControllerIT {
     }
 
     @Test
-    public void getNumberOfLikesFromImage_ImageIdIsMissing_Returns400HttpStatusCode() throws Exception {
+    void getNumberOfLikesFromImage_ImageIdIsMissing_Returns400HttpStatusCode() throws Exception {
         //when
         mockMvc.perform(get("/api/v1/images/{imageId}/likes", ""))
                 //then
@@ -328,7 +328,7 @@ class ImageControllerIT {
     }
 
     @Test
-    public void RemoveLikeFromImage_UserIsNotAuthenticated_Returns401HttpStatusCode() throws Exception {
+    void RemoveLikeFromImage_UserIsNotAuthenticated_Returns401HttpStatusCode() throws Exception {
         //given
         var imageId = new UUID(4,4);
 
@@ -340,7 +340,7 @@ class ImageControllerIT {
 
     @Test
     @WithUserDetails("userNotEmailVerified")
-    public void RemoveLikeFromImage_UserIsNotEmailVerified_Returns403HttpStatusCode() throws Exception {
+    void RemoveLikeFromImage_UserIsNotEmailVerified_Returns403HttpStatusCode() throws Exception {
         //given
         var imageId = new UUID(4,4);
 
@@ -352,7 +352,7 @@ class ImageControllerIT {
 
     @Test
     @WithUserDetails("userEmailVerified")
-    public void RemoveLikeFromImage_RemovesLike_Returns204HttpStatusCode() throws Exception {
+    void RemoveLikeFromImage_RemovesLike_Returns204HttpStatusCode() throws Exception {
         //given
         var imageId = new UUID(4,4);
 

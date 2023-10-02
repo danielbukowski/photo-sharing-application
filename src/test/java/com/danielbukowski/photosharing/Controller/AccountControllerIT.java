@@ -59,7 +59,7 @@ class AccountControllerIT {
     private EmailVerificationTokenService emailVerificationTokenService;
 
     @Test
-    public void GetAccount_UserIsNotAuthenticated_Returns401HttpStatusCode() throws Exception {
+    void GetAccount_UserIsNotAuthenticated_Returns401HttpStatusCode() throws Exception {
         //when
         mockMvc.perform(get("/api/v3/accounts"))
                 //then
@@ -68,7 +68,7 @@ class AccountControllerIT {
 
     @Test
     @WithUserDetails("userEmailVerified")
-    public void GetAccount_UserIsEmailVerified_Returns200HttpStatusCode() throws Exception {
+    void GetAccount_UserIsEmailVerified_Returns200HttpStatusCode() throws Exception {
         //when
         mockMvc.perform(get("/api/v3/accounts"))
                 //then
@@ -77,7 +77,7 @@ class AccountControllerIT {
 
     @Test
     @WithUserDetails("userNotEmailVerified")
-    public void GetAccount_UserIsNotEmailVerified_Returns200HttpStatusCode() throws Exception {
+    void GetAccount_UserIsNotEmailVerified_Returns200HttpStatusCode() throws Exception {
         //when
         mockMvc.perform(get("/api/v3/accounts"))
                 //then
@@ -85,7 +85,7 @@ class AccountControllerIT {
     }
 
     @Test
-    public void UpdateAccount_UserIsNotAuthenticated_Returns401HttpStatusCode() throws Exception {
+    void UpdateAccount_UserIsNotAuthenticated_Returns401HttpStatusCode() throws Exception {
         //when
         mockMvc.perform(put("/api/v3/accounts"))
                 //then
@@ -94,7 +94,7 @@ class AccountControllerIT {
 
     @Test
     @WithUserDetails("userEmailVerified")
-    public void UpdateAccount_UserIsEmailVerifiedAndBodyRequestIsEmpty_Returns400HttpStatusCode() throws Exception {
+    void UpdateAccount_UserIsEmailVerifiedAndBodyRequestIsEmpty_Returns400HttpStatusCode() throws Exception {
         //when
         mockMvc.perform(put("/api/v3/accounts")
                 )
@@ -104,7 +104,7 @@ class AccountControllerIT {
 
     @Test
     @WithUserDetails("userNotEmailVerified")
-    public void UpdateAccount_UserIsNotEmailVerified_Returns403HttpStatusCode() throws Exception {
+    void UpdateAccount_UserIsNotEmailVerified_Returns403HttpStatusCode() throws Exception {
         //given
         AccountUpdateRequest accountUpdateRequest = new AccountUpdateRequest("dddd", "");
 
@@ -119,7 +119,7 @@ class AccountControllerIT {
 
     @Test
     @WithUserDetails("userEmailVerified")
-    public void UpdateAccount_NicknameIsRequestBodyPassesValidation_Throws204HttpStatusCode() throws Exception {
+    void UpdateAccount_NicknameIsRequestBodyPassesValidation_Throws204HttpStatusCode() throws Exception {
         //given
         AccountUpdateRequest accountUpdateRequest = new AccountUpdateRequest("c00lNickn33me", "");
 
@@ -276,9 +276,7 @@ class AccountControllerIT {
     @Test
     void DeleteAccount_UserIsNotAuthenticated_Returns401HttpStatusCode() throws Exception {
         //when
-        mockMvc.perform(delete("/api/v3/accounts")
-//                        .with(csrf())
-                )
+        mockMvc.perform(delete("/api/v3/accounts"))
                 //then
                 .andExpect(status().is(401));
     }
