@@ -192,7 +192,7 @@ class ImageServiceTest {
     void GetIdsOfLatestImages_FindsSomeImages_ReturnsSimplePageResponse() {
         //given
         var pageNumber = Integer.valueOf(1);
-        given(imageRepository.findAll(any(PageRequest.class)))
+        given(imageRepository.findAllByIsPrivateFalse(any(PageRequest.class)))
                 .willReturn(
                         new PageImpl<>(List.of(
                                 Image.builder()
@@ -204,6 +204,29 @@ class ImageServiceTest {
         //when
         var actualSimplePageResponse = imageService.getIdsOfLatestImages(
                 pageNumber
+        );
+
+        //then
+        assertNotNull(actualSimplePageResponse);
+    }
+
+    @Test
+    void GetIdsOfLatestImagesFromAccount_FindsSomeImages_ReturnsSimplePageResponse() {
+        //given
+        var account = Account.builder().id(new UUID(4,4)).build();
+        var pageNumber = Integer.valueOf(1);
+        given(imageRepository.getAllImagesByAccountId(any(PageRequest.class), eq(account.getId())))
+                .willReturn(
+                        new PageImpl<>(List.of(
+                                Image.builder()
+                                        .id(new UUID(3, 3))
+                                        .build()
+                        ))
+                );
+
+        //when
+        var actualSimplePageResponse = imageService.getIdsOfLatestImagesFromAccount(
+                pageNumber, account
         );
 
         //then
