@@ -1,13 +1,16 @@
 package com.danielbukowski.photosharing.Service;
 
 import com.danielbukowski.photosharing.Dto.AccountRegisterRequest;
-import com.danielbukowski.photosharing.Dto.ChangePasswordRequest;
+import com.danielbukowski.photosharing.Dto.AccountUpdateRequest;
+import com.danielbukowski.photosharing.Dto.PasswordChangeRequest;
 import com.danielbukowski.photosharing.Entity.Account;
+import com.danielbukowski.photosharing.Entity.EmailVerificationToken;
 import com.danielbukowski.photosharing.Entity.Role;
 import com.danielbukowski.photosharing.Enum.ExceptionMessageResponse;
 import com.danielbukowski.photosharing.Exception.AccountAlreadyExistsException;
 import com.danielbukowski.photosharing.Exception.InvalidPasswordException;
 import com.danielbukowski.photosharing.Repository.AccountRepository;
+import com.danielbukowski.photosharing.Repository.EmailVerificationTokenRepository;
 import com.danielbukowski.photosharing.Repository.ImageRepository;
 import com.danielbukowski.photosharing.Repository.RoleRepository;
 import com.github.javafaker.Faker;
@@ -18,15 +21,19 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class AccountServiceTest {
@@ -48,12 +55,25 @@ class AccountServiceTest {
     private EmailService emailService;
     @Mock
     private EmailVerificationTokenService emailVerificationTokenService;
+    @Mock
+    private EmailVerificationTokenRepository emailVerificationTokenRepository;
+    private final ZonedDateTime now = ZonedDateTime.of(
+            2023,
+            6,
+            7,
+            21,
+            37,
+            0,
+            0,
+            ZoneId.of("GMT")
+    );
 
     @Test
     void CreateAccount_AccountAlreadyExists_ThrowsException() {
         //given
         var alreadyExistingEmailInDatabase = faker.internet().emailAddress();
-        var accountRegisterRequest = new AccountRegisterRequest(alreadyExistingEmailInDatabase
+        var accountRegisterRequest = new AccountRegisterRequest(alreadyExistingEmailInDatabase,
+                "nick"
                 , "password123");
         given(accountRepository.existsByEmailIgnoreCase(alreadyExistingEmailInDatabase))
                 .willReturn(true);
@@ -79,7 +99,9 @@ class AccountServiceTest {
         var role = new Role();
         role.setName("USER");
         var password = faker.internet().password();
-        var accountRegisterRequest = new AccountRegisterRequest(email, password);
+        var accountRegisterRequest = new AccountRegisterRequest(email,
+                "nick",
+                password);
         given(roleRepository.getByName("USER"))
                 .willReturn(role);
 
@@ -120,56 +142,110 @@ class AccountServiceTest {
     }
 
     @Test
-    void ChangeAccountPassword_PasswordsAreTheSame_ThrowsException() {
+    void ChangeAccountPassword_OldPasswordFromRequestIsNotMatchingOldPasswordFromAccount_ThrowsException() {
         //given
-        var account = Account.builder()
-                .password(faker.internet().password())
-                .email(faker.internet().emailAddress())
-                .build();
-        var changePasswordRequest = new ChangePasswordRequest(account.getPassword());
-        given(passwordEncoder.matches(
-                changePasswordRequest.newPassword(), account.getPassword())
-        ).willReturn(true);
+        var account = Account.builder().password("!L1keFood").build();
+        var passwordChangeRequest = new PasswordChangeRequest("IL!ke@nimals", "myN3wPass0rd!");
+
+        given(passwordEncoder.matches(account.getPassword(), passwordChangeRequest.oldPassword()))
+                .willReturn(false);
 
         //when
-        var actualException = assertThrowsExactly(
+        var actualException = assertThrows(
                 InvalidPasswordException.class,
-                () -> accountService.changeAccountPassword(account, changePasswordRequest)
+                () -> accountService.changeAccountPassword(account, passwordChangeRequest)
         );
 
         //then
-        assertEquals(
-                ExceptionMessageResponse.PASSWORD_SHOULD_NOT_BE_THE_SAME.getMessage(),
-                actualException.getMessage()
-        );
-        then(accountRepository).should(times(0))
-                .updatePasswordById(any(), any());
+        assertEquals("The old password does not match the account password", actualException.getMessage());
     }
 
     @Test
-    void ChangeAccountPassword_PasswordAreDifferent_ChangesAccountPassword() {
+    void ChangeAccountPassword_NewPasswordFromRequestIsTheSameAsOldPasswordFromAccount_ThrowsException() {
         //given
-        var account = Account.builder()
-                .id(new UUID(1, 1))
-                .password(faker.internet().password())
-                .email(faker.internet().emailAddress())
-                .build();
-        var changePasswordRequest = new ChangePasswordRequest(account.getPassword());
-        given(passwordEncoder.matches(changePasswordRequest.newPassword(),
-                account.getPassword())
-        ).willReturn(false);
-        given(passwordEncoder.encode(eq(account.getPassword()))
-        ).willReturn(account.getPassword());
+        var account = Account.builder().password("IL!ke@nimals").build();
+        var passwordChangeRequest = new PasswordChangeRequest("IL!ke@nimals", "IL!ke@nimals");
+        given(passwordEncoder.matches(account.getPassword(), passwordChangeRequest.oldPassword()))
+                .willReturn(true);
+
+        given(passwordEncoder.matches(account.getPassword(), passwordChangeRequest.newPassword()))
+                .willReturn(true);
 
         //when
-        assertDoesNotThrow(
-                () -> accountService.changeAccountPassword(account, changePasswordRequest)
+        var actualException = assertThrows(
+                InvalidPasswordException.class,
+                () -> accountService.changeAccountPassword(account, passwordChangeRequest)
         );
 
         //then
-        then(accountRepository).should(times(1))
-                .updatePasswordById(anyString(), any(UUID.class));
+        assertEquals(ExceptionMessageResponse.PASSWORD_SHOULD_NOT_BE_THE_SAME.getMessage(), actualException.getMessage());
     }
 
+    @Test
+    void ChangeAccountPassword_OldPasswordsAreTheSameAndNewPasswordIsDifferent_UpdatesPassword() {
+        //given
+        var account = Account.builder().password("myOldP4ss!").build();
+        var passwordChangeRequest = new PasswordChangeRequest("myOldP4ss!", "IL!ke@nimals");
+        given(passwordEncoder.matches(
+                account.getPassword(),
+                passwordChangeRequest.oldPassword()))
+                .willReturn(true);
+
+        given(passwordEncoder.matches(account.getPassword(), passwordChangeRequest.newPassword()))
+                .willReturn(false);
+
+        //when
+        accountService.changeAccountPassword(account, passwordChangeRequest);
+
+        //then
+        verify(accountRepository, times(1)).updatePasswordById(any(), any());
+    }
+
+    @Test
+    void GetAccountDetails_CallsTheMethod_ReturnsAccountDto() {
+        //given
+        var account = Account.builder()
+                .email("user1@gmail.com")
+                .password("password")
+                .id(new UUID(1, 1))
+                .isEmailVerified(true)
+                .isLocked(false)
+                .nickname("user1")
+                .roles(
+                        Set.of(
+                                Role.builder()
+                                        .name("USER")
+                                        .permissions("USER:READ,USER:CREATE,USER:UPDATE,USER:DELETE")
+                                        .build()
+                        )
+                )
+                .build();
+        given(emailVerificationTokenRepository.findByAccountId(account.getId()))
+                .willReturn(Optional.of(
+                        EmailVerificationToken.builder()
+                                .verifiedAt(now.toLocalDateTime())
+                                .build())
+                );
+
+        //when
+        var actualAccountDto = accountService.getAccountDetails(account);
+
+        //then
+        assertEquals(account.getEmail(), actualAccountDto.email());
+    }
+
+    @Test
+    void UpdateAccount_ChangesAccountField_ChecksChangedAccountFields() {
+        //given
+        var accountUpdateResult = new AccountUpdateRequest("fastRat3", ":)");
+        var account = Account.builder().build();
+
+        //when
+        accountService.updateAccount(account, accountUpdateResult);
+
+        //then
+        assertEquals(accountUpdateResult.nickname(), account.getNickname());
+        assertEquals(accountUpdateResult.biography(), account.getBiography());
+    }
 
 }
