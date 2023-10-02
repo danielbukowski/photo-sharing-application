@@ -1,5 +1,6 @@
 package com.danielbukowski.photosharing.Service;
 
+import com.danielbukowski.photosharing.Exception.EmailSenderException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.AllArgsConstructor;
@@ -18,22 +19,18 @@ import java.util.UUID;
 @AllArgsConstructor
 public class EmailService {
 
-    private static final String HOST = "http://localhost:8080";
     private final JavaMailSender emailSender;
 
     @Async
-    public void sendEmailVerificationMessage(String emailTo, UUID verificationToken) {
-        //The link doesn't because the browser sends a GET request
-        //Just copy the link and send a POST request via Postman
-        String link = HOST + "/api/v2/accounts/email-verification?token=" + verificationToken;
+    public void sendEmailForEmailVerification(String emailTo, String nickname, UUID verificationToken) {
         String text = """
-                Hi %s!<br>
+                Hi %s!<br><br>
                                 
-                <a href=\"%s\">Click here</a> to complete your registration<br>
-                
+                This is your verification token: "%s" to complete your registration<br><br>
+                                
                 Best regards,
                 XYZ
-                """.formatted(emailTo.split("@")[0], link);
+                """.formatted(nickname, verificationToken);
         try {
             MimeMessage mimeMessage = emailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
@@ -41,23 +38,24 @@ public class EmailService {
             helper.setSubject("Please complete your registration");
             helper.setText(text, true);
 
+            log.info("Sending an email verification message to an account with an email {}", emailTo);
             emailSender.send(mimeMessage);
         } catch (MessagingException e) {
-            log.error("failed to send an email for verification", e);
-            throw new RuntimeException("failed to send an email");
+            log.error("Failed to send an email verification message", e);
+            throw new EmailSenderException("Failed to send an email");
         }
     }
 
     @Async
-    public void sendEmailForCompletedRegistration(String emailTo) {
+    public void sendEmailForCompletedRegistration(String emailTo, String nickname) {
         String text = """
-                Hi %s!<br>
-                
-                Your registration has been successful<br>
-                
+                Hi %s!<br><br>
+                                
+                Your registration has been successful<br><br>
+                                
                 Best regards,
                 XYZ
-                """.formatted(emailTo.split("@")[0]);
+                """.formatted(nickname);
         try {
             MimeMessage mimeMessage = emailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
@@ -65,10 +63,62 @@ public class EmailService {
             helper.setSubject("Thank you for your registration");
             helper.setText(text, true);
 
+            log.info("Sending a completed registration message to an account with an email {}", emailTo);
             emailSender.send(mimeMessage);
         } catch (MessagingException e) {
-            log.error("failed to send an email for completed registration", e);
-            throw new RuntimeException("failed to send an email");
+            log.error("Failed to send a completed registration message", e);
+            throw new EmailSenderException("Failed to send an email");
+        }
+    }
+
+    @Async
+    public void sendEmailForPasswordReset(String emailTo, String nickname, UUID passwordResetToken) {
+        String text = """
+                Hi %s!<br><br>
+                                
+                You have request a password reset.<br>
+                This is your password reset token: "%s"<br><br>
+                                
+                Best regards,
+                XYZ
+                """.formatted(nickname, passwordResetToken);
+        try {
+            MimeMessage mimeMessage = emailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+            helper.setTo(emailTo);
+            helper.setSubject("Your password reset token is here");
+            helper.setText(text, true);
+
+            log.info("Sending a password reset token to an account with an email {}", emailTo);
+            emailSender.send(mimeMessage);
+        } catch (MessagingException e) {
+            log.error("Failed to send a password reset message", e);
+            throw new EmailSenderException("Failed to send an email");
+        }
+    }
+
+    @Async
+    public void sendEmailForPasswordResetNotification(String emailTo, String nickname) {
+        String text = """
+                Hi %s!<br><br>
+                                
+                Your password has been changed by the password reset token<br><br>
+                                
+                Best regards,
+                XYZ
+                """.formatted(nickname);
+        try {
+            MimeMessage mimeMessage = emailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+            helper.setTo(emailTo);
+            helper.setSubject("Your password has changed");
+            helper.setText(text, true);
+
+            log.info("Sending a password reset message to an account with an email {}", emailTo);
+            emailSender.send(mimeMessage);
+        } catch (MessagingException e) {
+            log.error("Failed to send a password reset notification message", e);
+            throw new EmailSenderException("Failed to send an email");
         }
     }
 

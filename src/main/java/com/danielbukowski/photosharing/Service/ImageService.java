@@ -45,13 +45,12 @@ public class ImageService {
     @Cacheable(cacheNames = "images", key = "#imageId", unless = "#result.isPrivate")
     public ImageDto getImageById(UUID imageId, Account account) {
         var image = imageRepository.findById(imageId)
-                .orElseThrow(
-                        () -> new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage())
-                );
+                .orElseThrow(() -> new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage()));
 
         if (!imageUtils.hasAccessToImage(account, image))
             throw new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage());
 
+        log.info("Getting an image with id {}", imageId);
         var imageData =
                 imageUtils.decompressImage(
                         encryptionUtils.decrypt(
@@ -100,13 +99,14 @@ public class ImageService {
     @CacheEvict(cacheNames = "images", key = "#imageId")
     @Transactional
     public void deleteImageFromAccount(UUID accountId, UUID imageId) {
-        log.info("Deleting an image with id {} in an account with id {}", imageId, accountId);
+        log.info("Deleting an image with id {}", imageId);
         imageRepository.deleteByImageIdAndAccountId(imageId, accountId);
         s3Service.deleteImageFromS3(accountId, imageId);
     }
 
     public SimplePageResponse<UUID> getIdsOfLatestImages(Integer pageNumber) {
-        var pageOfImages = imageRepository.findAll(
+        log.info("Getting latest images on a page number {}", pageNumber);
+        var pageOfImages = imageRepository.findAllByIsPrivateFalse(
                 PageRequest.of(
                         pageNumber,
                         PAGE_SIZE,
@@ -127,44 +127,65 @@ public class ImageService {
         );
     }
 
+    public SimplePageResponse<UUID> getIdsOfLatestImagesFromAccount(Integer pageNumber, Account account) {
+        log.info("Getting all images from an account with id {} and a page number {}", account.getId(), pageNumber);
+        var pageOfImages = imageRepository.getAllImagesByAccountId(
+                PageRequest.of(
+                        pageNumber,
+                        PAGE_SIZE,
+                        Sort.by(Sort.Direction.DESC, "creationDate")
+                ),
+                account.getId()
+        );
+
+        return new SimplePageResponse<>(
+                pageOfImages.getNumberOfElements(),
+                pageOfImages
+                        .getContent()
+                        .stream()
+                        .map(Image::getId)
+                        .toList(),
+                pageOfImages.getNumber(),
+                pageOfImages.getTotalPages(),
+                pageOfImages.isLast()
+        );
+    }
+
     @Transactional
     public void addLikeToImage(UUID imageId, Account account) {
         var image = imageRepository.findById(imageId)
-                .orElseThrow(
-                        () -> new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage())
-                );
+                .orElseThrow(() -> new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage()));
 
         if (!imageUtils.hasAccessToImage(account, image))
             throw new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage());
 
-        if(image.getLikes().stream().anyMatch(a -> a.equals(account)))
+        if (image.getLikes().stream().anyMatch(a -> a.equals(account)))
             throw new ImageException("You have already liked this image");
 
+        log.info("Adding like to an image with id {} by an account with id {}", imageId, account.getId());
         image.getLikes().add(account);
     }
 
     public int getNumberOfLikesFromImage(UUID imageId, Account account) {
         var image = imageRepository.findById(imageId)
-                .orElseThrow(
-                        () -> new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage())
-                );
+                .orElseThrow(() -> new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage()));
 
         if (!imageUtils.hasAccessToImage(account, image))
             throw new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage());
 
+        log.info("Getting number of likes from an image with id {}", imageId);
         return image.getLikes().size();
     }
 
     @Transactional
     public void removeLikeFromImage(UUID imageId, Account account) {
         var image = imageRepository.findById(imageId)
-                .orElseThrow(
-                        () -> new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage())
-                );
+                .orElseThrow(() -> new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage()));
 
         if (!imageUtils.hasAccessToImage(account, image))
             throw new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage());
 
+        log.info("Removing like from an image with id {} by an account with id {}", imageId, account.getId());
         image.getLikes().removeIf((a) -> a.getId().equals(account.getId()));
     }
 

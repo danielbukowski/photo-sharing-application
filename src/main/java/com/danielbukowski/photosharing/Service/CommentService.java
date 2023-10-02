@@ -39,6 +39,7 @@ public class CommentService {
         if (!imageUtils.hasAccessToImage(account, image))
             throw new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage());
 
+        log.info("Saving a comment to to an image with id {}", imageId);
         Comment comment = commentRepository.save(Comment.builder()
                 .account(account)
                 .image(image)
@@ -55,6 +56,7 @@ public class CommentService {
         if (!imageUtils.hasAccessToImage(account, image))
             throw new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage());
 
+        log.info("Getting comments from an image with id {}", imageId);
         var pageOfComments = commentRepository.getByImageId(PageRequest.of(pageNumber, PAGE_SIZE), imageId);
         return new SimplePageResponse<>(
                 pageOfComments.getNumberOfElements(),

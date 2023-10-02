@@ -94,6 +94,29 @@ class CommentServiceTest {
     }
 
     @Test
+    void SaveCommentToImage_ImageExistsAndAccountHasAccess_ReturnsId(){
+        //given
+        var newCommentRequest = new NewCommentRequest("huh");
+        var imageId = new UUID(1,1);
+        var account = Account.builder()
+                .build();
+        var image = Image.builder()
+                .id(imageId)
+                .build();
+        given(imageRepository.findById(imageId))
+                .willReturn(Optional.of(image));
+        given(imageUtils.hasAccessToImage(account, image))
+                .willReturn(true);
+        given(commentRepository.save(any()))
+                .willReturn(Comment.builder().id(3L).build());
+
+        //when
+        var actualId = commentService.saveCommentToImage(newCommentRequest, imageId, account);
+
+        //then
+        assertEquals(3L, actualId);}
+
+    @Test
     void GetCommentsFromImage_ImageDoesNotExist_ThrowsImageNotFoundException() {
         //given
         var imageId = new UUID(1, 1);

@@ -1,9 +1,6 @@
 package com.danielbukowski.photosharing.Controller;
 
-import com.danielbukowski.photosharing.Dto.CommentDto;
-import com.danielbukowski.photosharing.Dto.ImageDto;
-import com.danielbukowski.photosharing.Dto.NewCommentRequest;
-import com.danielbukowski.photosharing.Dto.SimplePageResponse;
+import com.danielbukowski.photosharing.Dto.*;
 import com.danielbukowski.photosharing.Entity.Account;
 import com.danielbukowski.photosharing.Service.CommentService;
 import com.danielbukowski.photosharing.Service.ImageService;
@@ -12,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -40,6 +38,7 @@ public class ImageController {
     }
 
     @PostMapping("/{imageId}/comments")
+    @PreAuthorize("hasAuthority('USER:CREATE')")
     public ResponseEntity<?> saveCommentToImage(@AuthenticationPrincipal Account account,
                                                 @PathVariable UUID imageId,
                                                 @Valid @RequestBody NewCommentRequest newCommentRequest) {
@@ -59,16 +58,21 @@ public class ImageController {
                                                                                @PathVariable UUID imageId,
                                                                                @RequestParam(required = false, defaultValue = "0") Integer pageNumber) {
         pageNumber = Integer.max(0, pageNumber);
-        return ResponseEntity.ok(commentService.getCommentsFromImage(imageId, pageNumber, account));
+        return ResponseEntity.ok(
+                commentService.getCommentsFromImage(imageId, pageNumber, account)
+        );
     }
 
     @GetMapping
-    public ResponseEntity<SimplePageResponse<UUID>> getListOfLatestImages(@RequestParam(required = false, defaultValue = "0") Integer pageNumber) {
+    public ResponseEntity<SimplePageResponse<UUID>> getLatestImages(@RequestParam(required = false, defaultValue = "0") Integer pageNumber) {
         pageNumber = Integer.max(0, pageNumber);
-        return ResponseEntity.ok(imageService.getIdsOfLatestImages(pageNumber));
+        return ResponseEntity.ok(
+                imageService.getIdsOfLatestImages(pageNumber)
+        );
     }
 
     @PostMapping("/{imageId}/likes")
+    @PreAuthorize("hasAuthority('USER:UPDATE')")
     public ResponseEntity<?> addLikeToImage(@AuthenticationPrincipal Account account,
                                             @PathVariable UUID imageId) {
         imageService.addLikeToImage(imageId, account);
@@ -85,10 +89,15 @@ public class ImageController {
     @GetMapping("/{imageId}/likes")
     public ResponseEntity<?> getNumberOfLikesFromImage(@AuthenticationPrincipal Account account,
                                                        @PathVariable UUID imageId) {
-        return ResponseEntity.ok(Map.of("likes", imageService.getNumberOfLikesFromImage(imageId, account)));
+        return ResponseEntity.ok(
+                new SimpleDataResponse<>(
+                        Map.of("likes", imageService.getNumberOfLikesFromImage(imageId, account))
+                )
+        );
     }
 
     @DeleteMapping("/{imageId}/likes")
+    @PreAuthorize("hasAuthority('USER:DELETE')")
     public ResponseEntity<?> removeLikeFromImage(@AuthenticationPrincipal Account account,
                                                  @PathVariable UUID imageId) {
         imageService.removeLikeFromImage(imageId, account);

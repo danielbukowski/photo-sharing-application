@@ -6,10 +6,16 @@ import jakarta.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.Length;
 
 public record AccountRegisterRequest(
-        @NotBlank(message = "Should not be empty")
+        @NotBlank(message = "Should not be blank")
         @Email
         String email,
-        @NotBlank(message = "Should not be empty") @Length(min = 8, max = 32, message = "Should must be 8-32 characters long") @Pattern.List({
+        @NotBlank(message = "Should not be blank")
+        @Pattern(regexp = ".*[a-z]{4}.*", message = "Should have at 4 letters")
+        @Length(min = 4, message = "The length should be at least 4 characters")
+        String nickname,
+        @NotBlank(message = "Should not be blank")
+        @Length(min = 8, max = 32, message = "Should must be 8-32 characters long")
+        @Pattern.List({
                 @Pattern(regexp = ".*[a-z].*", message = "Should have one lowercase letter"),
                 @Pattern(regexp = ".*[A-Z].*", message = "Should have one uppercase letter"),
                 @Pattern(regexp = ".*[@$!%*?&].*", message = "Should have one special character"),

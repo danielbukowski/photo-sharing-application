@@ -13,7 +13,7 @@ class ImageMapperTest {
     private final ImageMapper imageMapper = new ImageMapper();
 
     @Test
-    void FromImageToImageDto_MappedFieldsAreTheSame_ReturnsEqualObject() {
+    void FromImageToImageDto_MapsObject_ReturnsEqualObject() {
         // given
         byte[] data = new byte[]{};
         Image image = Image.builder()

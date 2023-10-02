@@ -21,7 +21,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-public class SecurityConfig {
+public class SecurityConfiguration {
 
     private final UserDetailsService userDetailsService;
     private final AuthenticationEntryPointHandler authenticationEntryPointHandler;
@@ -31,8 +31,11 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/api/v2/accounts").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v3/accounts").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/images/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v3/accounts/email-verification").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v3/accounts/password-reset").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/v3/accounts/password-reset/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> {

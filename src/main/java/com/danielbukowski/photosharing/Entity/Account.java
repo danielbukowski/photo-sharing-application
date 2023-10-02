@@ -36,6 +36,16 @@ public class Account implements UserDetails {
     private String email;
 
     @Column(
+            unique = true,
+            nullable = false
+    )
+    private String nickname;
+
+    private String biography;
+
+    private boolean isLocked;
+
+    @Column(
             nullable = false
     )
     private String password;
@@ -65,9 +75,21 @@ public class Account implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles.stream()
-                .map(r -> new SimpleGrantedAuthority("ROLE_" + r.getName()))
-                .toList();
+        List<SimpleGrantedAuthority> accountAuthorities = new ArrayList<>(15);
+        roles.forEach(e -> accountAuthorities.add(new SimpleGrantedAuthority("ROLE_" + e.getName())));
+
+        if (!isEmailVerified) {
+            accountAuthorities.add(new SimpleGrantedAuthority("USER:READ"));
+            return accountAuthorities;
+        }
+
+        for (Role role : roles) {
+            for (String permission : role.getPermissions().split(",")) {
+                accountAuthorities.add(new SimpleGrantedAuthority(permission));
+            }
+        }
+
+        return accountAuthorities;
     }
 
     @Override
@@ -87,7 +109,7 @@ public class Account implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return !isLocked;
     }
 
     @Override

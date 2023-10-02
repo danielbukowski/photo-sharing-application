@@ -1,12 +1,11 @@
 package com.danielbukowski.photosharing.Controller;
 
-import com.danielbukowski.photosharing.Dto.AccountRegisterRequest;
-import com.danielbukowski.photosharing.Dto.ChangePasswordRequest;
-import com.danielbukowski.photosharing.Dto.ImagePropertiesRequest;
+import com.danielbukowski.photosharing.Dto.*;
 import com.danielbukowski.photosharing.Entity.Account;
 import com.danielbukowski.photosharing.Service.AccountService;
 import com.danielbukowski.photosharing.Service.EmailVerificationTokenService;
 import com.danielbukowski.photosharing.Service.ImageService;
+import com.danielbukowski.photosharing.Service.PasswordResetTokenService;
 import com.danielbukowski.photosharing.Validator.Image;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -24,12 +23,31 @@ import java.util.UUID;
 @AllArgsConstructor
 @Validated
 @RestController
-@RequestMapping("api/v2/accounts")
+@RequestMapping("api/v3/accounts")
 public class AccountController {
 
-    private final AccountService accountService;
-    private final EmailVerificationTokenService emailVerificationTokenService;
     private final ImageService imageService;
+    private final AccountService accountService;
+    private final PasswordResetTokenService passwordResetTokenService;
+    private final EmailVerificationTokenService emailVerificationTokenService;
+
+    @GetMapping
+    @PreAuthorize("hasAuthority('USER:READ')")
+    public ResponseEntity<?> getAccount(@AuthenticationPrincipal Account account) {
+        return ResponseEntity.ok(
+                new SimpleDataResponse<>(accountService.getAccountDetails(account))
+        );
+    }
+
+    @PutMapping
+    @PreAuthorize("hasAuthority('USER:UPDATE')")
+    public ResponseEntity<?> updateAccount(@AuthenticationPrincipal Account account,
+                                           @RequestBody @Valid AccountUpdateRequest accountUpdateRequest) {
+        accountService.updateAccount(account, accountUpdateRequest);
+        return ResponseEntity
+                .noContent()
+                .build();
+    }
 
     @PostMapping
     public ResponseEntity<?> createAccount(@RequestBody @Valid AccountRegisterRequest accountRegisterRequest) {
@@ -61,7 +79,7 @@ public class AccountController {
     }
 
     @DeleteMapping
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAuthority('USER:DELETE')")
     public ResponseEntity<?> deleteAccount(@AuthenticationPrincipal Account account,
                                            HttpServletRequest request) {
         accountService.deleteAccountById(account.getId());
@@ -72,22 +90,30 @@ public class AccountController {
     }
 
     @PatchMapping("/password")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAuthority('USER:UPDATE')")
     public ResponseEntity<?> changeAccountPassword(@AuthenticationPrincipal Account account,
-                                                   @Valid @RequestBody ChangePasswordRequest changePasswordRequest,
-                                                   HttpServletRequest request) {
-        accountService.changeAccountPassword(account, changePasswordRequest);
-        request.getSession().invalidate();
+                                                   @Valid @RequestBody PasswordChangeRequest passwordChangeRequest) {
+        accountService.changeAccountPassword(account, passwordChangeRequest);
         return ResponseEntity
                 .noContent()
                 .build();
     }
 
+    @GetMapping("/images")
+    @PreAuthorize("hasAuthority('USER:READ')")
+    public ResponseEntity<?> getImagesFromAccount(@AuthenticationPrincipal Account account,
+                                                  @RequestParam(required = false, defaultValue = "0") Integer pageNumber) {
+        pageNumber = Integer.max(0, pageNumber);
+        return ResponseEntity.ok(
+                imageService.getIdsOfLatestImagesFromAccount(pageNumber, account)
+        );
+    }
+
     @PostMapping("/images")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAuthority('USER:CREATE')")
     public ResponseEntity<?> saveImageToAccount(@AuthenticationPrincipal Account account,
-                                                @Valid @RequestPart(required = false) @Image MultipartFile image,
-                                                @Valid @RequestPart(required = false) ImagePropertiesRequest imageProperties) {
+                                                @RequestPart @Valid @Image MultipartFile image,
+                                                @RequestPart @Valid ImagePropertiesRequest imageProperties) {
         UUID imageId = imageService.saveImageToAccount(image, account, imageProperties);
         return ResponseEntity
                 .created(
@@ -100,10 +126,27 @@ public class AccountController {
     }
 
     @DeleteMapping("/images/{imageId}")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAuthority('USER:DELETE')")
     public ResponseEntity<?> deleteImageFromAccount(@AuthenticationPrincipal Account account,
                                                     @PathVariable UUID imageId) {
         imageService.deleteImageFromAccount(account.getId(), imageId);
+        return ResponseEntity
+                .noContent()
+                .build();
+    }
+
+    @PostMapping("/password-reset")
+    public ResponseEntity<?> createResetPasswordToken(@RequestBody @Valid PasswordResetRequest passwordResetRequest) {
+        passwordResetTokenService.createPasswordResetToken(passwordResetRequest);
+        return ResponseEntity
+                .noContent()
+                .build();
+    }
+
+    @PutMapping("/password-reset")
+    public ResponseEntity<?> changePasswordByPasswordResetTokenId(@RequestParam UUID token,
+                                                                  @RequestBody @Valid PasswordChangeRequest passwordChangeRequest) {
+        passwordResetTokenService.changePasswordByPasswordResetTokenId(token, passwordChangeRequest);
         return ResponseEntity
                 .noContent()
                 .build();
