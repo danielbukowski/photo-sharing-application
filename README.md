@@ -36,7 +36,7 @@ In Progess
 - Saving images in S3
 - Image validation
 - CRUD operations on the account entity
-- CRUD operations on the image entity
+- CRD operations on the image entity
 - Changing password without authentication
 - Comments to the image entity
 - Likes to the image entity
@@ -50,10 +50,11 @@ In Progess
 
 ## Screenshots
 
-![database_schema](https://github.com/danielbukowski/photo-sharing-application/assets/82054911/f794995a-f215-48c0-91ec-ce50617eb2cf)
+[database_schema](https://github.com/danielbukowski/photo-sharing-application/assets/82054911/a74ee6c0-481d-47f0-b92d-74e1f2dec55d)
 
 
-## Running Tests
+## Running Tests!
+
 
 To run tests, run the following command
 
