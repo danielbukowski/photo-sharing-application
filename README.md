@@ -50,11 +50,10 @@ In Progess
 
 ## Screenshots
 
-[database_schema](https://github.com/danielbukowski/photo-sharing-application/assets/82054911/a74ee6c0-481d-47f0-b92d-74e1f2dec55d)
+![database_schema](https://github.com/danielbukowski/photo-sharing-application/assets/82054911/27a50a13-d2ef-4df1-a57e-0697bb512ced)
 
 
 ## Running Tests!
-
 
 To run tests, run the following command
 
