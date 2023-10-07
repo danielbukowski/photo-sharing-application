@@ -53,6 +53,32 @@ In Progess
 ![database_schema](https://github.com/danielbukowski/photo-sharing-application/assets/82054911/27a50a13-d2ef-4df1-a57e-0697bb512ced)
 
 
+## Running the application
+Requirements to run:
+- Docker
+- Bash
+
+Clone the project
+
+```bash
+  git clone danielbukowski/photo-sharing-application
+```
+
+Go to the project directory
+
+```bash
+  cd photo-sharing-application
+```
+
+Start the project
+
+```bash
+  bash start-dev.bash
+```
+
+![init-bash-script](https://github.com/danielbukowski/photo-sharing-application/assets/82054911/9ffd787e-7a6a-4eec-ad2f-36ffbfe716f0)
+
+
 ## Running Tests!
 
 To run tests, run the following command
