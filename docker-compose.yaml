@@ -1,71 +1,89 @@
 version: '3.8'
-
 services:
   api:
     build: .
+    container_name: api
     ports:
-      - "8081:8080"
-    environment:
-      POSTGRES_HOST: postgres
+      - "8081:8081"
+    restart: on-failure
     depends_on:
       - postgres
       - redis
-    restart: on-failure
+      - seaweedfs
+      - greenmail
+    networks:
+      - backend_network
+    env_file:
+      - .dev.env
   postgres:
     image: postgres:alpine
-    restart: on-failure
-    environment:
-      POSTGRES_DB: app_db
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
+    container_name: postgres
     ports:
       - "5432:5432"
+    restart: on-failure
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
-      - database:/var/lib/postgresql/data
+      - postgres:/var/lib/postgresql/data
+    networks:
+      - backend_network
   pgadmin:
     image: dpage/pgadmin4
-    restart: always
+    container_name: pgadmin
+    ports:
+      - "5050:80"
+    restart: on-failure
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin
-    ports:
-      - "5050:80"
-    links:
-      - postgres
+    volumes:
+      - pgadmin:/var/lib/pgadmin/data
+    networks:
+      - backend_network
   redis:
     image: redis:alpine
-    restart: on-failure
-    environment:
-      REDIS_PASSWORD: redis
+    container_name: redis
     ports:
       - "6379:6379"
+    restart: on-failure
+    command: /bin/sh -c "redis-server /usr/local/etc/redis.conf"
     volumes:
-      - redis:/var/lib/redis/data
-    command: /bin/sh -c "redis-server --requirepass $${REDIS_PASSWORD}"
+      - ./redis:/usr/local/etc
+      - redis:/data
+    networks:
+      - backend_network
   seaweedfs:
     image: chrislusf/seaweedfs
-    restart: always
-    volumes:
-      - seaweedfs:/var/lib/seaweedfs/data
+    container_name: seaweedfs
     ports:
       - "8333:8333"
+    restart: on-failure
     command:
-      - "server -s3"
-#    When this container starts go to the terminal
-#    and type   echo 's3.configure -access_key any -secret_key any -user admin -actions Admin -apply' | weed shell
+      - 'server -s3 -s3.config=/var/lib/seaweedfs/config.json'
+    volumes:
+      - ./seaweedfs:/var/lib/seaweedfs
+      - seaweedfs:/data
+      - seaweedfs:/tmp
+    networks:
+      - backend_network
   greenmail:
     image: greenmail/standalone:latest
-    restart: on-failure
-    volumes:
-      - greenmail:/var/lib/greenmail/data
-    environment:
-      - JAVA_OPTS=-Dgreenmail.verbose -Dgreenmail.users=user:pwd
+    container_name: greenmail
     ports:
-      - 3025:3025 # SMTP
-      - 8082:8080 # API
-      - 3110:3110 # POP3
+      - "3025:3025" # SMTP
+      - "8082:8080" # API
+      - "3110:3110" # POP3
+    restart: on-failure
+    environment:
+      - JAVA_OPTS=-Dgreenmail.verbose -Dgreenmail.users=user:password -Dgreenmail.hostname=0.0.0.0 -Dgreenmail.startup.timeout=3500
+    networks:
+      - backend_network
 volumes:
-  seaweedfs:
-  database:
   redis:
-  greenmail:
+  seaweedfs:
+  postgres:
+  pgadmin:
+networks:
+  backend_network:
