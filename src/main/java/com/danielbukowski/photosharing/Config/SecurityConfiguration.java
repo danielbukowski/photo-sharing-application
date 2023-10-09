@@ -36,6 +36,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/api/v3/accounts/email-verification").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v3/accounts/password-reset").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/v3/accounts/password-reset/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/csrf").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> {
