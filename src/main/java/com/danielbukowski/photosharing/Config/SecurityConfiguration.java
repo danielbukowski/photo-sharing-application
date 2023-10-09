@@ -11,11 +11,11 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @AllArgsConstructor
 @Configuration
@@ -44,7 +44,8 @@ public class SecurityConfiguration {
                     session.sessionFixation().newSession();
                 })
                 .authenticationProvider(authProvider())
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .and()
                 .httpBasic(h -> h.authenticationEntryPoint(authenticationEntryPointHandler))
                 .exceptionHandling(eH -> eH.accessDeniedHandler(authorizationDeniedHandler))
                 .build();
