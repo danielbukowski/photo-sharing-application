@@ -4,6 +4,9 @@ import com.danielbukowski.photosharing.Dto.*;
 import com.danielbukowski.photosharing.Entity.Account;
 import com.danielbukowski.photosharing.Service.CommentService;
 import com.danielbukowski.photosharing.Service.ImageService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,6 +30,21 @@ public class ImageController {
     private final ImageService imageService;
     private final CommentService commentService;
 
+
+    @Operation(
+            summary = "Return an image",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "An image has been returned"
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "An image does not exist"
+                    )
+
+            }
+    )
     @GetMapping("/{imageId}")
     public ResponseEntity<byte[]> getImageById(@PathVariable UUID imageId,
                                                @AuthenticationPrincipal Account account) {
@@ -37,6 +55,24 @@ public class ImageController {
                 .body(imageDto.data());
     }
 
+    @SecurityRequirement(name = "Basic auth")
+    @Operation(
+            summary = "Save a comment to an image",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "Comment has been saved"
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "An image does not exist"
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "An account is not email verified"
+                    )
+            }
+    )
     @PostMapping("/{imageId}/comments")
     @PreAuthorize("hasAuthority('USER:CREATE')")
     public ResponseEntity<?> saveCommentToImage(@AuthenticationPrincipal Account account,
@@ -53,6 +89,19 @@ public class ImageController {
                 ).build();
     }
 
+    @Operation(
+            summary = "Return a page of comments from an image",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "A page of of comments have been returned"
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "An image does not exist"
+                    )
+            }
+    )
     @GetMapping("/{imageId}/comments")
     public ResponseEntity<SimplePageResponse<CommentDto>> getCommentsFromImage(@AuthenticationPrincipal Account account,
                                                                                @PathVariable UUID imageId,
@@ -63,6 +112,15 @@ public class ImageController {
         );
     }
 
+    @Operation(
+            summary = "Return a page of latest images in form of ids",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "A page of latest images in form of ids have been returned"
+                    )
+            }
+    )
     @GetMapping
     public ResponseEntity<SimplePageResponse<UUID>> getLatestImages(@RequestParam(required = false, defaultValue = "0") Integer pageNumber) {
         pageNumber = Integer.max(0, pageNumber);
@@ -71,6 +129,28 @@ public class ImageController {
         );
     }
 
+    @SecurityRequirement(name = "Basic auth")
+    @Operation(
+            summary = "Add a like to an image",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "A like has been added"
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "An image does not exist"
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "An image is already liked"
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "An account is not email verified"
+                    )
+            }
+    )
     @PostMapping("/{imageId}/likes")
     @PreAuthorize("hasAuthority('USER:UPDATE')")
     public ResponseEntity<?> addLikeToImage(@AuthenticationPrincipal Account account,
@@ -86,6 +166,19 @@ public class ImageController {
                 .build();
     }
 
+    @Operation(
+            summary = "Return a number of likes of an image",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "A number of likes has been returned"
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "An image does not exist"
+                    )
+            }
+    )
     @GetMapping("/{imageId}/likes")
     public ResponseEntity<?> getNumberOfLikesFromImage(@AuthenticationPrincipal Account account,
                                                        @PathVariable UUID imageId) {
@@ -96,6 +189,24 @@ public class ImageController {
         );
     }
 
+    @SecurityRequirement(name = "Basic auth")
+    @Operation(
+            summary = "Delete a like from an image",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "A like has been deleted"
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "An image does not exist"
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "An account is not email verified"
+                    )
+            }
+    )
     @DeleteMapping("/{imageId}/likes")
     @PreAuthorize("hasAuthority('USER:DELETE')")
     public ResponseEntity<?> removeLikeFromImage(@AuthenticationPrincipal Account account,
