@@ -32,16 +32,6 @@ import io.swagger.v3.oas.annotations.servers.Server;
                         scheme = "basic",
                         type = SecuritySchemeType.HTTP,
                         in = SecuritySchemeIn.HEADER
-                ),
-                @SecurityScheme(
-                        name = "SESSION",
-                        type = SecuritySchemeType.APIKEY,
-                        in = SecuritySchemeIn.COOKIE
-                ),
-                @SecurityScheme(
-                        name = "X-XSRF-TOKEN",
-                        type = SecuritySchemeType.APIKEY,
-                        in = SecuritySchemeIn.HEADER
                 )
         }
 )
