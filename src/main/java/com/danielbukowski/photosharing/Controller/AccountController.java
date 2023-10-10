@@ -7,6 +7,9 @@ import com.danielbukowski.photosharing.Service.EmailVerificationTokenService;
 import com.danielbukowski.photosharing.Service.ImageService;
 import com.danielbukowski.photosharing.Service.PasswordResetTokenService;
 import com.danielbukowski.photosharing.Validator.Image;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -20,6 +23,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.UUID;
 
+@SecurityRequirement(name = "Basic auth")
 @AllArgsConstructor
 @Validated
 @RestController
@@ -31,6 +35,15 @@ public class AccountController {
     private final PasswordResetTokenService passwordResetTokenService;
     private final EmailVerificationTokenService emailVerificationTokenService;
 
+    @SecurityRequirement(name = "Basic auth")
+    @Operation(
+            summary = "Return details about an account",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Account details has been returned"
+                    )
+            })
     @GetMapping
     @PreAuthorize("hasAuthority('USER:READ')")
     public ResponseEntity<?> getAccount(@AuthenticationPrincipal Account account) {
@@ -39,6 +52,16 @@ public class AccountController {
         );
     }
 
+    @SecurityRequirement(name = "Basic auth")
+    @Operation(
+            summary = "Update an account",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "204",
+                            description = "An account has been updated"
+                    )
+            }
+    )
     @PutMapping
     @PreAuthorize("hasAuthority('USER:UPDATE')")
     public ResponseEntity<?> updateAccount(@AuthenticationPrincipal Account account,
@@ -49,6 +72,15 @@ public class AccountController {
                 .build();
     }
 
+    @Operation(
+            summary = "Create an account",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "An account has been created"
+                    )
+            }
+    )
     @PostMapping
     public ResponseEntity<?> createAccount(@RequestBody @Valid AccountRegisterRequest accountRegisterRequest) {
         UUID accountId = accountService.createAccount(accountRegisterRequest);
@@ -62,14 +94,41 @@ public class AccountController {
                 ).build();
     }
 
+    @Operation(
+            summary = "Verify an account by an email verification token",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "204",
+                            description = "An account has been email verified"
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "An email verification token is invalid / An account is already verified"
+                    )
+            }
+    )
     @PostMapping("/email-verification")
-    public ResponseEntity<?> verifyAccountByToken(@RequestParam UUID token) {
+    public ResponseEntity<?> verifyAccountByEmailVerificationToken(@RequestParam UUID token) {
         emailVerificationTokenService.verifyEmailVerificationToken(token);
         return ResponseEntity
                 .noContent()
                 .build();
     }
 
+    @SecurityRequirement(name = "Basic auth")
+    @Operation(
+            summary = "Resend an email verification token",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "204",
+                            description = "An email verification token has been resent"
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "An account is already email verified"
+                    )
+            }
+    )
     @PutMapping("/email-verification")
     public ResponseEntity<?> resendEmailVerificationToken(@AuthenticationPrincipal Account account) {
         emailVerificationTokenService.resendEmailVerificationToken(account);
@@ -78,6 +137,16 @@ public class AccountController {
                 .build();
     }
 
+    @SecurityRequirement(name = "Basic auth")
+    @Operation(
+            summary = "Delete an account",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "204",
+                            description = "An account has been deleted"
+                    )
+            }
+    )
     @DeleteMapping
     @PreAuthorize("hasAuthority('USER:DELETE')")
     public ResponseEntity<?> deleteAccount(@AuthenticationPrincipal Account account,
@@ -89,6 +158,18 @@ public class AccountController {
                 .build();
     }
 
+    @SecurityRequirement(name = "Basic auth")
+    @Operation(
+            summary = "Change a password",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "204",
+                            description = "A password has been changed"),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "A password is invalid")
+            }
+    )
     @PatchMapping("/password")
     @PreAuthorize("hasAuthority('USER:UPDATE')")
     public ResponseEntity<?> changeAccountPassword(@AuthenticationPrincipal Account account,
@@ -99,6 +180,15 @@ public class AccountController {
                 .build();
     }
 
+    @SecurityRequirement(name = "Basic auth")
+    @Operation(
+            summary = "Return a list of owned images in form of id",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "A list of images in form of id have been returned")
+            }
+    )
     @GetMapping("/images")
     @PreAuthorize("hasAuthority('USER:READ')")
     public ResponseEntity<?> getImagesFromAccount(@AuthenticationPrincipal Account account,
@@ -109,6 +199,15 @@ public class AccountController {
         );
     }
 
+    @SecurityRequirement(name = "Basic auth")
+    @Operation(
+            summary = "Save an image to an account",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "An image has been saved to an account")
+            }
+    )
     @PostMapping("/images")
     @PreAuthorize("hasAuthority('USER:CREATE')")
     public ResponseEntity<?> saveImageToAccount(@AuthenticationPrincipal Account account,
@@ -125,6 +224,15 @@ public class AccountController {
                 ).build();
     }
 
+    @SecurityRequirement(name = "Basic auth")
+    @Operation(
+            summary = "Delete an image from an account",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "204",
+                            description = "An image has been deleted")
+            }
+    )
     @DeleteMapping("/images/{imageId}")
     @PreAuthorize("hasAuthority('USER:DELETE')")
     public ResponseEntity<?> deleteImageFromAccount(@AuthenticationPrincipal Account account,
@@ -135,17 +243,43 @@ public class AccountController {
                 .build();
     }
 
+    @Operation(
+            summary = "Create a password reset token",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "204",
+                            description = "A password reset token has been created"
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "An account does not exist"
+                    )
+            }
+    )
     @PostMapping("/password-reset")
-    public ResponseEntity<?> createResetPasswordToken(@RequestBody @Valid PasswordResetRequest passwordResetRequest) {
+    public ResponseEntity<?> createPasswordResetToken(@RequestBody @Valid PasswordResetRequest passwordResetRequest) {
         passwordResetTokenService.createPasswordResetToken(passwordResetRequest);
         return ResponseEntity
                 .noContent()
                 .build();
     }
 
+    @Operation(
+            summary = "Change a password by a password reset token",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "204",
+                            description = "A password has been changed"
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Invalid password reset token"
+                    )
+            }
+    )
     @PutMapping("/password-reset")
-    public ResponseEntity<?> changePasswordByPasswordResetTokenId(@RequestParam UUID token,
-                                                                  @RequestBody @Valid PasswordChangeRequest passwordChangeRequest) {
+    public ResponseEntity<?> changePasswordByPasswordResetToken(@RequestParam UUID token,
+                                                                @RequestBody @Valid PasswordChangeRequest passwordChangeRequest) {
         passwordResetTokenService.changePasswordByPasswordResetTokenId(token, passwordChangeRequest);
         return ResponseEntity
                 .noContent()
