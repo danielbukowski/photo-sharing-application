@@ -113,11 +113,11 @@ public class ImageController {
     }
 
     @Operation(
-            summary = "Return a page of images in form of ids",
+            summary = "Return a page of latest images in form of ids",
             responses = {
                     @ApiResponse(
                             responseCode = "201",
-                            description = "A page of images in form of ids have been returned"
+                            description = "A page of latest images in form of ids have been returned"
                     )
             }
     )
