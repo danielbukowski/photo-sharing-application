@@ -23,7 +23,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.UUID;
 
-@SecurityRequirement(name = "Basic auth")
 @AllArgsConstructor
 @Validated
 @RestController
@@ -41,7 +40,7 @@ public class AccountController {
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Account details has been returned"
+                            description = "Account details are returned"
                     )
             })
     @GetMapping
@@ -59,6 +58,10 @@ public class AccountController {
                     @ApiResponse(
                             responseCode = "204",
                             description = "An account has been updated"
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "An account is not email verified"
                     )
             }
     )
@@ -78,6 +81,10 @@ public class AccountController {
                     @ApiResponse(
                             responseCode = "201",
                             description = "An account has been created"
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Request body is not valid"
                     )
             }
     )
@@ -144,6 +151,10 @@ public class AccountController {
                     @ApiResponse(
                             responseCode = "204",
                             description = "An account has been deleted"
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "An account is not email verified"
                     )
             }
     )
@@ -167,7 +178,11 @@ public class AccountController {
                             description = "A password has been changed"),
                     @ApiResponse(
                             responseCode = "400",
-                            description = "A password is invalid")
+                            description = "A password is invalid"),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "An account is not email verified"
+                    )
             }
     )
     @PatchMapping("/password")
@@ -182,11 +197,12 @@ public class AccountController {
 
     @SecurityRequirement(name = "Basic auth")
     @Operation(
-            summary = "Return a list of owned images in form of id",
+            summary = "Return a list of owned images in form of ids",
             responses = {
                     @ApiResponse(
                             responseCode = "201",
-                            description = "A list of images in form of id have been returned")
+                            description = "A list of images in form of ids have been returned"
+                    )
             }
     )
     @GetMapping("/images")
@@ -205,7 +221,16 @@ public class AccountController {
             responses = {
                     @ApiResponse(
                             responseCode = "201",
-                            description = "An image has been saved to an account")
+                            description = "An image has been saved to an account"
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "An account is not email verified"
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "An account is not email verified"
+                    )
             }
     )
     @PostMapping("/images")
@@ -230,7 +255,12 @@ public class AccountController {
             responses = {
                     @ApiResponse(
                             responseCode = "204",
-                            description = "An image has been deleted")
+                            description = "An image has been deleted"
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "An account is not email verified"
+                    )
             }
     )
     @DeleteMapping("/images/{imageId}")
