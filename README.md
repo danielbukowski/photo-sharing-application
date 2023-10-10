@@ -26,6 +26,7 @@ In Progess
 - Mockito
 - JUnit
 - Testcontainers
+- OpenAPI
 
 
 ## Implemented Features
