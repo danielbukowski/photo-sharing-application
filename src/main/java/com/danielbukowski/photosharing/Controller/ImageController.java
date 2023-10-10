@@ -66,6 +66,10 @@ public class ImageController {
                     @ApiResponse(
                             responseCode = "404",
                             description = "An image does not exist"
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "An account is not email verified"
                     )
             }
     )
@@ -109,11 +113,11 @@ public class ImageController {
     }
 
     @Operation(
-            summary = "Return a page of images in form of id",
+            summary = "Return a page of images in form of ids",
             responses = {
                     @ApiResponse(
                             responseCode = "201",
-                            description = "A page of images in form of id have been returned"
+                            description = "A page of images in form of ids have been returned"
                     )
             }
     )
@@ -140,6 +144,10 @@ public class ImageController {
                     @ApiResponse(
                             responseCode = "400",
                             description = "An image is already liked"
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "An account is not email verified"
                     )
             }
     )
@@ -192,6 +200,10 @@ public class ImageController {
                     @ApiResponse(
                             responseCode = "404",
                             description = "An image does not exist"
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "An account is not email verified"
                     )
             }
     )
