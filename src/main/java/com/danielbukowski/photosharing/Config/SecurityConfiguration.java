@@ -37,6 +37,15 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/api/v3/accounts/password-reset").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/v3/accounts/password-reset/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/csrf").permitAll()
+                        .requestMatchers(
+                                "/v3/api-docs",
+                                "/v3/api-docs/**",
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/swagger-resources",
+                                "/swagger-resources/**",
+                                "/configuration/ui",
+                                "/configuration/security").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> {
