@@ -8,6 +8,7 @@ In Progess
 
 ## Technologies used
 
+### Back-end
 - Java 17
 - Maven
 - Spring Boot
@@ -27,6 +28,12 @@ In Progess
 - JUnit
 - Testcontainers
 - OpenAPI
+
+### Front-end
+
+- Angular 16
+- Tailwind CSS
+
 
 
 ## Implemented Features
