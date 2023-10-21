@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -16,6 +17,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import static java.util.Arrays.asList;
+import static org.springframework.http.HttpHeaders.*;
+import static org.springframework.http.HttpMethod.*;
 
 @AllArgsConstructor
 @Configuration
@@ -56,6 +64,7 @@ public class SecurityConfiguration {
                 .authenticationProvider(authProvider())
                 .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .and()
+                .cors(Customizer.withDefaults())
                 .httpBasic(h -> h.authenticationEntryPoint(authenticationEntryPointHandler))
                 .exceptionHandling(eH -> eH.accessDeniedHandler(authorizationDeniedHandler))
                 .build();
@@ -72,6 +81,33 @@ public class SecurityConfiguration {
         authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.addAllowedOrigin("http://localhost:4200");
+
+        config.setAllowedHeaders(asList(
+                AUTHORIZATION,
+                CONTENT_TYPE,
+                ACCEPT,
+                "X-XSRF-TOKEN")
+        );
+
+        config.setAllowedMethods(asList(
+                GET.name(),
+                PATCH.name(),
+                POST.name(),
+                PUT.name(),
+                OPTIONS.name(),
+                DELETE.name()));
+        config.setMaxAge(3600L);
+
+        source.registerCorsConfiguration("/**", config);
+        return source;
     }
 
 }
