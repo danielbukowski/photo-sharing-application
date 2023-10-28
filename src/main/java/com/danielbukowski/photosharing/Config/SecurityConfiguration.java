@@ -88,13 +88,17 @@ public class SecurityConfiguration {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
+//        for local development
         config.addAllowedOrigin("http://localhost:4200");
+//        for environment built in docker
+        config.addAllowedOrigin("http://front-end:80");
 
         config.setAllowedHeaders(asList(
                 AUTHORIZATION,
                 CONTENT_TYPE,
                 ACCEPT,
-                "X-XSRF-TOKEN")
+                "X-XSRF-TOKEN"
+                )
         );
 
         config.setAllowedMethods(asList(
