@@ -1,0 +1,65 @@
+<div
+  class="flex justify-center items-center flex-col h-screen bg-gray-100 dark:bg-gray-900"
+>
+  <div
+    class=" flex flex-col justify-center p-24 shadow-2xl dark:bg-gray-300 bg-white "
+  >
+    <header>
+      <h1 class="text-center text-2xl text-blue-800 mb-3">Please log in</h1>
+    </header>
+    <form (ngSubmit)="onSubmit()" class="space-y-6">
+      <div
+        *ngIf="this.hasBadCredentials"
+        class="flex p-2 text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800 "
+      >
+        <svg
+          class="flex-shrink-0 inline w-4 h-4 mr-3"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+        >
+          <path
+            d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"
+          />
+        </svg>
+        <span class="sr-only">Info</span>
+        <div>You have provided a wrong password or email</div>
+      </div>
+      <div class="text-center">
+        <input
+          type="text"
+          name="email"
+          id="email"
+          placeholder="Email"
+          class="border-b-2 border-blue-700 hover:outline-none focus:outline-none p-1"
+          [required]="true"
+          [(ngModel)]="credentials.email"
+        />
+      </div>
+      <div class="text-center">
+        <input
+          type="password"
+          name="password"
+          id="password"
+          placeholder="Password"
+          class="border-b-2 border-blue-700 hover:outline-none focus:outline-none p-1"
+          [required]="true"
+          [(ngModel)]="credentials.password"
+        />
+      </div>
+      <div class="text-center">
+        <button
+          type="submit"
+          class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700"
+          >
+          Login
+        </button>
+      </div>
+      <div class="space-y-7 text-center">
+        <div><a routerLink="/register">Register an account</a></div>
+        <div><a routerLink="/reset-password">Forgot password?</a></div>
+      </div>
+    </form>
+  </div>
+</div>
