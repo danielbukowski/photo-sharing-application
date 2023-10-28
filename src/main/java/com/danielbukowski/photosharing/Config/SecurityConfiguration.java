@@ -39,12 +39,12 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/api/v3/accounts").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/images/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v3/accounts/email-verification").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v3/accounts/password-reset").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/v3/accounts/password-reset/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/csrf").permitAll()
+                        .requestMatchers(POST, "/api/v3/accounts").permitAll()
+                        .requestMatchers(GET, "/api/v1/images/**").permitAll()
+                        .requestMatchers(POST, "/api/v3/accounts/email-verification").permitAll()
+                        .requestMatchers(POST, "/api/v3/accounts/password-reset").permitAll()
+                        .requestMatchers(PUT, "/api/v3/accounts/password-reset/**").permitAll()
+                        .requestMatchers(GET, "/api/v1/csrf").permitAll()
                         .requestMatchers(
                                 "/v3/api-docs",
                                 "/v3/api-docs/**",
@@ -56,14 +56,15 @@ public class SecurityConfiguration {
                                 "/configuration/security").permitAll()
                         .anyRequest().authenticated()
                 )
+                .csrf(csrf ->
+                        csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                )
                 .sessionManagement(session -> {
                     session.maximumSessions(1).maxSessionsPreventsLogin(false);
-                    session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
-                    session.sessionFixation().newSession();
+                    session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
+                    session.sessionFixation().changeSessionId();
                 })
                 .authenticationProvider(authProvider())
-                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .and()
                 .cors(Customizer.withDefaults())
                 .httpBasic(h -> h.authenticationEntryPoint(authenticationEntryPointHandler))
                 .exceptionHandling(eH -> eH.accessDeniedHandler(authorizationDeniedHandler))
@@ -97,8 +98,7 @@ public class SecurityConfiguration {
                 AUTHORIZATION,
                 CONTENT_TYPE,
                 ACCEPT,
-                "X-XSRF-TOKEN"
-                )
+                "X-XSRF-TOKEN")
         );
 
         config.setAllowedMethods(asList(
