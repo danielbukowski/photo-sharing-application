@@ -26,11 +26,11 @@ public class EmailService {
         String text = """
                 Hi %s!<br><br>
                                 
-                This is your verification token: "%s" to complete your registration<br><br>
+                Click the link: "%s" to complete your registration<br><br>
                                 
                 Best regards,
                 XYZ
-                """.formatted(nickname, verificationToken);
+                """.formatted(nickname, "http://localhost/verify?token=" + verificationToken);
         try {
             MimeMessage mimeMessage = emailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
