@@ -4,7 +4,7 @@ import {
   HttpInterceptor,
   HttpRequest,
 } from '@angular/common/http';
-import { CsrfTokenService } from '../service/csrf-token.service';
+import { CsrfTokenService } from '../csrf-token/csrf-token.service';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
