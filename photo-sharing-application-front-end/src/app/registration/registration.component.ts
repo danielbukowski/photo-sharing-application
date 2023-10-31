@@ -28,14 +28,13 @@ export class RegistrationComponent {
 
   onSubmit(form: NgForm): void {
     this.isValid = true;
-    this.registrationService.register(this.registrationForm).subscribe({
+    this.registrationService.registerAccount(this.registrationForm).subscribe({
       next: (data) => this.router.navigate(['/login']),
       error: (err) => {
         if(err.status == "400") {
         this.formErrors = err.error.fieldNames;
         this.isValid = false;
         }
-        
       },
     });
   }
