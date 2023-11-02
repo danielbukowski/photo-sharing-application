@@ -1,7 +1,7 @@
 package com.danielbukowski.photosharing.Service;
 
-import com.danielbukowski.photosharing.Dto.PasswordChangeRequest;
 import com.danielbukowski.photosharing.Dto.PasswordResetRequest;
+import com.danielbukowski.photosharing.Dto.PasswordResetTokenRequest;
 import com.danielbukowski.photosharing.Entity.Account;
 import com.danielbukowski.photosharing.Entity.PasswordResetToken;
 import com.danielbukowski.photosharing.Exception.AccountNotFoundException;
@@ -53,7 +53,7 @@ public class PasswordResetTokenService {
     }
 
     @Transactional
-    public void changePasswordByPasswordResetTokenId(UUID passwordResetTokenId, PasswordChangeRequest passwordChangeRequest) {
+    public void changePasswordByPasswordResetTokenId(UUID passwordResetTokenId, PasswordResetTokenRequest passwordResetTokenRequest) {
         PasswordResetToken passwordResetToken = passwordResetTokenRepository.findById(passwordResetTokenId)
                 .orElseThrow(() -> new InvalidTokenException("The provided token is not valid"));
 
@@ -63,7 +63,7 @@ public class PasswordResetTokenService {
         log.info("Changing an account password with a password reset token {}", passwordResetToken);
         passwordResetToken.setAlreadyUsed(true);
         Account account = passwordResetToken.getAccount();
-        account.setPassword(passwordEncoder.encode(passwordChangeRequest.newPassword()));
+        account.setPassword(passwordEncoder.encode(passwordResetTokenRequest.newPassword()));
 
         emailService.sendEmailForPasswordResetNotification(
                 account.getEmail(),

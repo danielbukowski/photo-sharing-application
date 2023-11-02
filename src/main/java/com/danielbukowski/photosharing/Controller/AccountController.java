@@ -309,8 +309,8 @@ public class AccountController {
     )
     @PutMapping("/password-reset")
     public ResponseEntity<?> changePasswordByPasswordResetToken(@RequestParam UUID token,
-                                                                @RequestBody @Valid PasswordChangeRequest passwordChangeRequest) {
-        passwordResetTokenService.changePasswordByPasswordResetTokenId(token, passwordChangeRequest);
+                                                                @RequestBody @Valid PasswordResetTokenRequest passwordResetTokenRequest) {
+        passwordResetTokenService.changePasswordByPasswordResetTokenId(token, passwordResetTokenRequest);
         return ResponseEntity
                 .noContent()
                 .build();
