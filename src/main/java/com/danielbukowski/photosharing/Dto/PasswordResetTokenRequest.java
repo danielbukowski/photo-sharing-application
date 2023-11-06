@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.Length;
 
-public record PasswordResetRequest(
+public record PasswordResetTokenRequest(
         @NotBlank(message = "Should not be blank")
         @Length(min = 8, max = 32, message = "Should be 8-32 characters long")
         @Pattern.List({

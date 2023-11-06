@@ -691,7 +691,7 @@ class AccountControllerIT {
     @Test
     void CreateResetPasswordToken_UserIsNotAuthenticated_Returns204HttpStatusCode() throws Exception {
         //given
-        var passwordResetRequest = new PasswordResetRequest("email@gmail.com");
+        var passwordResetRequest = new PasswordResetEmailRequest("email@gmail.com");
 
         //when
         mockMvc.perform(post("/api/v3/accounts/password-reset")
@@ -705,7 +705,7 @@ class AccountControllerIT {
     @Test
     void CreateResetPasswordToken_RequestBodyIsBlank_Returns400HttpStatusCode() throws Exception {
         //given
-        var passwordResetRequest = new PasswordResetRequest("");
+        var passwordResetRequest = new PasswordResetEmailRequest("");
 
         //when
         mockMvc.perform(post("/api/v3/accounts/password-reset")
