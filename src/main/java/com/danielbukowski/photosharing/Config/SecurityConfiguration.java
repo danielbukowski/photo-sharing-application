@@ -6,7 +6,6 @@ import com.danielbukowski.photosharing.Service.UserDetailsService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -92,8 +91,7 @@ public class SecurityConfiguration {
 //        for local development
         config.addAllowedOrigin("http://localhost:4200");
 //        for environment built in docker
-        config.addAllowedOrigin("http://front-end:80");
-
+        config.addAllowedOrigin("http://localhost");
         config.setAllowedHeaders(asList(
                 AUTHORIZATION,
                 CONTENT_TYPE,
