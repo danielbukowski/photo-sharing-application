@@ -1,5 +1,5 @@
 # Photo Sharing Application
-The project is an API which allows to create accounts on which you can save your images as available only to you or available to other users. 
+The project is a full-stack application which allows to create accounts on which you can save your images as available only to you or available to other users. 
 
 
 ## Status
