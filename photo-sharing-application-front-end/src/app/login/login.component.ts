@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Credentials } from '../model/credentials';
 import { LoginService } from './login.service';
 import { Router } from '@angular/router';
+import { AuthService } from '../auth/auth.service';
+import { CsrfTokenService } from '../csrf-token/csrf-token.service';
 
 @Component({
   selector: 'app-login',
@@ -10,20 +12,24 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent {
   credentials: Credentials = {} as Credentials;
-  hasBadCredentials: boolean = false;
+  haveBadCredentials: boolean = false;
 
   constructor(
     private loginService: LoginService,
-    private router: Router
+    private router: Router,
+    private csrfToken: CsrfTokenService,
+    private authService: AuthService
   ) {}
 
   onSubmit(): void {
     this.loginService.login(this.credentials).subscribe({
-      next: (data) => this.router.navigateByUrl('/home'),
-      error: (err) => {(this.hasBadCredentials = true)
-        console.log(err);
-        
-      
+      next: (d) => {
+        this.csrfToken.generateCsrfToken();
+        this.authService.updateAuthentication();
+        this.router.navigateByUrl('/home');
+      },
+      error: (e) => {
+        this.haveBadCredentials = true;
       },
     });
   }
