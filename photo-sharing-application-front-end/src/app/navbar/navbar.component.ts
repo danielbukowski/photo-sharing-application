@@ -1,4 +1,8 @@
-import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, OnChanges, OnInit, Signal, SimpleChanges, WritableSignal, signal } from '@angular/core';
+import { LogoutService } from '../logout/logout.service';
+import { AuthService } from '../auth/auth.service';
+import { Observable } from 'rxjs';
+import { Account } from '../model/account';
 
 @Component({
   selector: 'app-navbar',
@@ -6,8 +10,16 @@ import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
   styleUrls: ['./navbar.component.css'],
 })
 export class NavbarComponent implements OnInit {
+  accountDetails: Signal<Account | undefined> = signal(undefined);
+
+  constructor(public logoutService: LogoutService, public authService: AuthService) { }
 
   ngOnInit(): void {
+    this.initThemeButton();
+    this.accountDetails = this.authService.getAccountDetails();
+  }
+
+  private initThemeButton() {
     if (localStorage.getItem('theme') === 'dark') {
       document.getElementById('moon-icon')?.toggleAttribute('hidden');
     } else {

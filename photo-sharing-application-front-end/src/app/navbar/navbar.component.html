@@ -2,7 +2,7 @@
   class="bg-white dark:bg-gray-900 sticky w-full z-20 top-0 left-0 mb-0 pb-0"
 >
   <div
-    class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-3"
+    class="flex flex-wrap items-center justify-between mx-auto p-3 shadow-md"
   >
     <a class="flex items-center">
       <span
@@ -40,13 +40,22 @@
             >Home</a
           >
         </li>
-        <li>
+        <li *ngIf="!(this.authService.isAuthenticated()); else logout">
           <a
-            routerLink="/login-page"
+            routerLink="/login"
             class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white  dark:hover:text-white  md:dark:hover:bg-transparent dark:bg-gray-900"
             >Log in</a
           >
         </li>
+        <ng-template #logout>
+        <li >
+          <a
+            (click)="this.logoutService.logout()"
+            class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white  dark:hover:text-white  md:dark:hover:bg-transparent dark:bg-gray-900"
+            >Log out</a
+          >
+        </li>
+      </ng-template>
       </ul>
     </div>
   </div>
