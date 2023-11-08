@@ -7,3 +7,6 @@ spring:
         generate_statistics: true
   session:
     store-type: none
+server:
+  address: localhost
+  port: 8081

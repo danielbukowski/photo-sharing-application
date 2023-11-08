@@ -38,9 +38,9 @@ class EmailVerificationTokenRepositoryIT {
 
     @Sql(
             scripts = "classpath:db/populate_test_data.sql",
-            statements = "INSERT INTO email_verification_tokens(id, account_id, expiration_date) " +
+            statements = "INSERT INTO email_verification_tokens(email_verification_token_id, account_id, expiration_date) " +
                     "VALUES ('368b8a28-0cc4-4d8f-b8ca-19e7e10ec16e', '4e280c33-518e-444f-a541-0cc4b14b5b05', NOW()); " +
-                    "INSERT INTO email_verification_tokens(id, account_id, expiration_date) " +
+                    "INSERT INTO email_verification_tokens(email_verification_token_id, account_id, expiration_date) " +
                     "VALUES ('c96c0426-6b26-46f8-a1c8-eadeafaefdd5', '6d1afd8a-f8cf-4dd9-b105-fd4b9f81a8eb', NOW()); "
     )
     @Test
@@ -59,9 +59,9 @@ class EmailVerificationTokenRepositoryIT {
 
     @Sql(
             scripts = "classpath:db/populate_test_data.sql",
-            statements = "INSERT INTO email_verification_tokens(id, account_id, expiration_date) " +
+            statements = "INSERT INTO email_verification_tokens(email_verification_token_id, account_id, expiration_date) " +
                     "VALUES ('368b8a28-0cc4-4d8f-b8ca-19e7e10ec16e', '4e280c33-518e-444f-a541-0cc4b14b5b05', NOW()); " +
-                    "INSERT INTO email_verification_tokens(id, account_id, expiration_date) " +
+                    "INSERT INTO email_verification_tokens(email_verification_token_id, account_id, expiration_date) " +
                     "VALUES ('c96c0426-6b26-46f8-a1c8-eadeafaefdd5', '6d1afd8a-f8cf-4dd9-b105-fd4b9f81a8eb', NOW()); "
     )
     @Test
