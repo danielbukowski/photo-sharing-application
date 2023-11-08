@@ -1,7 +1,7 @@
 package com.danielbukowski.photosharing.Service;
 
-import com.danielbukowski.photosharing.Dto.PasswordChangeRequest;
-import com.danielbukowski.photosharing.Dto.PasswordResetRequest;
+import com.danielbukowski.photosharing.Dto.PasswordResetEmailRequest;
+import com.danielbukowski.photosharing.Dto.PasswordResetTokenRequest;
 import com.danielbukowski.photosharing.Entity.Account;
 import com.danielbukowski.photosharing.Entity.PasswordResetToken;
 import com.danielbukowski.photosharing.Enum.ExceptionMessageResponse;
@@ -57,7 +57,7 @@ class PasswordResetTokenServiceTest {
     @Test
     void CreatePasswordResetToken_AccountDoesNotExist_ThrowsException() {
         //given
-        var passwordResetRequest = new PasswordResetRequest("myemail3@mail.com");
+        var passwordResetRequest = new PasswordResetEmailRequest("myemail3@mail.com");
         given(accountRepository.findByEmailIgnoreCase(passwordResetRequest.email()))
                 .willReturn(Optional.empty());
 
@@ -83,7 +83,7 @@ class PasswordResetTokenServiceTest {
         var passwordResetToken = PasswordResetToken.builder()
                 .id(new UUID(5,5))
                 .build();
-        var passwordResetRequest = new PasswordResetRequest("myemail3@mail.com");
+        var passwordResetRequest = new PasswordResetEmailRequest("myemail3@mail.com");
         given(accountRepository.findByEmailIgnoreCase(passwordResetRequest.email()))
                 .willReturn(Optional.of(account));
         given(passwordResetTokenRepository.save(any()))
@@ -109,8 +109,8 @@ class PasswordResetTokenServiceTest {
     void ChangePasswordByPasswordResetTokenId_PasswordResetTokenDoesNotExist_ThrowsException() {
         //given
         var passwordResetTokenId = new UUID(1,1);
-        var passwordChangeRequest = new PasswordChangeRequest(
-                "", ""
+        var passwordResetTokenRequest = new PasswordResetTokenRequest(
+                ""
         );
         given(passwordResetTokenRepository.findById(passwordResetTokenId))
                 .willReturn(Optional.empty());
@@ -118,7 +118,7 @@ class PasswordResetTokenServiceTest {
         //when
         var actualException = assertThrows(
                 InvalidTokenException.class,
-                () -> passwordResetTokenService.changePasswordByPasswordResetTokenId(passwordResetTokenId, passwordChangeRequest)
+                () -> passwordResetTokenService.changePasswordByPasswordResetTokenId(passwordResetTokenId, passwordResetTokenRequest)
         );
 
         //then
@@ -133,8 +133,8 @@ class PasswordResetTokenServiceTest {
                 .isAlreadyUsed(true)
                 .build();
         var passwordResetTokenId = new UUID(1,1);
-        var passwordChangeRequest = new PasswordChangeRequest(
-                "", ""
+        var passwordResetTokenRequest = new PasswordResetTokenRequest(
+                ""
         );
         given(passwordResetTokenRepository.findById(passwordResetTokenId))
                 .willReturn(Optional.of(passwordResetToken));
@@ -142,7 +142,7 @@ class PasswordResetTokenServiceTest {
         //when
         var actualException = assertThrows(
                 InvalidTokenException.class,
-                () -> passwordResetTokenService.changePasswordByPasswordResetTokenId(passwordResetTokenId, passwordChangeRequest)
+                () -> passwordResetTokenService.changePasswordByPasswordResetTokenId(passwordResetTokenId, passwordResetTokenRequest)
         );
 
         //then
@@ -160,8 +160,8 @@ class PasswordResetTokenServiceTest {
                 .expirationDate(now.minusSeconds(1).toLocalDateTime())
                 .build();
         var passwordResetTokenId = new UUID(1,1);
-        var passwordChangeRequest = new PasswordChangeRequest(
-                "", ""
+        var passwordResetTokenRequest = new PasswordResetTokenRequest(
+                ""
         );
         given(passwordResetTokenRepository.findById(passwordResetTokenId))
                 .willReturn(Optional.of(passwordResetToken));
@@ -169,7 +169,7 @@ class PasswordResetTokenServiceTest {
         //when
         var actualException = assertThrows(
                 InvalidTokenException.class,
-                () -> passwordResetTokenService.changePasswordByPasswordResetTokenId(passwordResetTokenId, passwordChangeRequest)
+                () -> passwordResetTokenService.changePasswordByPasswordResetTokenId(passwordResetTokenId, passwordResetTokenRequest)
         );
 
         //then
@@ -193,14 +193,14 @@ class PasswordResetTokenServiceTest {
                 )
                 .build();
         var passwordResetTokenId = new UUID(1,1);
-        var passwordChangeRequest = new PasswordChangeRequest(
-                "32kndsa!2C", "6662kndsAAA!2C"
+        var passwordResetTokenRequest = new PasswordResetTokenRequest(
+                "32kndsa!2C"
         );
         given(passwordResetTokenRepository.findById(passwordResetTokenId))
                 .willReturn(Optional.of(passwordResetToken));
 
         //when
-        passwordResetTokenService.changePasswordByPasswordResetTokenId(passwordResetTokenId, passwordChangeRequest);
+        passwordResetTokenService.changePasswordByPasswordResetTokenId(passwordResetTokenId, passwordResetTokenRequest);
 
         //then
         verify(emailService, times(1))

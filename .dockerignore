@@ -1,0 +1,7 @@
+.idea
+.github
+./photo-sharing-application-front-end
+./redis
+./seaweedfs
+README.md
+./start-dev.bash

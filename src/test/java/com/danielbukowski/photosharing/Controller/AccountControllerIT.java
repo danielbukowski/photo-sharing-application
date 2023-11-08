@@ -691,12 +691,12 @@ class AccountControllerIT {
     @Test
     void CreateResetPasswordToken_UserIsNotAuthenticated_Returns204HttpStatusCode() throws Exception {
         //given
-        var passwordResetRequest = new PasswordResetRequest("email@gmail.com");
+        var passwordResetEmailRequest = new PasswordResetEmailRequest("email@gmail.com");
 
         //when
         mockMvc.perform(post("/api/v3/accounts/password-reset")
                         .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(passwordResetRequest))
+                        .content(objectMapper.writeValueAsString(passwordResetEmailRequest))
                 )
                 //then
                 .andExpect(status().is(204));
@@ -705,12 +705,12 @@ class AccountControllerIT {
     @Test
     void CreateResetPasswordToken_RequestBodyIsBlank_Returns400HttpStatusCode() throws Exception {
         //given
-        var passwordResetRequest = new PasswordResetRequest("");
+        var passwordResetEmailRequest = new PasswordResetEmailRequest("");
 
         //when
         mockMvc.perform(post("/api/v3/accounts/password-reset")
                         .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(passwordResetRequest))
+                        .content(objectMapper.writeValueAsString(passwordResetEmailRequest))
                 )
                 //then
                 .andExpect(status().is(400));
@@ -719,13 +719,13 @@ class AccountControllerIT {
     @Test
     void ChangeResetPasswordByPasswordResetTokenId_UserIsNotAuthenticated_Returns204HttpStatusCode() throws Exception {
         //given
-        var passwordChangeRequest = new PasswordChangeRequest("myOldpas0!d", "myn3Wpas0!d");
+        var passwordResetTokenRequest = new PasswordResetTokenRequest("myOldpas0!d");
 
         //when
         mockMvc.perform(put("/api/v3/accounts/password-reset")
                         .contentType(APPLICATION_JSON)
                         .param("token", new UUID(1, 1).toString())
-                        .content(objectMapper.writeValueAsString(passwordChangeRequest))
+                        .content(objectMapper.writeValueAsString(passwordResetTokenRequest))
                 )
                 //then
                 .andExpect(status().is(204));

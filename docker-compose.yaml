@@ -1,7 +1,8 @@
 version: '3.8'
 services:
   api:
-    build: .
+    build:
+      context: .
     container_name: api
     ports:
       - "8081:8081"
@@ -15,6 +16,15 @@ services:
       - backend_network
     env_file:
       - .dev.env
+  front-end:
+    build:
+      context: ./photo-sharing-application-front-end/
+    container_name: front-end
+    ports:
+      - "80:80"
+    restart: on-failure
+    depends_on:
+      - api
   postgres:
     image: postgres:alpine
     container_name: postgres

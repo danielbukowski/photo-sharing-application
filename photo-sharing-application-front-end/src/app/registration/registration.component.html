@@ -1,0 +1,66 @@
+<div
+  class="flex flex-col justify-center items-center h-screen bg-gray-100 dark:bg-gray-900"
+>
+  <div class="shadow-2xl p-5 bg-white dark:bg-gray-300">
+    <h1 class="text-center text-2xl text-blue-800 mb-3">
+      Register your account
+    </h1>
+    <form
+      class="flex flex-col space-y-5 text-center"
+      #form="ngForm"
+      (ngSubmit)="onSubmit(form)"
+    >
+      <div>
+        <div *ngIf="this.formErrors.nickname !== null">
+          <ul>
+            <li *ngFor="let reason of this.formErrors.nickname">{{reason}}</li>
+          </ul>
+        </div>
+        <input
+          type="text"
+          name="nickname"
+          id="nickname"
+          placeholder="Nickname"
+          [(ngModel)]="registrationForm.nickname"
+          class="border-b-2 border-blue-700 hover:outline-none focus:outline-none p-1"
+        />
+      </div>
+      <div>
+        <div *ngIf="this.formErrors.email">
+          <ul>
+            <li *ngFor="let reason of this.formErrors.email">{{reason}}</li>
+          </ul>
+        </div>
+        <input
+          type="text"
+          name="email"
+          id="email"
+          placeholder="Email"
+          [(ngModel)]="registrationForm.email"
+          class="border-b-2 border-blue-700 hover:outline-none focus:outline-none p-1"
+        />
+      </div>
+      <div>
+        <div *ngIf="this.formErrors.password">
+          <ul>
+            <li *ngFor="let reason of this.formErrors.password">{{reason}}</li>
+          </ul>
+        </div>
+        <input
+          type="password"
+          name="password"
+          id="password"
+          placeholder="Password"
+          [(ngModel)]="registrationForm.password"
+          class="border-b-2 border-blue-700 hover:outline-none focus:outline-none p-1"
+        />
+      </div>
+      <button
+        type="submit"
+        class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700"
+      >
+        Submit
+      </button>
+    </form>
+  </div>
+</div>
