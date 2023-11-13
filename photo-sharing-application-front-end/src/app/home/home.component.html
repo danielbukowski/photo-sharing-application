@@ -1,6 +1,16 @@
 <app-navbar></app-navbar>
-<main class=" dark:bg-blend-darken dark:bg-gray-700">
-    <div class="max-w-screen-2xl mx-auto h-screen dark:bg-gray-900 shadow-xl">
-        <p>Main v0.1.0</p>
-    </div>
+<main>
+  <div class="mx-6 pb-6">
+    <h1 class="text-4xl my-3 font-semibold">Latest images</h1>
+    <ul class="inline-flex flex-wrap gap-4 ">
+      <li
+      class="cursor-pointer flex-[auto]"
+      *ngFor="let imageId of listOfImagesAsIds">
+        <img
+        class="object-cover max-w-screen-lg min-w-full h-[300px] align-middle rounded-md "
+          src="http://localhost:8081/api/v1/images/{{ imageId }}"
+        />
+      </li>
+    </ul>
+  </div>
 </main>
