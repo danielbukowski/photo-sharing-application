@@ -1,6 +1,4 @@
-<nav
-  class="bg-white dark:bg-gray-700 border-gray-200 py-2 pl-60 shadow-md"
->
+<nav class="bg-white dark:bg-gray-700 py-2 mb-3 pl-60 shadow-md">
   <div class="flex flex-wrap items-center justify-between p-3">
     <div>
       <a class="flex items-center">
@@ -9,8 +7,8 @@
         >
       </a>
     </div>
-    <div class=" ">
-      <ul class="flex flex-row p-0 font-medium items-center mt-0">
+    <div>
+      <ul class="flex flex-row p-0 font-medium items-center mt-0 space-x-8">
         <li>
           <a
             routerLink="/home"
@@ -18,9 +16,21 @@
             >Home</a
           >
         </li>
+
+        <li *ngIf="this.authService.isAuthenticated()">
+            <a 
+            [ngStyle]="!this.accountDetails()?.isEmailVerified ? {pointerEvents: 'none', color: 'gray'} : {}"
+            href="/add-image">Add an image</a>
+        </li>
       </ul>
     </div>
-    <div class="flex">
+    <div class="flex items-center">
+      <div
+      *ngIf="this.authService.isAuthenticated() && !this.accountDetails()?.isEmailVerified"
+      class="p-3 mr-5 text-red-800 rounded-lg bg-red-200 dark:bg-gray-800 dark:text-red-500">
+        <span class="font-medium">Please verify your email address!</span>
+      </div>
+
       <button
         (click)="changeTheme()"
         type="button"
@@ -37,31 +47,29 @@
           ></path>
         </svg>
       </button>
+
       <ul class="flex flex-row font-medium items-center space-x-8">
-        <ng-template #authenticatedUserNavbar>
+        <li
+          *ngIf="this.authService.isAuthenticated(); else nonAuthenticatedView"
+        >
+          <a
+            (click)="this.logoutService.logout()"
+            class="block hover:text-red-800 cursor-pointer"
+            >Log out</a
+          >
+        </li>
+        <ng-template #nonAuthenticatedView>
           <li>
-            <a
-              (click)="this.logoutService.logout()"
-              class="block dark:hover:text-gray-300"
-              >Log out</a
+            <a routerLink="/login" class="block dark:hover:text-gray-300"
+              >Log in</a
+            >
+          </li>
+          <li>
+            <a routerLink="/register" class="block dark:hover:text-gray-300"
+              >Register</a
             >
           </li>
         </ng-template>
-        <li
-          *ngIf="
-            !this.authService.isAuthenticated();
-            else authenticatedUserNavbar
-          "
-        >
-          <a routerLink="/login" class="block dark:hover:text-gray-300"
-            >Log in</a
-          >
-        </li>
-        <li>
-          <a routerLink="/register" class="block dark:hover:text-gray-300"
-            >Register</a
-          >
-        </li>
       </ul>
     </div>
   </div>
