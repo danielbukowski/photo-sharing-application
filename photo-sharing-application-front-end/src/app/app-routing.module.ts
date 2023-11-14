@@ -6,6 +6,7 @@ import { LoginComponent } from './login/login.component';
 import { ForgottenPasswordComponent } from './forgotten-password/forgotten-password.component';
 import { RegistrationComponent } from './registration/registration.component';
 import { VerificationComponent } from './verification/verification.component';
+import { AddImagePageComponent } from './add-image-page/add-image-page.component';
 
 const routes: Routes = [
   {
@@ -27,6 +28,10 @@ const routes: Routes = [
   {
     path: 'verify',
     component: VerificationComponent,
+  },
+  {
+    path: 'add-image',
+    component: AddImagePageComponent,
   },
   {
     path: '',
