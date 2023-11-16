@@ -9,6 +9,7 @@
         <img
         class="object-cover max-w-screen-lg min-w-full h-[300px] align-middle rounded-md "
           src="http://localhost:8081/api/v1/images/{{ imageId }}"
+          [routerLink]="['/image',  imageId]"
         />
       </li>
     </ul>
