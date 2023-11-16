@@ -8,6 +8,7 @@ import { RegistrationComponent } from './registration/registration.component';
 import { VerificationComponent } from './verification/verification.component';
 import { AddImagePageComponent } from './add-image-page/add-image-page.component';
 import { emailVerificationGuard } from './guard/guards';
+import { ImageDetailsComponent } from './image-details/image-details.component';
 
 const routes: Routes = [
   {
@@ -34,6 +35,10 @@ const routes: Routes = [
     path: 'add-image',
     component: AddImagePageComponent,
     canActivate: [emailVerificationGuard]
+  },
+  {
+    path: 'image/:id',
+    component: ImageDetailsComponent,
   },
   {
     path: '',
