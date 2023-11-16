@@ -7,6 +7,7 @@ import { ForgottenPasswordComponent } from './forgotten-password/forgotten-passw
 import { RegistrationComponent } from './registration/registration.component';
 import { VerificationComponent } from './verification/verification.component';
 import { AddImagePageComponent } from './add-image-page/add-image-page.component';
+import { emailVerificationGuard } from './guard/guards';
 
 const routes: Routes = [
   {
@@ -32,6 +33,7 @@ const routes: Routes = [
   {
     path: 'add-image',
     component: AddImagePageComponent,
+    canActivate: [emailVerificationGuard]
   },
   {
     path: '',
