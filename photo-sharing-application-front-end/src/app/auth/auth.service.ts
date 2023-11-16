@@ -1,7 +1,6 @@
-import { Injectable, Signal, WritableSignal, signal } from '@angular/core';
+import { Injectable, Signal, signal } from '@angular/core';
 import { Account } from '../model/account';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, filter, map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
