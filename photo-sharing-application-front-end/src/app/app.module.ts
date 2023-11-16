@@ -17,6 +17,7 @@ import { HttpCsrfTokenInterceptor } from './Interceptor/HttpCsrfTokenInterceptor
 import { ForgottenPasswordComponent } from './forgotten-password/forgotten-password.component';
 import { AddImagePageComponent } from './add-image-page/add-image-page.component';
 import { AuthService } from './auth/auth.service';
+import { ImageDetailsComponent } from './image-details/image-details.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { AuthService } from './auth/auth.service';
     ForgottenPasswordComponent,
     RegistrationComponent,
     VerificationComponent,
-    AddImagePageComponent
+    AddImagePageComponent,
+    ImageDetailsComponent
   ],
   imports: [BrowserModule, AppRoutingModule, HttpClientModule, FormsModule],
   providers: [
