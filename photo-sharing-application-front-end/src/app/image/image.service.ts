@@ -29,4 +29,9 @@ export class ImageService {
       formData
     );
   }
+
+  getNumberOfLikesFromImage(imageId: string): Observable<any> {
+    return this.http.get(`http://localhost:8081/api/v1/images/${imageId}/likes` );
+  }
+
 }
