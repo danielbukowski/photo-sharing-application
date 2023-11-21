@@ -41,6 +41,22 @@ export class ImageDetailsComponent implements OnInit {
       },
     });
 
+    this.updatePageContent(0);
+  }
+
+  private updatePageContent(pageNumber: number) {
+    this.commentPage$ = this.commentService.getCommentsFromImage(this.IdOfCurrentDisplayedImage(), pageNumber);
+  }
+
+
+  fetchNextPageOfComments(currentPageNumber: number, isLast: boolean) {
+    if(isLast) return;
+    this.updatePageContent(currentPageNumber + 1);
+  }
+
+  fetchPreviousPageOfComments(currentPagenumber: number) {
+    if(currentPagenumber <= 0) return;
+    this.updatePageContent(currentPagenumber - 1);
   }
 
 }
