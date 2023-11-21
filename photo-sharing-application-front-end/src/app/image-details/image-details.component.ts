@@ -48,6 +48,21 @@ export class ImageDetailsComponent implements OnInit {
     this.commentPage$ = this.commentService.getCommentsFromImage(this.IdOfCurrentDisplayedImage(), pageNumber);
   }
 
+  addCommentToImage(textAreaElement:  HTMLTextAreaElement): void {
+    if(textAreaElement.value === "") return;
+
+    this.commentService
+      .addCommentToImage(textAreaElement.value, this.IdOfCurrentDisplayedImage())
+      .subscribe({
+        next: () => {
+    textAreaElement.value = "";
+        },
+        error: () => {
+
+        }
+      });
+
+  }
 
   fetchNextPageOfComments(currentPageNumber: number, isLast: boolean) {
     if(isLast) return;
