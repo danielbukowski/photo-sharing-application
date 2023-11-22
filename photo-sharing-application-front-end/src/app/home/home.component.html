@@ -1,44 +1,43 @@
 <app-navbar></app-navbar>
 <main class="min-h-screen">
-  <div class="mx-6 pb-6">
+  <div class="mx-6 pb-6" *ngIf="imagePage$ | async as imagePage">
     <h2 class="text-4xl my-3 font-semibold">Latest images</h2>
-    <ul class="inline-flex flex-wrap gap-4 ">
+    <ul class="inline-flex flex-wrap gap-4">
       <li
-      class="cursor-pointer flex-[auto]"
-      *ngFor="let imageId of listOfImagesAsIds">
+        class="cursor-pointer flex-[auto]"
+        *ngFor="let imageId of imagePage.data"
+      >
         <img
-        class="object-cover max-w-screen-lg min-w-full h-[300px] align-middle rounded-md "
+          class="object-cover max-w-screen-lg min-w-full h-[300px] align-middle rounded-md"
           src="http://localhost:8081/api/v1/images/{{ imageId }}"
-          [routerLink]="['/image',  imageId]"
+          [routerLink]="['/image', imageId]"
         />
       </li>
     </ul>
-  <div class="flex flex-col items-center py-6">
-    <span class="text-sm text-gray-700 dark:text-gray-400">
-      Showing
-      <span class="font-semibold text-gray-900">
-
+    <div class="flex flex-col items-center py-6">
+      <span class="text-sm text-gray-700 dark:text-gray-400">
+        Showing
+        <span class="font-semibold text-gray-900">
+          {{ imagePage.totalPages ? imagePage.currentPage + 1 : 0 }}
+        </span>
+        page out of
+        <span class="font-semibold text-gray-900">
+          {{ imagePage.totalPages }}
+        </span>
+        pages
       </span>
-      page out of
-      <span class="font-semibold text-gray-900">
-
-      </span>
-      pages
-    </span>
-    <div class="inline-flex mt-2">
-      <button
-
-        class="flex items-center justify-center px-4 h-10 text-base font-medium text-white bg-gray-800 rounded-s hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-      >
-        Prev
-      </button>
-      <button
-
-        class="flex items-center justify-center px-4 h-10 text-base font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded-e hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-      >
-        Next
-      </button>
+      <div class="inline-flex mt-2">
+        <button
+          class="flex items-center justify-center px-4 h-10 text-base font-medium text-white bg-gray-800 rounded-s hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+        >
+          Prev
+        </button>
+        <button
+          class="flex items-center justify-center px-4 h-10 text-base font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded-e hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+        >
+          Next
+        </button>
+      </div>
     </div>
-  </div>
   </div>
 </main>
