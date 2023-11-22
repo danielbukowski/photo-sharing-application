@@ -1,7 +1,7 @@
 <app-navbar></app-navbar>
 <main class="min-h-screen">
   <div class="mx-6 pb-6">
-    <h1 class="text-4xl my-3 font-semibold">Latest images</h1>
+    <h2 class="text-4xl my-3 font-semibold">Latest images</h2>
     <ul class="inline-flex flex-wrap gap-4 ">
       <li
       class="cursor-pointer flex-[auto]"
@@ -13,5 +13,32 @@
         />
       </li>
     </ul>
+  <div class="flex flex-col items-center py-6">
+    <span class="text-sm text-gray-700 dark:text-gray-400">
+      Showing
+      <span class="font-semibold text-gray-900">
+
+      </span>
+      page out of
+      <span class="font-semibold text-gray-900">
+
+      </span>
+      pages
+    </span>
+    <div class="inline-flex mt-2">
+      <button
+
+        class="flex items-center justify-center px-4 h-10 text-base font-medium text-white bg-gray-800 rounded-s hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+      >
+        Prev
+      </button>
+      <button
+
+        class="flex items-center justify-center px-4 h-10 text-base font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded-e hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+      >
+        Next
+      </button>
+    </div>
+  </div>
   </div>
 </main>
