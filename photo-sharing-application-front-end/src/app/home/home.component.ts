@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ImageService } from '../image/image.service';
+import { Observable } from 'rxjs';
+import { Page } from '../model/page';
 
 @Component({
   selector: 'app-home',
@@ -8,15 +10,12 @@ import { ImageService } from '../image/image.service';
 })
 export class HomeComponent implements OnInit {
 
-  listOfImagesAsIds!: Array<string>;
+  imagePage$!: Observable<Page<String>>;
 
   constructor(private imageService: ImageService) { }
 
   ngOnInit(): void {
-    this.imageService.getLatestImagesInFormOfIdList()
-    .subscribe({
-      next: d => this.listOfImagesAsIds = d.data
-    });
+    this.imagePage$ = this.imageService.getPageOfLatestImages(0);
   }
 
 }
