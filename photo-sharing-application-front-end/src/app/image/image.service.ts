@@ -9,7 +9,7 @@ import { ImageDetailsPostRequest } from '../model/image-details-post-request';
 export class ImageService {
   constructor(private http: HttpClient) {}
 
-  getLatestImagesInFormOfIdList(): Observable<any> {
+  getPageOfLatestImages(): Observable<any> {
     return this.http.get('http://localhost:8081/api/v1/images');
   }
 
