@@ -18,4 +18,19 @@ export class HomeComponent implements OnInit {
     this.imagePage$ = this.imageService.getPageOfLatestImages(0);
   }
 
+  private updatePageContent(pageNumber: number) {
+    this.imagePage$ = this.imageService.getPageOfLatestImages(pageNumber);
+  }
+
+  
+  fetchNextPageOfComments(currentPageNumber: number, isLast: boolean) {
+    if(isLast) return;
+    this.updatePageContent(currentPageNumber + 1);
+  }
+
+  fetchPreviousPageOfComments(currentPagenumber: number) {
+    if(currentPagenumber <= 0) return;
+    this.updatePageContent(currentPagenumber - 1);
+  }
+
 }
