@@ -1,19 +1,38 @@
-<nav
-  class="bg-white dark:bg-gray-900 sticky w-full z-20 top-0 left-0 mb-0 pb-0"
->
-  <div
-    class="flex flex-wrap items-center justify-between mx-auto p-3 shadow-md"
-  >
-    <a class="flex items-center">
-      <span
-        class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"
-        >Photo Sharing Application</span
-      >
-    </a>
-    <div
-      class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
-      id="navbar-sticky"
-    >
+<nav class="bg-white dark:bg-gray-700 py-2  pl-60 shadow-md">
+  <div class="flex flex-wrap items-center justify-between p-3">
+    <div>
+      <a class="flex items-center">
+        <span class="self-center text-2xl font-semibold whitespace-nowrap"
+          >Photo Sharing Application</span
+        >
+      </a>
+    </div>
+    <div>
+      <ul class="flex flex-row p-0 font-medium items-center mt-0 space-x-8">
+        <li>
+          <a
+            routerLink="/home"
+            class="block p-0 dark:hover:text-gray-300 dark:bg-gray-700"
+            >Home</a
+          >
+        </li>
+
+        <li *ngIf="this.authService.isAuthenticated()">
+          <span [ngClass]="!this.accountDetails()?.isEmailVerified ? 'cursor-not-allowed' : ''">
+            <a 
+            [ngClass]="!this.accountDetails()?.isEmailVerified ? 'pointer-events-none text-gray-400' : ''"
+            href="/add-image">Add an image</a>
+        </span>
+        </li>
+      </ul>
+    </div>
+    <div class="flex items-center">
+      <div
+      *ngIf="this.authService.isAuthenticated() && !this.accountDetails()?.isEmailVerified"
+      class="p-3 mr-5 text-red-800 rounded-lg bg-red-200 dark:bg-gray-800 dark:text-red-500">
+        <span class="font-medium">Please verify your email address!</span>
+      </div>
+
       <button
         (click)="changeTheme()"
         type="button"
@@ -30,32 +49,29 @@
           ></path>
         </svg>
       </button>
-      <ul
-        class="flex flex-col p-4 md:p-0 mt-4 font-medium border items-center border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white dark:bg-gray-900 "
-      >
-        <li>
-          <a
-            routerLink="/home"
-            class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white  dark:hover:text-white md:dark:hover:bg-transparent dark:bg-gray-900  "
-            >Home</a
-          >
-        </li>
-        <li *ngIf="!(this.authService.isAuthenticated()); else logout">
-          <a
-            routerLink="/login"
-            class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white  dark:hover:text-white  md:dark:hover:bg-transparent dark:bg-gray-900"
-            >Log in</a
-          >
-        </li>
-        <ng-template #logout>
-        <li >
+
+      <ul class="flex flex-row font-medium items-center space-x-8">
+        <li
+          *ngIf="this.authService.isAuthenticated(); else nonAuthenticatedView"
+        >
           <a
             (click)="this.logoutService.logout()"
-            class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white  dark:hover:text-white  md:dark:hover:bg-transparent dark:bg-gray-900"
+            class="block hover:text-red-800 cursor-pointer"
             >Log out</a
           >
         </li>
-      </ng-template>
+        <ng-template #nonAuthenticatedView>
+          <li>
+            <a routerLink="/login" class="block dark:hover:text-gray-300"
+              >Log in</a
+            >
+          </li>
+          <li>
+            <a routerLink="/register" class="block dark:hover:text-gray-300"
+              >Register</a
+            >
+          </li>
+        </ng-template>
       </ul>
     </div>
   </div>

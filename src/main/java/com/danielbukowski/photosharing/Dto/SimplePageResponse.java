@@ -7,5 +7,5 @@ public record SimplePageResponse<T>(
         List<T> data,
         int currentPage,
         int totalPages,
-        boolean last) {
+        boolean isLast) {
 }

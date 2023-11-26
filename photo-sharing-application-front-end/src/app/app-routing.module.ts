@@ -6,6 +6,9 @@ import { LoginComponent } from './login/login.component';
 import { ForgottenPasswordComponent } from './forgotten-password/forgotten-password.component';
 import { RegistrationComponent } from './registration/registration.component';
 import { VerificationComponent } from './verification/verification.component';
+import { AddImagePageComponent } from './add-image-page/add-image-page.component';
+import { emailVerificationGuard } from './guard/guards';
+import { ImageDetailsComponent } from './image-details/image-details.component';
 
 const routes: Routes = [
   {
@@ -29,6 +32,15 @@ const routes: Routes = [
     component: VerificationComponent,
   },
   {
+    path: 'add-image',
+    component: AddImagePageComponent,
+    canActivate: [emailVerificationGuard]
+  },
+  {
+    path: 'image/:id',
+    component: ImageDetailsComponent,
+  },
+  {
     path: '',
     redirectTo: '/home',
     pathMatch: 'full',
@@ -40,7 +52,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, {scrollPositionRestoration: 'enabled'})],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}
