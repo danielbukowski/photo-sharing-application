@@ -11,7 +11,7 @@ import { PasswordResetComponent } from './password-reset/password-reset.componen
 import { RegistrationComponent } from './registration/registration.component';
 import { VerificationComponent } from './verification/verification.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpCookieInterceptor } from './Interceptor/HttpCookieInterceptor';
 import { HttpCsrfTokenInterceptor } from './Interceptor/HttpCsrfTokenInterceptor';
 import { ForgottenPasswordComponent } from './forgotten-password/forgotten-password.component';
@@ -33,7 +33,7 @@ import { ImageDetailsComponent } from './image-details/image-details.component';
     AddImagePageComponent,
     ImageDetailsComponent
   ],
-  imports: [BrowserModule, AppRoutingModule, HttpClientModule, FormsModule],
+  imports: [BrowserModule, AppRoutingModule, HttpClientModule, FormsModule, ReactiveFormsModule],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
