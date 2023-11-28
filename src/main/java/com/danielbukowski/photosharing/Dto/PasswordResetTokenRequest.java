@@ -5,13 +5,13 @@ import jakarta.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.Length;
 
 public record PasswordResetTokenRequest(
-        @NotBlank(message = "Should not be blank")
-        @Length(min = 8, max = 32, message = "Should be 8-32 characters long")
+        @NotBlank(message = "Not be blank")
+        @Length(min = 8, max = 32, message = "At least 8 to 32 characters long")
         @Pattern.List({
-                @Pattern(regexp = ".*[a-z].*", message = "Should have one lowercase letter"),
-                @Pattern(regexp = ".*[A-Z].*", message = "Should have one uppercase letter"),
-                @Pattern(regexp = ".*[@$!%*?&].*", message = "Should have one special character(@$!%*?&)"),
-                @Pattern(regexp = ".*\\d.*", message = "Should have one digit from 1 to 9"),
+                @Pattern(regexp = ".*[a-z].*", message = "At least one lowercase letter"),
+                @Pattern(regexp = ".*[A-Z].*", message = "At least one uppercase letter"),
+                @Pattern(regexp = ".*[@$!%*?&].*", message = "At least one special character(@$!%*?&)"),
+                @Pattern(regexp = ".*\\d.*", message = "At least one digit from 1 to 9"),
         })
         String newPassword) {
 }
