@@ -1,41 +1,71 @@
-import { Component } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { RegistrationService } from './registration.service';
 import { Router } from '@angular/router';
-import { RegistrationForm } from '../model/registration-form';
-import { FormErrors } from '../model/form-errors';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-register',
   templateUrl: './registration.component.html',
   styleUrls: ['./registration.component.css'],
 })
-export class RegistrationComponent {
-  registrationForm: RegistrationForm = {
-    nickname: '',
-    email: '',
-    password: '',
+export class RegistrationComponent implements OnInit, OnDestroy {
+  registrationForm!: FormGroup;
+  errorsInForm = {
+    nickname:  [] as string[],
+    email: [] as string[],
+    password: [] as string[]
   };
-
-  formErrors = {} as FormErrors;
-
-  isValid = true;
+  generalErrorReason!: string;
+  isBeingProcessed$: Observable<boolean>;
+  private _isBeingProcessed$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   constructor(
     private registrationService: RegistrationService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private fb: FormBuilder
+  ) {
+    this.isBeingProcessed$ = this._isBeingProcessed$.asObservable();
+  }
 
-  onSubmit(form: NgForm): void {
-    this.isValid = true;
-    this.registrationService.registerAccount(this.registrationForm).subscribe({
-      next: (data) => this.router.navigate(['/login']),
-      error: (err) => {
-        if(err.status == "400") {
-        this.formErrors = err.error.fieldNames;
-        this.isValid = false;
-        }
-      },
+  ngOnInit(): void {
+    this.registrationForm = this.fb.group({
+      nickname: ['', Validators.required],
+      email: ['', Validators.required],
+      password: ['', Validators.required]
     });
+  }
+
+  ngOnDestroy(): void {
+    this._isBeingProcessed$.unsubscribe();
+  }
+
+  private resetErrorMessages() {
+    this.errorsInForm = {
+      nickname: [],
+      email: [],
+      password: []
+    };
+    this.generalErrorReason = "";
+  }
+
+  onSubmit(): void {
+    this.resetErrorMessages();
+    this._isBeingProcessed$.next(true);
+    this.registrationService
+      .registerAccount(this.registrationForm.value)
+      .subscribe({
+        next: (d) => this.router.navigate(['/login']),
+        error: (e) => {
+          if (e.error.fieldNames) {
+            this.errorsInForm.nickname.push(...e.error.fieldNames.nickname || []);
+            this.errorsInForm.email.push(...e.error.fieldNames.email || []);
+            this.errorsInForm.password.push(...e.error.fieldNames.password || []);
+          } else {
+            this.generalErrorReason = e.error.reason;
+          }
+          this._isBeingProcessed$.next(false);
+        }
+      });
   }
 }
