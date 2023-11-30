@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RegistrationService } from './registration.service';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -17,16 +17,13 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     password: [] as string[]
   };
   generalErrorReason!: string;
-  isBeingProcessed$: Observable<boolean>;
-  private _isBeingProcessed$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  isBeingProcessed$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   constructor(
     private registrationService: RegistrationService,
     private router: Router,
     private fb: FormBuilder
-  ) {
-    this.isBeingProcessed$ = this._isBeingProcessed$.asObservable();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.registrationForm = this.fb.group({
@@ -37,7 +34,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this._isBeingProcessed$.unsubscribe();
+    this.isBeingProcessed$.unsubscribe();
   }
 
   private resetErrorMessages() {
@@ -51,11 +48,11 @@ export class RegistrationComponent implements OnInit, OnDestroy {
 
   onSubmit(): void {
     this.resetErrorMessages();
-    this._isBeingProcessed$.next(true);
+    this.isBeingProcessed$.next(true);
     this.registrationService
       .registerAccount(this.registrationForm.value)
       .subscribe({
-        next: (d) => this.router.navigate(['/login']),
+        next: (n) => this.router.navigate(['/login']),
         error: (e) => {
           if (e.error.fieldNames) {
             this.errorsInForm.nickname.push(...e.error.fieldNames.nickname || []);
@@ -64,7 +61,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
           } else {
             this.generalErrorReason = e.error.reason;
           }
-          this._isBeingProcessed$.next(false);
+          this.isBeingProcessed$.next(false);
         }
       });
   }
