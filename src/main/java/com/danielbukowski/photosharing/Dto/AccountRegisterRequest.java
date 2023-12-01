@@ -7,7 +7,7 @@ import org.hibernate.validator.constraints.Length;
 
 public record AccountRegisterRequest(
         @NotBlank(message = "Not be blank")
-        @Email(message = "Be a well formed e-mail address")
+        @Email(message = "The email address is not a well formed e-mail address")
         String email,
         @NotBlank(message = "Not be blank")
         @Pattern(regexp = "(.*[a-zA-z].*){4}", message = "At least 4 letters")
