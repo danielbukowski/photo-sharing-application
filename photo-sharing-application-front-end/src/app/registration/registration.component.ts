@@ -10,14 +10,14 @@ import { BehaviorSubject } from 'rxjs';
   styleUrls: ['./registration.component.css'],
 })
 export class RegistrationComponent implements OnInit, OnDestroy {
-  registrationForm!: FormGroup;
-  errorsInForm = {
-    nickname:  [] as string[],
+  validationErrors$ = new BehaviorSubject({
+    nickname: [] as string[],
     email: [] as string[],
-    password: [] as string[]
-  };
-  generalErrorReason!: string;
+    password: [] as string[],
+  });
+  generalError$: BehaviorSubject<string> = new BehaviorSubject('');
   isBeingProcessed$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  registrationForm!: FormGroup;
 
   constructor(
     private registrationService: RegistrationService,
@@ -29,7 +29,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     this.registrationForm = this.fb.group({
       nickname: ['', Validators.required],
       email: ['', Validators.required],
-      password: ['', Validators.required]
+      password: ['', Validators.required],
     });
   }
 
@@ -38,12 +38,12 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   }
 
   private resetErrorMessages() {
-    this.errorsInForm = {
+    this.validationErrors$.next({
       nickname: [],
       email: [],
-      password: []
-    };
-    this.generalErrorReason = "";
+      password: [],
+    });
+    this.generalError$.next('');
   }
 
   onSubmit(): void {
@@ -55,14 +55,12 @@ export class RegistrationComponent implements OnInit, OnDestroy {
         next: (n) => this.router.navigate(['/login']),
         error: (e) => {
           if (e.error.fieldNames) {
-            this.errorsInForm.nickname.push(...e.error.fieldNames.nickname || []);
-            this.errorsInForm.email.push(...e.error.fieldNames.email || []);
-            this.errorsInForm.password.push(...e.error.fieldNames.password || []);
+            this.validationErrors$.next({ ...e.error.fieldNames });
           } else {
-            this.generalErrorReason = e.error.reason;
+            this.generalError$.next(e.error.reason);
           }
           this.isBeingProcessed$.next(false);
-        }
+        },
       });
   }
 }

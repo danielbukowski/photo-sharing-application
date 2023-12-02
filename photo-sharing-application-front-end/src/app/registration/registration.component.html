@@ -1,13 +1,14 @@
 <main class="flex flex-col justify-center items-center h-screen bg-gray-50">
   <div class="shadow-2xl p-14 bg-white">
-    <h1 class="text-xl font-bold p-6">Register your account! :)</h1>
+    <h1 class="text-2xl font-bold p-6">Register your account! :)</h1>
+
     <form
-      class="flex space-y-3 flex-col mt-2 text-center"
+      class="flex space-y-3 flex-col text-center"
       [formGroup]="this.registrationForm"
       (ngSubmit)="onSubmit()"
     >
       <div
-        *ngIf="this.generalErrorReason"
+        *ngIf="this.generalError$ | async as generalErrorReason"
         class="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50"
       >
         <svg
@@ -28,13 +29,21 @@
         <input
           type="text"
           placeholder="Nickname"
+          name="nickname"
           formControlName="nickname"
-          [ngClass]="this.errorsInForm.nickname.length ? 'border-red-600' : ''"
-          class="bg-white hover:bg-gray-50 font-medium rounded-lg border-2 text-sm px-5 py-2.5 w-full"
+          [ngClass]="
+            (this.validationErrors$ | async)?.nickname?.length
+              ? 'border-red-600'
+              : ''
+          "
+          class="bg-white hover:bg-gray-50 font-medium rounded-lg border-2 text-sm px-5 py-2.5"
+          autocomplete="nickname"
         />
-        <ul *ngIf="this.errorsInForm.nickname.length !== 0">
+        <ul
+          *ngIf="(this.validationErrors$ | async)?.nickname as nicknameErrorReasons"
+        >
           <li
-            *ngFor="let errorReason of this.errorsInForm.nickname"
+            *ngFor="let errorReason of nicknameErrorReasons"
             class="text-sm text-red-400"
           >
             {{ errorReason }}
@@ -43,15 +52,21 @@
       </div>
       <div>
         <input
-          type="text"
+          type="email"
           placeholder="Email"
+          name="email"
           formControlName="email"
-          [ngClass]="this.errorsInForm.email.length ? 'border-red-600' : ''"
-          class="bg-white hover:bg-gray-50 font-medium rounded-lg border-2 text-sm px-5 py-2.5 w-full"
+          [ngClass]="
+            (this.validationErrors$ | async)?.email?.length
+              ? 'border-red-600'
+              : ''
+          "
+          class="bg-white hover:bg-gray-50 font-medium rounded-lg border-2 text-sm px-5 py-2.5"
+          autocomplete="email"
         />
-        <ul *ngIf="this.errorsInForm.email">
+        <ul *ngIf="(this.validationErrors$ | async)?.email as emailErrorReasons">
           <li
-            *ngFor="let errorReason of this.errorsInForm.email"
+            *ngFor="let errorReason of emailErrorReasons"
             class="text-sm text-red-400"
           >
             {{ errorReason }}
@@ -62,15 +77,21 @@
         <input
           type="password"
           placeholder="Password"
-          formControlName="password"
           name="password"
-          id="password"
-          [ngClass]="this.errorsInForm.password.length ? 'border-red-600' : ''"
-          class="bg-white hover:bg-gray-50 font-medium rounded-lg border-2 text-sm px-5 py-2.5 w-full"
+          formControlName="password"
+          [ngClass]="
+            (this.validationErrors$ | async)?.password?.length
+              ? 'border-red-600'
+              : ''
+          "
+          class="bg-white hover:bg-gray-50 font-medium rounded-lg border-2 text-sm px-5 py-2.5"
+          autocomplete="new-password"
         />
-        <ul *ngIf="this.errorsInForm.password">
+        <ul
+          *ngIf="(this.validationErrors$ | async)?.password as passwordErrorReasons"
+        >
           <li
-            *ngFor="let errorReason of this.errorsInForm.password"
+            *ngFor="let errorReason of passwordErrorReasons"
             class="text-sm text-red-400"
           >
             {{ errorReason }}
@@ -95,7 +116,7 @@
         >
           <div>
             <svg
-              class="w-8 h-8 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+              class="w-8 h-8 mr-2 text-gray-200 animate-spin fill-black"
               viewBox="0 0 100 101"
               fill="none"
             >
