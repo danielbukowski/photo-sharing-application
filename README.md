@@ -32,8 +32,9 @@ In Progess
 ### Front-end
 
 - Angular 16
+- TypeScript
+- RxJS
 - Tailwind CSS
-
 
 
 ## Implemented Features
