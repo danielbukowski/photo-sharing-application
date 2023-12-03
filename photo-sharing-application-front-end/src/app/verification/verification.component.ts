@@ -1,34 +1,40 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { VerificationService } from './verification.service';
-import { log } from 'console';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-verify',
   templateUrl: './verification.component.html',
   styleUrls: ['./verification.component.css'],
 })
-export class VerificationComponent implements OnInit {
-  private token: string = "";
-  verificationResponse: string = "";
+export class VerificationComponent implements OnInit, OnDestroy {
+  verificationResponse$: BehaviorSubject<string> = new BehaviorSubject('');
 
   constructor(
     private route: ActivatedRoute,
     private verificationService: VerificationService
   ) {}
+
+  ngOnDestroy(): void {
+    this.verificationResponse$.unsubscribe();
+  }
+
   ngOnInit(): void {
-    this.route.queryParams.subscribe((p) => {
-      this.token = p['token'];
+    this.route.queryParams.subscribe((queryParams) => {
+      setTimeout(() => this.verifyAccount(queryParams['token']), 1000);
     });
   }
 
-  verifyAccont(): void {
-    this.verificationService.verifyAccountByToken(this.token).subscribe({
-      next: (n) => { 
-        this.verificationResponse = "Your account has been successfully verified";
+  verifyAccount(token: string): void {
+    this.verificationService.verifyAccountByToken(token).subscribe({
+      next: (n) => {
+        this.verificationResponse$.next(
+          'Your account has been successfully verified! C:'
+        );
       },
       error: (e) => {
-        this.verificationResponse = e.error.reason;
+        this.verificationResponse$.next(e.error.reason);
       },
     });
   }

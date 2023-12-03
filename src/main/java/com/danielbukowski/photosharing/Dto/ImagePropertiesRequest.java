@@ -4,6 +4,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record ImagePropertiesRequest(
-        @NotNull(message = "Should not be null") Boolean isPrivate,
-        @NotBlank(message = "Should not be blank") String title) {
+        @NotNull(message = "Not be null") Boolean isPrivate,
+        @NotBlank(message = "Not be blank") String title) {
 }

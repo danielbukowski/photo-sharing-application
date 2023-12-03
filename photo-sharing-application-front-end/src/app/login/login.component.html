@@ -1,21 +1,17 @@
-<div
-  class="flex justify-center items-center flex-col h-screen bg-gray-100 dark:bg-gray-900"
->
-  <div
-    class=" flex flex-col justify-center p-24 shadow-2xl dark:bg-gray-300 bg-white "
-  >
-    <header>
-      <h1 class="text-center text-2xl text-blue-800 mb-3">Please log in</h1>
-    </header>
-    <form (ngSubmit)="onSubmit()" class="space-y-6">
+<div class="flex justify-center items-center flex-col h-screen bg-gray-100">
+  <div class="flex flex-col p-24 shadow-2xl bg-white">
+    <h1 class="text-center text-2xl font-bold mb-3">Please log in</h1>
+    <form
+      [formGroup]="this.loginForm"
+      (ngSubmit)="onSubmit()"
+      class="space-y-6 flex flex-col items-center"
+    >
       <div
-        *ngIf="this.haveBadCredentials"
-        class="flex p-2 text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800 "
+        *ngIf="this.hasBadCredentials$ | async"
+        class="flex items-center p-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50"
       >
         <svg
-          class="flex-shrink-0 inline w-4 h-4 mr-3"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
+          class="flex-shrink-0 inline w-4 h-4 me-3"
           fill="currentColor"
           viewBox="0 0 20 20"
         >
@@ -26,39 +22,54 @@
         <span class="sr-only">Info</span>
         <div>You have provided a wrong password or email</div>
       </div>
-      <div class="text-center">
+      <div>
         <input
-          type="text"
-          name="email"
-          id="email"
+          type="email"
           placeholder="Email"
-          class="border-b-2 border-blue-700 hover:outline-none focus:outline-none p-1"
-          [required]="true"
-          [(ngModel)]="credentials.email"
+          name="email"
+          formControlName="email"
+          class="bg-white hover:bg-gray-50 font-medium rounded-lg border-2 text-sm px-5 py-2.5"
+          autocomplete="email"
         />
       </div>
-      <div class="text-center">
+      <div>
         <input
           type="password"
-          name="password"
-          id="password"
           placeholder="Password"
-          class="border-b-2 border-blue-700 hover:outline-none focus:outline-none p-1"
-          [required]="true"
-          [(ngModel)]="credentials.password"
+          name="password"
+          formControlName="password"
+          class="bg-white hover:bg-gray-50 font-medium rounded-lg border-2 text-sm px-5 py-2.5"
+          autocomplete="current-password"
         />
+        <div>
+          <a class="text-sm italic text-gray-400" routerLink="/forget-password"
+            >Forgot your password?</a
+          >
+        </div>
       </div>
-      <div class="text-center">
+      <div>
         <button
           type="submit"
-          class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700"
-          >
+          [disabled]="!loginForm.valid"
+          [ngClass]="
+            !loginForm.valid ? 'cursor-not-allowed hover:bg-white' : ''
+          "
+          class="bg-white hover:bg-gray-50 font-medium rounded-lg border-2 text-sm px-5 py-2.5 mr-2 mb-2"
+        >
           Login
         </button>
       </div>
-      <div class="space-y-7 text-center">
-        <div><a routerLink="/register">Register an account</a></div>
-        <div><a routerLink="/forget-password">Forgot password?</a></div>
+      <hr
+        class="w-full h-px mx-auto my-4 bg-gray-200 border-0 rounded md:my-10"
+      />
+      <div class="flex gap-x-5">
+        <div>
+          <a
+            class="bg-white hover:bg-gray-50 font-medium rounded-lg border-2 text-sm px-5 py-2.5 mr-2 mb-2"
+            routerLink="/register"
+            >Create account</a
+          >
+        </div>
       </div>
     </form>
   </div>
