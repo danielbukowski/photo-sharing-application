@@ -1,15 +1,15 @@
-<main class="flex flex-col justify-center items-center h-screen bg-gray-100">
-  <div class="shadow-2xl p-5 bg-white">
+<main class="flex flex-col justify-center items-center h-screen bg-gray-100 dark:bg-gray-900">
+  <div class="shadow-2xl p-5 bg-white dark:bg-slate-900">
       <div *ngIf="(this.verificationResponse$ | async) as verificationResponse">
         <p class="text-lg font-bold">{{ this.verificationResponse }}</p>
       </div>
       <div
         *ngIf="!(this.verificationResponse$ | async)"
-        class="flex items-center justify-center w-full h-12 bg-white"
+        class="flex items-center justify-center w-full h-12 bg-white dark:bg-slate-900"
       >
         <div>
           <svg
-            class="w-8 h-8 mr-2 text-gray-200 animate-spin fill-black"
+            class="w-8 h-8 mr-2 text-gray-200 dark:text-slate-800 animate-spin fill-black"
             viewBox="0 0 100 101"
             fill="none"
           >

@@ -1,5 +1,5 @@
-<main class="flex flex-col justify-center items-center h-screen bg-gray-50">
-  <div class="shadow-2xl p-14 bg-white">
+<main class="flex flex-col justify-center items-center h-screen bg-gray-50 dark:bg-gray-900">
+  <div class="shadow-2xl p-14 bg-white dark:bg-slate-900">
     <h1 class="text-2xl font-bold p-6">Register your account! :)</h1>
 
     <form
@@ -9,7 +9,7 @@
     >
       <div
         *ngIf="this.generalError$ | async as generalErrorReason"
-        class="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50"
+        class="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800"
       >
         <svg
           class="flex-shrink-0 inline w-4 h-4 me-3"
@@ -36,7 +36,7 @@
               ? 'border-red-600'
               : ''
           "
-          class="bg-white hover:bg-gray-50 font-medium rounded-lg border-2 text-sm px-5 py-2.5"
+          class="bg-white hover:bg-gray-50 font-medium rounded-lg border-2 text-sm px-5 py-2.5 dark:bg-slate-800 dark:border-slate-700 focus:dark:outline focus:dark:outline-gray-300"
           autocomplete="nickname"
         />
         <ul
@@ -61,7 +61,7 @@
               ? 'border-red-600'
               : ''
           "
-          class="bg-white hover:bg-gray-50 font-medium rounded-lg border-2 text-sm px-5 py-2.5"
+          class="bg-white hover:bg-gray-50 font-medium rounded-lg border-2 text-sm px-5 py-2.5 dark:bg-slate-800 dark:border-slate-700 focus:dark:outline focus:dark:outline-gray-300"
           autocomplete="email"
         />
         <ul *ngIf="(this.validationErrors$ | async)?.email as emailErrorReasons">
@@ -84,7 +84,7 @@
               ? 'border-red-600'
               : ''
           "
-          class="bg-white hover:bg-gray-50 font-medium rounded-lg border-2 text-sm px-5 py-2.5"
+          class="bg-white hover:bg-gray-50 font-medium rounded-lg border-2 text-sm px-5 py-2.5 dark:bg-slate-800 dark:border-slate-700 focus:dark:outline focus:dark:outline-gray-300"
           autocomplete="new-password"
         />
         <ul
@@ -104,19 +104,19 @@
           type="submit"
           [disabled]="!registrationForm.valid"
           [ngClass]="
-            !registrationForm.valid ? 'cursor-not-allowed hover:bg-white' : ''
+            !registrationForm.valid ? 'cursor-not-allowed hover:bg-white' : 'dark:hover:bg-slate-700'
           "
-          class="bg-white hover:bg-gray-50 font-medium rounded-lg border-2 text-sm px-5 py-2.5 mx-auto"
+          class="bg-white hover:bg-gray-50 font-medium rounded-lg border-2 text-sm px-5 py-2.5 mx-auto dark:bg-slate-800 dark:border-slate-700"
         >
           Submit
         </button>
         <div
           *ngIf="this.isBeingProcessed$ | async"
-          class="flex items-center justify-center w-full h-12 bg-white dark:border-gray-700"
+          class="flex items-center justify-center w-full h-12 bg-white dark:bg-slate-900"
         >
           <div>
             <svg
-              class="w-8 h-8 mr-2 text-gray-200 animate-spin fill-black"
+              class="w-8 h-8 mr-2 text-gray-200 dark:text-slate-800 animate-spin fill-black"
               viewBox="0 0 100 101"
               fill="none"
             >
