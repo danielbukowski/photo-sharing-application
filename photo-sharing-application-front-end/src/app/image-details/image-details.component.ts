@@ -1,6 +1,5 @@
 import { Component, OnInit, Signal, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ImageService } from '../image/image.service';
 import { Comment } from '../model/comment';
 import { Page } from '../model/page';
 import { CommentService } from '../comment/comment.service';
@@ -14,64 +13,58 @@ import { Observable } from 'rxjs';
   styleUrls: ['./image-details.component.css'],
 })
 export class ImageDetailsComponent implements OnInit {
-  IdOfCurrentDisplayedImage = signal<string>("");
-  numberOfLikes = signal<number>(0);
+  IdOfCurrentDisplayedImage = signal<string>('');
   accountDetails!: Signal<Account | undefined>;
   commentPage$!: Observable<Page<Comment>>;
 
   constructor(
     private route: ActivatedRoute,
-    private imageService: ImageService,
     private commentService: CommentService,
     private authService: AuthService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe({next: params => {
-      this.IdOfCurrentDisplayedImage.set(params.get('id') || "");
-    }});
-
-    this.accountDetails = this.authService.getAccountDetails();
-
-    this.imageService
-    .getNumberOfLikesFromImage(this.IdOfCurrentDisplayedImage())
-    .subscribe({
-      next: (d) => {
-        this.numberOfLikes.set(d.data.likes);
+    this.route.paramMap.subscribe({
+      next: (params) => {
+        this.IdOfCurrentDisplayedImage.set(params.get('id') || '');
       },
     });
+
+    this.accountDetails = this.authService.getAccountDetails();
 
     this.updatePageContent(0);
   }
 
   private updatePageContent(pageNumber: number) {
-    this.commentPage$ = this.commentService.getCommentsFromImage(this.IdOfCurrentDisplayedImage(), pageNumber);
+    this.commentPage$ = this.commentService.getCommentsFromImage(
+      this.IdOfCurrentDisplayedImage(),
+      pageNumber
+    );
   }
 
-  addCommentToImage(textAreaElement:  HTMLTextAreaElement): void {
-    if(textAreaElement.value === "") return;
+  addCommentToImage(textAreaElement: HTMLTextAreaElement): void {
+    if (textAreaElement.value === '') return;
 
     this.commentService
-      .addCommentToImage(textAreaElement.value, this.IdOfCurrentDisplayedImage())
+      .addCommentToImage(
+        textAreaElement.value,
+        this.IdOfCurrentDisplayedImage()
+      )
       .subscribe({
         next: () => {
-    textAreaElement.value = "";
+          textAreaElement.value = '';
         },
-        error: () => {
-
-        }
+        error: () => {},
       });
-
   }
 
   fetchNextPageOfComments(currentPageNumber: number, isLast: boolean) {
-    if(isLast) return;
+    if (isLast) return;
     this.updatePageContent(currentPageNumber + 1);
   }
 
   fetchPreviousPageOfComments(currentPagenumber: number) {
-    if(currentPagenumber <= 0) return;
+    if (currentPagenumber <= 0) return;
     this.updatePageContent(currentPagenumber - 1);
   }
-
 }
