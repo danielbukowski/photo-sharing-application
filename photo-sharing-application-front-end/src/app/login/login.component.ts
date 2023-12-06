@@ -8,8 +8,7 @@ import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'],
+  templateUrl: './login.component.html'
 })
 export class LoginComponent implements OnInit {
   hasBadCredentials$: BehaviorSubject<boolean> = new BehaviorSubject(false);

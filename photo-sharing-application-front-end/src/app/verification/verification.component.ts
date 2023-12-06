@@ -5,8 +5,7 @@ import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-verify',
-  templateUrl: './verification.component.html',
-  styleUrls: ['./verification.component.css'],
+  templateUrl: './verification.component.html'
 })
 export class VerificationComponent implements OnInit {
   verificationResponse$: BehaviorSubject<string> = new BehaviorSubject('');

@@ -9,8 +9,7 @@ import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-image-details',
-  templateUrl: './image-details.component.html',
-  styleUrls: ['./image-details.component.css'],
+  templateUrl: './image-details.component.html'
 })
 export class ImageDetailsComponent implements OnInit {
   IdOfCurrentDisplayedImage = signal<string>('');

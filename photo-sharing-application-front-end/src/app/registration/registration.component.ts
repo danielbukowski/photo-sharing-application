@@ -6,8 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-register',
-  templateUrl: './registration.component.html',
-  styleUrls: ['./registration.component.css'],
+  templateUrl: './registration.component.html'
 })
 export class RegistrationComponent implements OnInit {
   validationErrors$ = new BehaviorSubject({

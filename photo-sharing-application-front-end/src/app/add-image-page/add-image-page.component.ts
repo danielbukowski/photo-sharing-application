@@ -6,8 +6,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-add-image-page',
-  templateUrl: './add-image-page.component.html',
-  styleUrls: ['./add-image-page.component.css'],
+  templateUrl: './add-image-page.component.html'
 })
 export class AddImagePageComponent implements OnInit {
   isBeingProcessed$: BehaviorSubject<boolean> = new BehaviorSubject(false);

@@ -6,8 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-password-reset',
-  templateUrl: './forgotten-password.component.html',
-  styleUrls: ['./forgotten-password.css'],
+  templateUrl: './forgotten-password.component.html'
 })
 export class ForgottenPasswordComponent {
   validationError$: BehaviorSubject<string> = new BehaviorSubject('');
