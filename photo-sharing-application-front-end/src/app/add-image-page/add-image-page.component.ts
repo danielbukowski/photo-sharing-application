@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ImageService } from '../image/image.service';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
@@ -9,7 +9,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   templateUrl: './add-image-page.component.html',
   styleUrls: ['./add-image-page.component.css'],
 })
-export class AddImagePageComponent implements OnDestroy, OnInit {
+export class AddImagePageComponent implements OnInit {
   isBeingProcessed$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   image!: File;
   addImageForm!: FormGroup;
@@ -26,10 +26,6 @@ export class AddImagePageComponent implements OnDestroy, OnInit {
       isPrivate: [false, Validators.required],
       image: [this.image, Validators.required],
     });
-  }
-  
-  ngOnDestroy(): void {
-    this.isBeingProcessed$.unsubscribe();
   }
 
   getImageFromInput(event: any) {

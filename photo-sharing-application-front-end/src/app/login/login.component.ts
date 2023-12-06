@@ -11,7 +11,7 @@ import { BehaviorSubject } from 'rxjs';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
-export class LoginComponent implements OnInit, OnDestroy{
+export class LoginComponent implements OnInit {
   hasBadCredentials$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   loginForm!: FormGroup;
 
@@ -22,10 +22,6 @@ export class LoginComponent implements OnInit, OnDestroy{
     private authService: AuthService,
     private fb: FormBuilder
   ) {}
-
-  ngOnDestroy(): void {
-    this.hasBadCredentials$.unsubscribe();
-  }
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({

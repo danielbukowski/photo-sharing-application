@@ -8,17 +8,13 @@ import { BehaviorSubject } from 'rxjs';
   templateUrl: './verification.component.html',
   styleUrls: ['./verification.component.css'],
 })
-export class VerificationComponent implements OnInit, OnDestroy {
+export class VerificationComponent implements OnInit {
   verificationResponse$: BehaviorSubject<string> = new BehaviorSubject('');
 
   constructor(
     private route: ActivatedRoute,
     private verificationService: VerificationService
   ) {}
-
-  ngOnDestroy(): void {
-    this.verificationResponse$.unsubscribe();
-  }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((queryParams) => {

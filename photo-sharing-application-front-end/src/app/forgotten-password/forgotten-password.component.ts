@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ForgottenPasswordService } from './forgotten-password.service';
 import { Router } from '@angular/router';
@@ -9,7 +9,7 @@ import { BehaviorSubject } from 'rxjs';
   templateUrl: './forgotten-password.component.html',
   styleUrls: ['./forgotten-password.css'],
 })
-export class ForgottenPasswordComponent implements OnDestroy {
+export class ForgottenPasswordComponent {
   validationError$: BehaviorSubject<string> = new BehaviorSubject('');
   generalError$: BehaviorSubject<string> = new BehaviorSubject('');
   isBeingProcessed$: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -25,12 +25,6 @@ export class ForgottenPasswordComponent implements OnDestroy {
     this.forgetPasswordForm = this.fb.group({
       email: ['', Validators.required],
     });
-  }
-
-  ngOnDestroy(): void {
-    this.validationError$.unsubscribe();
-    this.generalError$.unsubscribe();
-    this.isBeingProcessed$.unsubscribe();
   }
 
   resetForm(): void {

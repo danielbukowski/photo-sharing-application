@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RegistrationService } from './registration.service';
 import { Router } from '@angular/router';
@@ -9,7 +9,7 @@ import { BehaviorSubject } from 'rxjs';
   templateUrl: './registration.component.html',
   styleUrls: ['./registration.component.css'],
 })
-export class RegistrationComponent implements OnInit, OnDestroy {
+export class RegistrationComponent implements OnInit {
   validationErrors$ = new BehaviorSubject({
     nickname: [] as string[],
     email: [] as string[],
@@ -31,10 +31,6 @@ export class RegistrationComponent implements OnInit, OnDestroy {
       email: ['', Validators.required],
       password: ['', Validators.required],
     });
-  }
-
-  ngOnDestroy(): void {
-    this.isBeingProcessed$.unsubscribe();
   }
 
   private resetErrorMessages() {
