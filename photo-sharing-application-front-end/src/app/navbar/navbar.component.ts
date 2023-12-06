@@ -1,7 +1,6 @@
-import { Component, OnChanges, OnInit, Signal, SimpleChanges, WritableSignal, signal } from '@angular/core';
+import { Component, OnInit, Signal, signal } from '@angular/core';
 import { LogoutService } from '../logout/logout.service';
 import { AuthService } from '../auth/auth.service';
-import { Observable } from 'rxjs';
 import { Account } from '../model/account';
 
 @Component({
