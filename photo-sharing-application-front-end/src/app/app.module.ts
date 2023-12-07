@@ -14,7 +14,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpCookieInterceptor } from './Interceptor/HttpCookieInterceptor';
 import { HttpCsrfTokenInterceptor } from './Interceptor/HttpCsrfTokenInterceptor';
 import { ForgottenPasswordPageComponent } from './forgotten-password/forgotten-password-page.component';
-import { AddImagePageComponent } from './add-image-page/add-image-page.component';
+import { AddImagePageComponent } from './add-image/add-image-page.component';
 import { ImageDetailsComponent } from './image-details/image-details.component';
 
 @NgModule({

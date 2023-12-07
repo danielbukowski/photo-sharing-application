@@ -6,7 +6,7 @@ import { LoginComponent } from './login/login.component';
 import { ForgottenPasswordPageComponent } from './forgotten-password/forgotten-password-page.component';
 import { RegistrationComponent } from './registration/registration.component';
 import { VerificationComponent } from './verification/verification.component';
-import { AddImagePageComponent } from './add-image-page/add-image-page.component';
+import { AddImagePageComponent } from './add-image/add-image-page.component';
 import { emailVerificationGuard } from './guard/guards';
 import { ImageDetailsComponent } from './image-details/image-details.component';
 
