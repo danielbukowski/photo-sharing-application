@@ -14,7 +14,7 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.authService.updateAuthentication();
     this.setTheme();
-    this.CsrfTokenService.generateCsrfToken();
+    this.CsrfTokenService.updateCsrfToken();
   }
 
   private setTheme() {
