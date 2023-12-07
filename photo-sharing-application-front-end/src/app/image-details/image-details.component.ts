@@ -62,8 +62,8 @@ export class ImageDetailsComponent implements OnInit {
     this.updatePageContent(currentPageNumber + 1);
   }
 
-  fetchPreviousPageOfComments(currentPagenumber: number) {
-    if (currentPagenumber <= 0) return;
-    this.updatePageContent(currentPagenumber - 1);
+  fetchPreviousPageOfComments(currentPageNumber: number) {
+    if (currentPageNumber <= 0) return;
+    this.updatePageContent(currentPageNumber - 1);
   }
 }
