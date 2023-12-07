@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HomeComponent } from './home/home.component';
+import { HomePageComponent } from './home/home-page.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { LoginComponent } from './login/login.component';
 import { ForgottenPasswordPageComponent } from './forgotten-password/forgotten-password-page.component';
@@ -13,7 +13,7 @@ import { ImageDetailsComponent } from './image-details/image-details.component';
 const routes: Routes = [
   {
     path: 'home',
-    component: HomeComponent
+    component: HomePageComponent
   },
   {
     path: 'login',

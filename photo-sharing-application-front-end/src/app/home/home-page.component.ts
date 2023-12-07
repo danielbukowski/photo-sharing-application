@@ -4,10 +4,10 @@ import { Observable } from 'rxjs';
 import { Page } from '../model/page';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html'
+  selector: 'app-home-page',
+  templateUrl: './home-page.component.html'
 })
-export class HomeComponent implements OnInit {
+export class HomePageComponent implements OnInit {
 
   imagePage$!: Observable<Page<String>>;
 
