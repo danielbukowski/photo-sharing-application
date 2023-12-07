@@ -5,10 +5,10 @@ import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 
 @Component({
-  selector: 'app-password-reset',
-  templateUrl: './forgotten-password.component.html'
+  selector: 'app-forgotten-password-page',
+  templateUrl: './forgotten-password-page.component.html'
 })
-export class ForgottenPasswordComponent {
+export class ForgottenPasswordPageComponent {
   validationError$: BehaviorSubject<string> = new BehaviorSubject('');
   generalError$: BehaviorSubject<string> = new BehaviorSubject('');
   isBeingProcessed$: BehaviorSubject<boolean> = new BehaviorSubject(false);

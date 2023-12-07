@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { LoginComponent } from './login/login.component';
-import { ForgottenPasswordComponent } from './forgotten-password/forgotten-password.component';
+import { ForgottenPasswordPageComponent } from './forgotten-password/forgotten-password-page.component';
 import { RegistrationComponent } from './registration/registration.component';
 import { VerificationComponent } from './verification/verification.component';
 import { AddImagePageComponent } from './add-image-page/add-image-page.component';
@@ -25,7 +25,7 @@ const routes: Routes = [
   },
   {
     path: 'forget-password',
-    component: ForgottenPasswordComponent,
+    component: ForgottenPasswordPageComponent,
   },
   {
     path: 'verify',

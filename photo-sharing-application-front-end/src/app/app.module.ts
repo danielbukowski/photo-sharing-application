@@ -13,7 +13,7 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpCookieInterceptor } from './Interceptor/HttpCookieInterceptor';
 import { HttpCsrfTokenInterceptor } from './Interceptor/HttpCsrfTokenInterceptor';
-import { ForgottenPasswordComponent } from './forgotten-password/forgotten-password.component';
+import { ForgottenPasswordPageComponent } from './forgotten-password/forgotten-password-page.component';
 import { AddImagePageComponent } from './add-image-page/add-image-page.component';
 import { ImageDetailsComponent } from './image-details/image-details.component';
 
@@ -24,7 +24,7 @@ import { ImageDetailsComponent } from './image-details/image-details.component';
     LoginComponent,
     NavbarComponent,
     PageNotFoundComponent,
-    ForgottenPasswordComponent,
+    ForgottenPasswordPageComponent,
     RegistrationComponent,
     VerificationComponent,
     AddImagePageComponent,
