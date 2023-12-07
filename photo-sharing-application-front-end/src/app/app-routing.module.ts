@@ -2,26 +2,26 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomePageComponent } from './home/home-page.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-import { LoginComponent } from './login/login.component';
+import { LoginPageComponent } from './login/login-page.component';
 import { ForgottenPasswordPageComponent } from './forgotten-password/forgotten-password-page.component';
-import { RegistrationComponent } from './registration/registration.component';
-import { VerificationComponent } from './verification/verification.component';
+import { RegistrationPageComponent } from './registration/registration-page.component';
+import { VerificationPageComponent } from './verification/verification-page.component';
 import { AddImagePageComponent } from './add-image/add-image-page.component';
-import { emailVerificationGuard } from './guard/guards';
-import { ImageDetailsComponent } from './image-details/image-details.component';
+import { emailVerificationGuard } from './guards/email-verification.guard';
+import { ImageDetailComponent } from './image-detail/image-detail-page.component';
 
 const routes: Routes = [
   {
     path: 'home',
-    component: HomePageComponent
+    component: HomePageComponent,
   },
   {
     path: 'login',
-    component: LoginComponent,
+    component: LoginPageComponent,
   },
   {
     path: 'register',
-    component: RegistrationComponent,
+    component: RegistrationPageComponent,
   },
   {
     path: 'forget-password',
@@ -29,16 +29,16 @@ const routes: Routes = [
   },
   {
     path: 'verify',
-    component: VerificationComponent,
+    component: VerificationPageComponent,
   },
   {
     path: 'add-image',
     component: AddImagePageComponent,
-    canActivate: [emailVerificationGuard]
+    canActivate: [emailVerificationGuard],
   },
   {
     path: 'image/:id',
-    component: ImageDetailsComponent,
+    component: ImageDetailPageComponent,
   },
   {
     path: '',
@@ -52,7 +52,9 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, {scrollPositionRestoration: 'enabled'})],
+  imports: [
+    RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled' }),
+  ],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}

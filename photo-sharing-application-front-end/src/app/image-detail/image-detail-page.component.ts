@@ -1,18 +1,18 @@
-import { Component, OnInit, Signal, signal } from '@angular/core';
+import { Component, OnInit, Signal, WritableSignal, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Comment } from '../model/comment';
-import { Page } from '../model/page';
-import { CommentService } from '../service/comment/comment.service';
-import { AuthService } from '../service/auth/auth.service';
-import { Account } from '../model/account';
+import { Comment } from '../models/comment';
+import { Page } from '../models/page';
+import { CommentService } from '../services/comment/comment.service';
+import { AuthService } from '../services/auth/auth.service';
+import { Account } from '../models/account';
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'app-image-details',
-  templateUrl: './image-details.component.html'
+  selector: 'app-image-detail-page',
+  templateUrl: './image-detail-page.component.html'
 })
-export class ImageDetailsComponent implements OnInit {
-  IdOfCurrentDisplayedImage = signal<string>('');
+export class ImageDetailComponent implements OnInit {
+  IdOfCurrentDisplayedImage: WritableSignal<string> = signal<string>('');
   accountDetails!: Signal<Account | undefined>;
   commentPage$!: Observable<Page<Comment>>;
 
@@ -28,9 +28,7 @@ export class ImageDetailsComponent implements OnInit {
         this.IdOfCurrentDisplayedImage.set(params.get('id') || '');
       },
     });
-
     this.accountDetails = this.authService.getAccountDetails();
-
     this.updatePageContent(0);
   }
 
