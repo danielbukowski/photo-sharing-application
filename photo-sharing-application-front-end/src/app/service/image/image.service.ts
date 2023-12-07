@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ImageDetailsPostRequest } from '../model/image-details-post-request';
+import { ImageDetailsPostRequest } from '../../model/image-details-post-request';
 
 @Injectable({
   providedIn: 'root',

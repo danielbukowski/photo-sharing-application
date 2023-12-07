@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ImageService } from '../image/image.service';
+import { ImageService } from '../service/image/image.service';
 import { Observable } from 'rxjs';
 import { Page } from '../model/page';
 

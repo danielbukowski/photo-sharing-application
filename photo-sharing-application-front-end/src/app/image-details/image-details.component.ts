@@ -2,8 +2,8 @@ import { Component, OnInit, Signal, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Comment } from '../model/comment';
 import { Page } from '../model/page';
-import { CommentService } from '../comment/comment.service';
-import { AuthService } from '../auth/auth.service';
+import { CommentService } from '../service/comment/comment.service';
+import { AuthService } from '../service/auth/auth.service';
 import { Account } from '../model/account';
 import { Observable } from 'rxjs';
 

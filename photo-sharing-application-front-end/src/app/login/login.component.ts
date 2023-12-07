@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { LoginService } from './login.service';
+import { LoginService } from '../service/login/login.service';
 import { Router } from '@angular/router';
-import { AuthService } from '../auth/auth.service';
-import { CsrfTokenService } from '../csrf-token/csrf-token.service';
+import { AuthService } from '../service/auth/auth.service';
+import { CsrfTokenService } from '../service/csrf-token/csrf-token.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 

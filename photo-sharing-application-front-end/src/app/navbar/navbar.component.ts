@@ -1,6 +1,6 @@
 import { Component, OnInit, Signal, signal } from '@angular/core';
-import { LogoutService } from '../logout/logout.service';
-import { AuthService } from '../auth/auth.service';
+import { LogoutService } from '../service/logout/logout.service';
+import { AuthService } from '../service/auth/auth.service';
 import { Account } from '../model/account';
 
 @Component({

@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { AuthService } from '../auth/auth.service';
+import { AuthService } from '../service/auth/auth.service';
 import { Observable, filter, map } from 'rxjs';
 import { toObservable } from '@angular/core/rxjs-interop';
 
