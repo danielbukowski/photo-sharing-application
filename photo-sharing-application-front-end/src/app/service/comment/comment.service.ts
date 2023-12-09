@@ -4,18 +4,25 @@ import { Observable } from 'rxjs';
 import { Page } from '../../model/page';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CommentService {
+  constructor(private http: HttpClient) {}
 
-  constructor(private http: HttpClient) { }
-
-  addCommentToImage(content: string, imageId: string): Observable<any> {
-    return this.http.post(`http://localhost:8081/api/v1/images/${imageId}/comments`, {content});
+  addCommentToImage(commentContent: string, imageId: string): Observable<any> {
+    return this.http.post(
+      `http://localhost:8081/api/v1/images/${imageId}/comments`,
+      { content: commentContent }
+    );
   }
 
-  getCommentsFromImage(imageId: string, pageNumber: number): Observable<Page<any>> {
-    return this.http.get<Page<Comment>>(`http://localhost:8081/api/v1/images/${imageId}/comments`, {params: {pageNumber}});
+  getCommentsFromImage(
+    imageId: string,
+    pageNumber: number
+  ): Observable<Page<any>> {
+    return this.http.get<Page<Comment>>(
+      `http://localhost:8081/api/v1/images/${imageId}/comments`,
+      { params: { pageNumber } }
+    );
   }
-
 }
