@@ -1,7 +1,9 @@
-import { Component, OnInit, Signal, signal } from '@angular/core';
+import { Component, OnInit, Signal, computed, signal } from '@angular/core';
 import { LogoutService } from '../service/logout/logout.service';
 import { AuthService } from '../service/auth/auth.service';
 import { Account } from '../model/account';
+import { Observable, of } from 'rxjs';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-navbar',
@@ -9,6 +11,7 @@ import { Account } from '../model/account';
 })
 export class NavbarComponent implements OnInit {
   accountDetails: Signal<Account | undefined> = signal(undefined);
+  isAuthenticated = computed(() => this.accountDetails() !== undefined);
 
   constructor(
     public logoutService: LogoutService,

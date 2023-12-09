@@ -16,7 +16,7 @@
             >Home</a
           >
         </li>
-        <li *ngIf="this.authService.isAuthenticated()">
+        <li *ngIf="this.isAuthenticated()">
           <span [ngClass]="!this.accountDetails()?.isEmailVerified ? 'cursor-not-allowed' : ''">
             <a 
             [ngClass]="!this.accountDetails()?.isEmailVerified ? 'pointer-events-none text-gray-400' : ''"
@@ -28,7 +28,7 @@
     </div>
     <div class="flex items-center">
       <div
-      *ngIf="this.authService.isAuthenticated() && !this.accountDetails()?.isEmailVerified"
+      *ngIf="this.isAuthenticated() && !this.accountDetails()?.isEmailVerified"
       class="p-3 mr-5 text-red-800 rounded-lg bg-red-200 dark:bg-gray-800 dark:text-red-400">
         <span class="font-medium">Please verify your email address!</span>
       </div>
@@ -52,7 +52,7 @@
 
       <ul class="flex flex-row font-medium items-center space-x-8">
         <li
-          *ngIf="this.authService.isAuthenticated(); else nonAuthenticatedView"
+          *ngIf="this.isAuthenticated(); else nonAuthenticatedView"
         >
           <a
             (click)="this.logoutService.logOut()"
