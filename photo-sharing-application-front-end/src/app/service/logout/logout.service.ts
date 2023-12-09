@@ -15,7 +15,7 @@ export class LogoutService {
 
   logout(): void {
     this.http.delete('http://localhost:8081/api/v1/sessions').subscribe({
-      next: (n) => {
+      next: () => {
         this.authService.updateAuthentication();
         this.router.navigate(['/home']);
       },

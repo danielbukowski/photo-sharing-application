@@ -23,7 +23,7 @@ export class VerificationComponent implements OnInit {
 
   verifyAccount(token: string): void {
     this.verificationService.verifyAccountByToken(token).subscribe({
-      next: (n) => {
+      next: () => {
         this.verificationResponse$.next(
           'Your account has been successfully verified! C:'
         );

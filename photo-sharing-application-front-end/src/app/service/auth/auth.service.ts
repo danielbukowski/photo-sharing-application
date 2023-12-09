@@ -15,11 +15,9 @@ export class AuthService {
   }
 
   updateAuthentication(): void {
-    this.http
-    .get<any>('http://localhost:8081/api/v3/accounts')
-    .subscribe({
-      next: (n) => this.#accountDetails.set(n.data),
-      error: (e) => this.#accountDetails.set(undefined),
+    this.http.get<any>('http://localhost:8081/api/v3/accounts').subscribe({
+      next: (d) => this.#accountDetails.set(d.data),
+      error: () => this.#accountDetails.set(undefined),
     });
   }
 

@@ -47,7 +47,7 @@ export class RegistrationComponent implements OnInit {
     this.registrationService
       .registerAccount(this.registrationForm.value)
       .subscribe({
-        next: (n) => this.router.navigate(['/login']),
+        next: () => this.router.navigate(['/login']),
         error: (e) => {
           if (e.error.fieldNames) {
             this.validationErrors$.next({ ...e.error.fieldNames });

@@ -37,7 +37,7 @@ export class ForgottenPasswordPageComponent {
     this.forgottenPasswordService
       .sendPasswordResetRequest(this.forgetPasswordForm.value)
       .subscribe({
-        next: (n) => {
+        next: () => {
           this.router.navigate(['/login']);
         },
         error: (e) => {

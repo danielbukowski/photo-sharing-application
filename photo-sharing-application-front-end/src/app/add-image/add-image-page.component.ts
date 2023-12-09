@@ -36,10 +36,10 @@ export class AddImagePageComponent implements OnInit {
     this.imageService
       .uploadImage(this.addImageForm.value, this.image)
       .subscribe({
-        next: (n) => {
+        next: () => {
           this.router.navigate(['/home']);
         },
-        error: (e) => {
+        error: () => {
           this.isBeingProcessed$.next(false);
         },
       });

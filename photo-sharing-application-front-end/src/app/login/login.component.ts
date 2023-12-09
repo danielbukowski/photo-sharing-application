@@ -31,12 +31,12 @@ export class LoginComponent implements OnInit {
 
   onSubmit(): void {
     this.loginService.login(this.loginForm.value).subscribe({
-      next: (n) => {
-        this.csrfToken.generateCsrfToken();
+      next: () => {
+        this.csrfToken.updateCsrfToken();
         this.authService.updateAuthentication();
         this.router.navigate(['/home']);
       },
-      error: (e) => {
+      error: () => {
         this.hasBadCredentials$.next(true);
       },
     });
