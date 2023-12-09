@@ -10,10 +10,15 @@ export class ImageService {
   constructor(private http: HttpClient) {}
 
   getPageOfLatestImages(pageNumber: number): Observable<any> {
-    return this.http.get('http://localhost:8081/api/v1/images', {params: {pageNumber}});
+    return this.http.get('http://localhost:8081/api/v1/images', {
+      params: { pageNumber },
+    });
   }
 
-  uploadImage(imagePostRequest: ImageDetailsPostRequest, image: File): Observable<any> {
+  uploadImage(
+    imagePostRequest: ImageDetailsPostRequest,
+    image: File
+  ): Observable<any> {
     let formData = new FormData();
 
     formData.append('image', image);
@@ -31,7 +36,8 @@ export class ImageService {
   }
 
   getNumberOfLikesFromImage(imageId: string): Observable<any> {
-    return this.http.get(`http://localhost:8081/api/v1/images/${imageId}/likes` );
+    return this.http.get(
+      `http://localhost:8081/api/v1/images/${imageId}/likes`
+    );
   }
-
 }
