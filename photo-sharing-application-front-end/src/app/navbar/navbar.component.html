@@ -55,7 +55,7 @@
           *ngIf="this.authService.isAuthenticated(); else nonAuthenticatedView"
         >
           <a
-            (click)="this.logoutService.logout()"
+            (click)="this.logoutService.logOut()"
             class="block hover:text-red-800 cursor-pointer"
             >Log out</a
           >
