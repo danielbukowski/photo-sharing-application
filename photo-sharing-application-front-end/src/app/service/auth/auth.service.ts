@@ -20,9 +20,4 @@ export class AuthService {
       error: () => this.#accountDetails.set(undefined),
     });
   }
-
-  isAuthenticated(): boolean {
-    return this.#accountDetails() !== undefined;
-  }
-
 }
