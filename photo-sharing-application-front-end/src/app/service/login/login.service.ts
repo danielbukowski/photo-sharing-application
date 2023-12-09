@@ -11,11 +11,15 @@ import { Buffer } from 'buffer';
 export class LoginService {
   constructor(private http: HttpClient) {}
 
-  login(credentials: Credentials): Observable<any> {
+  logIn(credentials: Credentials): Observable<any> {
     const httpOptions = {
       headers: new HttpHeaders({
-        Authorization:'Basic ' + Buffer.from(`${credentials.email}:${credentials.password}`).toString('base64')
-      })
+        Authorization:
+          'Basic ' +
+          Buffer.from(`${credentials.email}:${credentials.password}`).toString(
+            'base64'
+          ),
+      }),
     };
     return this.http.post(
       'http://localhost:8081/api/v1/sessions',

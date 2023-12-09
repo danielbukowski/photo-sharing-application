@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.loginService.login(this.loginForm.value).subscribe({
+    this.loginService.logIn(this.loginForm.value).subscribe({
       next: () => {
         this.csrfToken.updateCsrfToken();
         this.authService.updateAuthentication();
