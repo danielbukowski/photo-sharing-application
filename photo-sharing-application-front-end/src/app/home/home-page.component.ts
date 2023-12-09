@@ -5,13 +5,12 @@ import { Page } from '../model/page';
 
 @Component({
   selector: 'app-home-page',
-  templateUrl: './home-page.component.html'
+  templateUrl: './home-page.component.html',
 })
 export class HomePageComponent implements OnInit {
-
   imagePage$!: Observable<Page<String>>;
 
-  constructor(private imageService: ImageService) { }
+  constructor(private imageService: ImageService) {}
 
   ngOnInit(): void {
     this.imagePage$ = this.imageService.getPageOfLatestImages(0);
@@ -21,15 +20,13 @@ export class HomePageComponent implements OnInit {
     this.imagePage$ = this.imageService.getPageOfLatestImages(pageNumber);
   }
 
-  
   fetchNextPageOfComments(currentPageNumber: number, isLast: boolean) {
-    if(isLast) return;
+    if (isLast) return;
     this.updatePageContent(currentPageNumber + 1);
   }
 
   fetchPreviousPageOfComments(currentPagenumber: number) {
-    if(currentPagenumber <= 0) return;
+    if (currentPagenumber <= 0) return;
     this.updatePageContent(currentPagenumber - 1);
   }
-
 }
