@@ -5,12 +5,15 @@ import { Account } from '../model/account';
 
 @Component({
   selector: 'app-navbar',
-  templateUrl: './navbar.component.html'
+  templateUrl: './navbar.component.html',
 })
 export class NavbarComponent implements OnInit {
   accountDetails: Signal<Account | undefined> = signal(undefined);
 
-  constructor(public logoutService: LogoutService, public authService: AuthService) { }
+  constructor(
+    public logoutService: LogoutService,
+    public authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     this.initThemeButton();
@@ -36,5 +39,4 @@ export class NavbarComponent implements OnInit {
     document.getElementById('moon-icon')?.toggleAttribute('hidden');
     document.getElementById('sun-icon')?.toggleAttribute('hidden');
   }
-  
 }
