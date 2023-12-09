@@ -10,7 +10,6 @@ import { Observable } from 'rxjs';
 
 @Injectable()
 export class HttpCsrfTokenInterceptor implements HttpInterceptor {
-
   constructor(private csrfTokenService: CsrfTokenService) {}
 
   intercept(
