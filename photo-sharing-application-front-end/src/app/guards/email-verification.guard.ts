@@ -8,16 +8,16 @@ export const emailVerificationGuard: CanActivateFn =
   (): Observable<boolean> => {
     const router = inject(Router);
     const authService = inject(AuthService);
-    const accountDetails = toObservable(authService.getAccountDetails());
+    const accountDetails$ = toObservable(authService.getAccountDetails());
 
-    return accountDetails.pipe(
+    return accountDetails$.pipe(
       filter((a) => a !== undefined),
       map((a) => {
-        if (!a?.isEmailVerified) {
-          router.navigate(['home']);
-          return false;
+        if (a?.isEmailVerified) {
+          return true;
         }
-        return true;
+        router.navigate(['home']);
+        return false;
       })
     );
   };
