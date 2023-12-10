@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { RegistrationService } from '../service/registration/registration.service';
+import { RegistrationService } from '../services/registration/registration.service';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 

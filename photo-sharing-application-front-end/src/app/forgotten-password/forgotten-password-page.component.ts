@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ForgottenPasswordService } from '../service/forgotten-password/forgotten-password.service';
+import { ForgottenPasswordService } from '../services/forgotten-password/forgotten-password.service';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 

@@ -1,5 +1,5 @@
 import { Injectable, Signal, signal } from '@angular/core';
-import { Account } from '../../model/account';
+import { Account } from '../../models/account';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({

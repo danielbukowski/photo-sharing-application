@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { VerificationService } from '../service/verification/verification.service';
+import { VerificationService } from '../services/verification/verification.service';
 import { BehaviorSubject } from 'rxjs';
 
 @Component({

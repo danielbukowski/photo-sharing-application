@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ImageService } from '../service/image/image.service';
+import { ImageService } from '../services/image/image.service';
 import { Observable } from 'rxjs';
-import { Page } from '../model/page';
+import { Page } from '../models/page';
 
 @Component({
   selector: 'app-home-page',

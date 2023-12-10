@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { CsrfTokenService } from './service/csrf-token/csrf-token.service';
-import { AuthService } from './service/auth/auth.service';
+import { CsrfTokenService } from './services/csrf-token/csrf-token.service';
+import { AuthService } from './services/auth/auth.service';
 
 @Component({
   selector: 'app-root',

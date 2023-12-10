@@ -1,7 +1,7 @@
 import { Component, OnInit, Signal, computed, signal } from '@angular/core';
-import { LogoutService } from '../service/logout/logout.service';
-import { AuthService } from '../service/auth/auth.service';
-import { Account } from '../model/account';
+import { LogoutService } from '../services/logout/logout.service';
+import { AuthService } from '../services/auth/auth.service';
+import { Account } from '../models/account';
 import { Observable, of } from 'rxjs';
 import { toObservable } from '@angular/core/rxjs-interop';
 
