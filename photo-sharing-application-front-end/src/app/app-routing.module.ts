@@ -5,10 +5,10 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { LoginPageComponent } from './login/login-page.component';
 import { ForgottenPasswordPageComponent } from './forgotten-password/forgotten-password-page.component';
 import { RegistrationPageComponent } from './registration/registration-page.component';
-import { VerificationComponent } from './verification/verification.component';
+import { VerificationPageComponent } from './verification/verification-page.component';
 import { AddImagePageComponent } from './add-image/add-image-page.component';
 import { emailVerificationGuard } from './guards/email-verification.guard';
-import { ImageDetailComponent } from './image-detail/image-detail-page.component';
+import { ImageDetailPageComponent } from './image-detail/image-detail-page.component';
 
 const routes: Routes = [
   {
@@ -38,7 +38,8 @@ const routes: Routes = [
   },
   {
     path: 'image/:id',
-    component: ImageDetailPageComponent,
+    component: ImageDetailPageComponent
+    ,
   },
   {
     path: '',

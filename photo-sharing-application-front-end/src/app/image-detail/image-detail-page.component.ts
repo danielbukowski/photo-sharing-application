@@ -11,7 +11,7 @@ import { Observable } from 'rxjs';
   selector: 'app-image-detail-page',
   templateUrl: './image-detail-page.component.html'
 })
-export class ImageDetailComponent implements OnInit {
+export class ImageDetailPageComponent implements OnInit {
   IdOfCurrentDisplayedImage: WritableSignal<string> = signal<string>('');
   accountDetails!: Signal<Account | undefined>;
   commentPage$!: Observable<Page<Comment>>;

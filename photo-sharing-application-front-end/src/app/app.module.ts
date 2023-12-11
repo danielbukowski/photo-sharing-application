@@ -8,14 +8,14 @@ import { LoginPageComponent } from './login/login-page.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { RegistrationPageComponent } from './registration/registration-page.component';
-import { VerificationComponent } from './verification/verification.component';
+import { VerificationPageComponent } from './verification/verification-page.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpCookieInterceptor } from './Interceptors/HttpCookieInterceptor';
 import { HttpCsrfTokenInterceptor } from './Interceptors/HttpCsrfTokenInterceptor';
 import { ForgottenPasswordPageComponent } from './forgotten-password/forgotten-password-page.component';
 import { AddImagePageComponent } from './add-image/add-image-page.component';
-import { ImageDetailComponent } from './image-detail/image-detail-page.component';
+import { ImageDetailPageComponent } from './image-detail/image-detail-page.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +28,7 @@ import { ImageDetailComponent } from './image-detail/image-detail-page.component
     RegistrationPageComponent,
     VerificationPageComponent,
     AddImagePageComponent,
-    ImageDetailComponent,
+    ImageDetailPageComponent,
   ],
   imports: [
     BrowserModule,
