@@ -10,7 +10,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 export class ImageUploaderPageComponent implements OnInit {
   isBeingProcessed: WritableSignal<boolean> = signal(false);
   image!: File;
-  addImageForm!: FormGroup;
+  ImageUploaderForm!: FormGroup;
 
   constructor(
     private imageService: ImageService,
@@ -19,7 +19,7 @@ export class ImageUploaderPageComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.addImageForm = this.fb.group({
+    this.ImageUploaderForm = this.fb.group({
       title: ['', Validators.required],
       isPrivate: [false, Validators.required],
       image: [this.image, Validators.required],
@@ -33,7 +33,7 @@ export class ImageUploaderPageComponent implements OnInit {
   onSubmit() {
     this.isBeingProcessed.set(true);
     this.imageService
-      .uploadImage(this.addImageForm.value, this.image)
+      .uploadImage(this.ImageUploaderForm.value, this.image)
       .subscribe({
         next: () => {
           this.router.navigate(['/home']);

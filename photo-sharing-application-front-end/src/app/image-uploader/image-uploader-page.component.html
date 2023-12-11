@@ -8,7 +8,7 @@
     </header>
     <form
       class="space-y-6"
-      [formGroup]="this.addImageForm"
+      [formGroup]="this.ImageUploaderForm"
       (ngSubmit)="onSubmit()"
     >
       <div class="mb-6">
@@ -51,9 +51,9 @@
       <div class="text-center" *ngIf="!this.isBeingProcessed()">
         <button
           type="submit"
-          [disabled]="!addImageForm.valid"
+          [disabled]="!ImageUploaderForm.valid"
           [ngClass]="
-            !addImageForm.valid ? 'cursor-not-allowed hover:bg-white' : ''
+            !ImageUploaderForm.valid ? 'cursor-not-allowed hover:bg-white' : ''
           "
           class="bg-white font-medium rounded-lg border-2 text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-slate-800 dark:border-slate-700"
         >
