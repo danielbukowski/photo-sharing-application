@@ -4,10 +4,10 @@ import { RegistrationService } from '../services/registration/registration.servi
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-register',
-  templateUrl: './registration.component.html'
+  selector: 'app-registration-page',
+  templateUrl: './registration-page.component.html'
 })
-export class RegistrationComponent implements OnInit {
+export class RegistrationPageComponent implements OnInit {
   validationErrors = signal({
     nickname: [] as string[],
     email: [] as string[],
