@@ -1,6 +1,8 @@
-<div class="flex justify-center items-center flex-col h-screen bg-gray-100 dark:bg-gray-900">
+<div
+  class="flex justify-center items-center flex-col h-screen bg-gray-100 dark:bg-gray-900"
+>
   <div class="flex flex-col p-24 shadow-2xl bg-white dark:bg-slate-900">
-    <h1 class="text-center text-2xl font-bold mb-3 ">Please log in</h1>
+    <h1 class="text-center text-2xl font-bold mb-3">Please log in</h1>
     <form
       [formGroup]="this.loginForm"
       (ngSubmit)="onSubmit()"
@@ -52,13 +54,14 @@
           type="submit"
           [disabled]="!loginForm.valid"
           [ngClass]="
-            !loginForm.valid ? 'cursor-not-allowed hover:bg-white' : 'dark:hover:bg-slate-700'
+            !loginForm.valid
+              ? 'cursor-not-allowed hover:bg-white'
+              : 'dark:hover:bg-slate-700'
           "
           class="bg-white hover:bg-gray-50 font-medium rounded-lg border-2 text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-slate-800 dark:border-slate-700"
         >
           Login
         </button>
-        <!-- add loading button -->
       </div>
       <hr
         class="w-full h-px mx-auto my-4 bg-gray-200 border-0 rounded md:my-10"
