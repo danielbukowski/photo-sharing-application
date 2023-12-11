@@ -6,7 +6,7 @@ import { LoginPageComponent } from './login/login-page.component';
 import { ForgottenPasswordPageComponent } from './forgotten-password/forgotten-password-page.component';
 import { RegistrationPageComponent } from './registration/registration-page.component';
 import { VerificationPageComponent } from './verification/verification-page.component';
-import { AddImagePageComponent } from './add-image/add-image-page.component';
+import { ImageUploaderPageComponent } from './image-uploader/image-uploader-page.component';
 import { emailVerificationGuard } from './guards/email-verification.guard';
 import { ImageDetailPageComponent } from './image-detail/image-detail-page.component';
 
@@ -33,7 +33,7 @@ const routes: Routes = [
   },
   {
     path: 'add-image',
-    component: AddImagePageComponent,
+    component: ImageUploaderPageComponent,
     canActivate: [emailVerificationGuard],
   },
   {

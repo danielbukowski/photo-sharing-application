@@ -4,10 +4,10 @@ import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
-  selector: 'app-add-image-page',
-  templateUrl: './add-image-page.component.html'
+  selector: 'app-image-uploader-page',
+  templateUrl: './image-uploader-page.component.html'
 })
-export class AddImagePageComponent implements OnInit {
+export class ImageUploaderPageComponent implements OnInit {
   isBeingProcessed: WritableSignal<boolean> = signal(false);
   image!: File;
   addImageForm!: FormGroup;
