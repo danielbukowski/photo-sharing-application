@@ -49,7 +49,7 @@ export class RegistrationPageComponent implements OnInit {
         next: () => this.router.navigate(['/login']),
         error: (e) => {
           if (e.error.fieldNames) {
-            this.validationErrors.update(v => v = { ...e.error.fieldNames });
+            this.validationErrors.set({ ...e.error.fieldNames });
           } else {
             this.generalError.set(e.error.reason);
           }
