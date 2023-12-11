@@ -7,7 +7,7 @@
       class="space-y-6 flex flex-col items-center"
     >
       <div
-        *ngIf="this.hasBadCredentials$ | async"
+        *ngIf="this.hasBadCredentials()"
         class="flex items-center p-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800"
       >
         <svg
@@ -58,6 +58,7 @@
         >
           Login
         </button>
+        <!-- add loading button -->
       </div>
       <hr
         class="w-full h-px mx-auto my-4 bg-gray-200 border-0 rounded md:my-10"

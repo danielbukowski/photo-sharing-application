@@ -1,17 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, WritableSignal, signal } from '@angular/core';
 import { LoginService } from '../services/login/login.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth/auth.service';
 import { CsrfTokenService } from '../services/csrf-token/csrf-token.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html'
 })
 export class LoginComponent implements OnInit {
-  hasBadCredentials$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  hasBadCredentials: WritableSignal<boolean> = signal(false);
   loginForm!: FormGroup;
 
   constructor(
@@ -37,7 +36,7 @@ export class LoginComponent implements OnInit {
         this.router.navigate(['/home']);
       },
       error: () => {
-        this.hasBadCredentials$.next(true);
+        this.hasBadCredentials.set(true);
       },
     });
   }
