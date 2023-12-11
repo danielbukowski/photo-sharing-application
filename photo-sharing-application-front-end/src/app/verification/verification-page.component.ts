@@ -3,10 +3,10 @@ import { ActivatedRoute } from '@angular/router';
 import { VerificationService } from '../services/verification/verification.service';
 
 @Component({
-  selector: 'app-verify',
-  templateUrl: './verification.component.html'
+  selector: 'app-verifcation-page',
+  templateUrl: './verification-page.component.html'
 })
-export class VerificationComponent implements OnInit {
+export class VerificationPageComponent implements OnInit {
   verificationResponse: WritableSignal<string> = signal('');
 
   constructor(

@@ -7,7 +7,7 @@ import { HomePageComponent } from './home/home-page.component';
 import { LoginPageComponent } from './login/login-page.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-import { RegistrationComponent } from './registration/registration.component';
+import { RegistrationPageComponent } from './registration/registration-page.component';
 import { VerificationComponent } from './verification/verification.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
