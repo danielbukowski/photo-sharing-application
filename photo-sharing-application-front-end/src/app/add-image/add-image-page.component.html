@@ -46,7 +46,7 @@
           (change)="getImageFromInput($event)"
         />
       </div>
-      <div class="text-center" *ngIf="!(this.isBeingProcessed$ | async)">
+      <div class="text-center" *ngIf="!this.isBeingProcessed()">
         <button
           type="submit"
           [disabled]="!addImageForm.valid"
@@ -59,7 +59,7 @@
         </button>
       </div>
       <div
-        *ngIf="this.isBeingProcessed$ | async"
+        *ngIf="this.isBeingProcessed()"
         class="flex items-center justify-center w-full h-12 bg-white dark:bg-slate-900"
       >
         <div>

@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, WritableSignal, signal } from '@angular/core';
 import { ImageService } from '../services/image/image.service';
 import { Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -9,7 +8,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   templateUrl: './add-image-page.component.html'
 })
 export class AddImagePageComponent implements OnInit {
-  isBeingProcessed$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  isBeingProcessed: WritableSignal<boolean> = signal(false);
   image!: File;
   addImageForm!: FormGroup;
 
@@ -32,7 +31,7 @@ export class AddImagePageComponent implements OnInit {
   }
 
   onSubmit() {
-    this.isBeingProcessed$.next(true);
+    this.isBeingProcessed.set(true);
     this.imageService
       .uploadImage(this.addImageForm.value, this.image)
       .subscribe({
@@ -40,7 +39,7 @@ export class AddImagePageComponent implements OnInit {
           this.router.navigate(['/home']);
         },
         error: () => {
-          this.isBeingProcessed$.next(false);
+          this.isBeingProcessed.set(false);
         },
       });
   }
