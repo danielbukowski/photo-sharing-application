@@ -4,6 +4,7 @@ import { Credentials } from '../../models/credentials';
 import { Observable } from 'rxjs';
 import { HttpHeaders } from '@angular/common/http';
 import { Buffer } from 'buffer';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -22,7 +23,7 @@ export class LoginService {
       }),
     };
     return this.http.post(
-      'http://localhost:8081/api/v1/sessions',
+      `${environment.apiUrl}/api/v1/sessions`,
       {},
       httpOptions
     );

@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, Signal, WritableSignal, signal } from '@angular/core';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +16,7 @@ export class CsrfTokenService {
 
   updateCsrfToken(): void {
     this.http
-      .get<any>('http://localhost:8081/api/v1/csrf')
+      .get<any>(`${environment.apiUrl}/api/v1/csrf`)
       .subscribe({
         next: (d) => this.#token.set(d.data.token),
         error: () => this.#token.set(''),

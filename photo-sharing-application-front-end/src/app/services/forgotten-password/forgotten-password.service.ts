@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +13,7 @@ export class ForgottenPasswordService {
     let headers = new HttpHeaders();
     headers.append('Content-Type', 'application/json');
     return this.http.post(
-      'http://localhost:8081/api/v3/accounts/password-reset',
+      `${environment.apiUrl}/api/v3/accounts/password-reset`,
       email,
       { headers: headers }
     );
