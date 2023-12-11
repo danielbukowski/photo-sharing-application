@@ -1,14 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, WritableSignal, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { VerificationService } from '../services/verification/verification.service';
-import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-verify',
   templateUrl: './verification.component.html'
 })
 export class VerificationComponent implements OnInit {
-  verificationResponse$: BehaviorSubject<string> = new BehaviorSubject('');
+  verificationResponse: WritableSignal<string> = signal('');
 
   constructor(
     private route: ActivatedRoute,
@@ -24,12 +23,12 @@ export class VerificationComponent implements OnInit {
   verifyAccount(token: string): void {
     this.verificationService.verifyAccountByToken(token).subscribe({
       next: () => {
-        this.verificationResponse$.next(
+        this.verificationResponse.set(
           'Your account has been successfully verified! C:'
         );
       },
       error: (e) => {
-        this.verificationResponse$.next(e.error.reason);
+        this.verificationResponse.set(e.error.reason);
       },
     });
   }
