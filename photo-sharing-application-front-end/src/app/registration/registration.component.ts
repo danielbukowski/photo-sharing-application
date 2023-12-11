@@ -1,21 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, WritableSignal, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RegistrationService } from '../services/registration/registration.service';
 import { Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-register',
   templateUrl: './registration.component.html'
 })
 export class RegistrationComponent implements OnInit {
-  validationErrors$ = new BehaviorSubject({
+  validationErrors = signal({
     nickname: [] as string[],
     email: [] as string[],
     password: [] as string[],
   });
-  generalError$: BehaviorSubject<string> = new BehaviorSubject('');
-  isBeingProcessed$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  generalError: WritableSignal<string> = signal('');
+  isBeingProcessed: WritableSignal<boolean> = signal(false);
   registrationForm!: FormGroup;
 
   constructor(
@@ -33,28 +32,28 @@ export class RegistrationComponent implements OnInit {
   }
 
   private resetErrorMessages() {
-    this.validationErrors$.next({
+    this.validationErrors.set({
       nickname: [],
       email: [],
       password: [],
     });
-    this.generalError$.next('');
+    this.generalError.set('');
   }
 
   onSubmit(): void {
     this.resetErrorMessages();
-    this.isBeingProcessed$.next(true);
+    this.isBeingProcessed.set(true);
     this.registrationService
       .registerAccount(this.registrationForm.value)
       .subscribe({
         next: () => this.router.navigate(['/login']),
         error: (e) => {
           if (e.error.fieldNames) {
-            this.validationErrors$.next({ ...e.error.fieldNames });
+            this.validationErrors.update(v => v = { ...e.error.fieldNames });
           } else {
-            this.generalError$.next(e.error.reason);
+            this.generalError.set(e.error.reason);
           }
-          this.isBeingProcessed$.next(false);
+          this.isBeingProcessed.set(false);
         },
       });
   }

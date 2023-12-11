@@ -8,7 +8,7 @@
       (ngSubmit)="onSubmit()"
     >
       <div
-        *ngIf="this.generalError$ | async as generalErrorReason"
+        *ngIf="this.generalError() as generalErrorReason"
         class="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800"
       >
         <svg
@@ -32,7 +32,7 @@
           name="nickname"
           formControlName="nickname"
           [ngClass]="
-            (this.validationErrors$ | async)?.nickname?.length
+            this.validationErrors()?.nickname?.length
               ? 'border-red-600'
               : ''
           "
@@ -40,7 +40,7 @@
           autocomplete="nickname"
         />
         <ul
-          *ngIf="(this.validationErrors$ | async)?.nickname as nicknameErrorReasons"
+          *ngIf="this.validationErrors().nickname as nicknameErrorReasons"
         >
           <li
             *ngFor="let errorReason of nicknameErrorReasons"
@@ -57,14 +57,14 @@
           name="email"
           formControlName="email"
           [ngClass]="
-            (this.validationErrors$ | async)?.email?.length
+            this.validationErrors()?.email?.length
               ? 'border-red-600'
               : ''
           "
           class="bg-white hover:bg-gray-50 font-medium rounded-lg border-2 text-sm px-5 py-2.5 dark:bg-slate-800 dark:border-slate-700 focus:dark:outline focus:dark:outline-gray-300"
           autocomplete="email"
         />
-        <ul *ngIf="(this.validationErrors$ | async)?.email as emailErrorReasons">
+        <ul *ngIf="this.validationErrors().email as emailErrorReasons">
           <li
             *ngFor="let errorReason of emailErrorReasons"
             class="text-sm text-red-400"
@@ -80,7 +80,7 @@
           name="password"
           formControlName="password"
           [ngClass]="
-            (this.validationErrors$ | async)?.password?.length
+            this.validationErrors()?.password?.length
               ? 'border-red-600'
               : ''
           "
@@ -88,7 +88,7 @@
           autocomplete="new-password"
         />
         <ul
-          *ngIf="(this.validationErrors$ | async)?.password as passwordErrorReasons"
+          *ngIf="this.validationErrors().password as passwordErrorReasons"
         >
           <li
             *ngFor="let errorReason of passwordErrorReasons"
@@ -100,7 +100,7 @@
       </div>
       <div>
         <button
-          *ngIf="!(this.isBeingProcessed$ | async)"
+          *ngIf="!this.isBeingProcessed()"
           type="submit"
           [disabled]="!registrationForm.valid"
           [ngClass]="
@@ -111,7 +111,7 @@
           Submit
         </button>
         <div
-          *ngIf="this.isBeingProcessed$ | async"
+          *ngIf="this.isBeingProcessed()"
           class="flex items-center justify-center w-full h-12 bg-white dark:bg-slate-900"
         >
           <div>
