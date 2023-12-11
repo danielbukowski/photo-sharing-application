@@ -1,17 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, WritableSignal, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ForgottenPasswordService } from '../services/forgotten-password/forgotten-password.service';
 import { Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-forgotten-password-page',
   templateUrl: './forgotten-password-page.component.html'
 })
 export class ForgottenPasswordPageComponent {
-  validationError$: BehaviorSubject<string> = new BehaviorSubject('');
-  generalError$: BehaviorSubject<string> = new BehaviorSubject('');
-  isBeingProcessed$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  validationError: WritableSignal<string> = signal('');
+  generalError: WritableSignal<string> = signal('');
+  isBeingProcessed: WritableSignal<boolean> = signal(false);
   forgetPasswordForm!: FormGroup;
 
   constructor(
@@ -28,12 +27,12 @@ export class ForgottenPasswordPageComponent {
 
   resetForm(): void {
     this.forgetPasswordForm.reset();
-    this.validationError$.next('');
-    this.generalError$.next('');
+    this.validationError.set('');
+    this.generalError.set('');
   }
 
   onSubmit() {
-    this.isBeingProcessed$.next(true);
+    this.isBeingProcessed.set(true);
     this.forgottenPasswordService
       .sendPasswordResetRequest(this.forgetPasswordForm.value)
       .subscribe({
@@ -43,11 +42,11 @@ export class ForgottenPasswordPageComponent {
         error: (e) => {
           this.resetForm();
           if (e.error.fieldNames) {
-            this.validationError$.next(e.error.fieldNames.email);
+            this.validationError.set(e.error.fieldNames.email);
           } else {
-            this.generalError$.next(e.error.reason);
+            this.generalError.set(e.error.reason);
           }
-          this.isBeingProcessed$.next(false);
+          this.isBeingProcessed.set(false);
         },
       });
   }
