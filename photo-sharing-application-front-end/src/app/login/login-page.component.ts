@@ -6,10 +6,10 @@ import { CsrfTokenService } from '../services/csrf-token/csrf-token.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html'
+  selector: 'app-login-page',
+  templateUrl: './login-page.component.html'
 })
-export class LoginComponent implements OnInit {
+export class LoginPageComponent implements OnInit {
   hasBadCredentials: WritableSignal<boolean> = signal(false);
   loginForm!: FormGroup;
 
