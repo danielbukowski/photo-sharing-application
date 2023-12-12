@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { CsrfTokenService } from './csrf-token/csrf-token.service';
-import { AuthService } from './auth/auth.service';
+import { CsrfTokenService } from './services/csrf-token/csrf-token.service';
+import { AuthService } from './services/auth/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -8,17 +8,22 @@ import { AuthService } from './auth/auth.service';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
-
-  constructor(private CsrfTokenService: CsrfTokenService, private authService: AuthService) {}
+  constructor(
+    private CsrfTokenService: CsrfTokenService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     this.authService.updateAuthentication();
-    this.setTheme();
-    this.CsrfTokenService.generateCsrfToken();
+    this.updateTheme();
+    this.CsrfTokenService.updateCsrfToken();
   }
 
-  private setTheme() {
-    if (localStorage.getItem('theme') === 'dark' || window.matchMedia('(prefers-color-scheme: dark)').matches) {
+  private updateTheme() {
+    if (
+      localStorage.getItem('theme') === 'dark' ||
+      window.matchMedia('(prefers-color-scheme: dark)').matches
+    ) {
       localStorage.setItem('theme', 'dark');
       document.documentElement.classList.add('dark');
     } else {
@@ -26,5 +31,4 @@ export class AppComponent implements OnInit {
       document.documentElement.classList.remove('dark');
     }
   }
-
 }

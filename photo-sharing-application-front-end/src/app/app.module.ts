@@ -3,46 +3,52 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HomeComponent } from './home/home.component';
-import { LoginComponent } from './login/login.component';
+import { HomePageComponent } from './home/home-page.component';
+import { LoginPageComponent } from './login/login-page.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-import { RegistrationComponent } from './registration/registration.component';
-import { VerificationComponent } from './verification/verification.component';
+import { RegistrationPageComponent } from './registration/registration-page.component';
+import { VerificationPageComponent } from './verification/verification-page.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpCookieInterceptor } from './Interceptor/HttpCookieInterceptor';
-import { HttpCsrfTokenInterceptor } from './Interceptor/HttpCsrfTokenInterceptor';
-import { ForgottenPasswordComponent } from './forgotten-password/forgotten-password.component';
-import { AddImagePageComponent } from './add-image-page/add-image-page.component';
-import { ImageDetailsComponent } from './image-details/image-details.component';
+import { HttpCookieInterceptor } from './Interceptors/HttpCookieInterceptor';
+import { HttpCsrfTokenInterceptor } from './Interceptors/HttpCsrfTokenInterceptor';
+import { ForgottenPasswordPageComponent } from './forgotten-password/forgotten-password-page.component';
+import { ImageUploaderPageComponent } from './image-uploader/image-uploader-page.component';
+import { ImageDetailPageComponent } from './image-detail/image-detail-page.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent,
-    LoginComponent,
+    HomePageComponent,
+    LoginPageComponent,
     NavbarComponent,
     PageNotFoundComponent,
-    ForgottenPasswordComponent,
-    RegistrationComponent,
-    VerificationComponent,
-    AddImagePageComponent,
-    ImageDetailsComponent
+    ForgottenPasswordPageComponent,
+    RegistrationPageComponent,
+    VerificationPageComponent,
+    ImageUploaderPageComponent,
+    ImageDetailPageComponent,
   ],
-  imports: [BrowserModule, AppRoutingModule, HttpClientModule, FormsModule, ReactiveFormsModule],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule,
+  ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpCookieInterceptor,
-      multi: true
+      multi: true,
     },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpCsrfTokenInterceptor,
-      multi: true
-    }
+      multi: true,
+    },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -1,18 +1,20 @@
-import { Component, OnChanges, OnInit, Signal, SimpleChanges, WritableSignal, signal } from '@angular/core';
-import { LogoutService } from '../logout/logout.service';
-import { AuthService } from '../auth/auth.service';
-import { Observable } from 'rxjs';
-import { Account } from '../model/account';
+import { Component, OnInit, Signal, computed, signal } from '@angular/core';
+import { AuthService } from '../services/auth/auth.service';
+import { Account } from '../models/account';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.css'],
 })
 export class NavbarComponent implements OnInit {
   accountDetails: Signal<Account | undefined> = signal(undefined);
+  isAuthenticated = computed(() => this.accountDetails() !== undefined);
 
-  constructor(public logoutService: LogoutService, public authService: AuthService) { }
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.initThemeButton();
@@ -38,5 +40,9 @@ export class NavbarComponent implements OnInit {
     document.getElementById('moon-icon')?.toggleAttribute('hidden');
     document.getElementById('sun-icon')?.toggleAttribute('hidden');
   }
-  
+
+  logOut(): void {
+    this.router.navigate(['home']);
+    this.authService.logOut();
+  }
 }
