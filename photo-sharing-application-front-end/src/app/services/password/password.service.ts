@@ -6,7 +6,7 @@ import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root',
 })
-export class ForgottenPasswordService {
+export class PasswordService {
   constructor(private http: HttpClient) {}
 
   sendPasswordResetRequest(email: string): Observable<any> {

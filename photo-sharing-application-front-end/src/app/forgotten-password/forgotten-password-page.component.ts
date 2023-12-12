@@ -1,6 +1,6 @@
 import { Component, WritableSignal, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ForgottenPasswordService } from '../services/forgotten-password/forgotten-password.service';
+import { PasswordService } from '../services/password/password.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -14,7 +14,7 @@ export class ForgottenPasswordPageComponent {
   forgetPasswordForm!: FormGroup;
 
   constructor(
-    private forgottenPasswordService: ForgottenPasswordService,
+    private passwordService: PasswordService,
     private router: Router,
     private fb: FormBuilder
   ) {}
@@ -33,7 +33,7 @@ export class ForgottenPasswordPageComponent {
 
   onSubmit() {
     this.isBeingProcessed.set(true);
-    this.forgottenPasswordService
+    this.passwordService
       .sendPasswordResetRequest(this.forgetPasswordForm.value)
       .subscribe({
         next: () => {
