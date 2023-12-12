@@ -1,5 +1,4 @@
 import { Component, OnInit, Signal, computed, signal } from '@angular/core';
-import { LogoutService } from '../services/logout/logout.service';
 import { AuthService } from '../services/auth/auth.service';
 import { Account } from '../models/account';
 import { Router } from '@angular/router';
@@ -13,7 +12,6 @@ export class NavbarComponent implements OnInit {
   isAuthenticated = computed(() => this.accountDetails() !== undefined);
 
   constructor(
-    public logoutService: LogoutService,
     public authService: AuthService,
     private router: Router
   ) {}
