@@ -26,19 +26,20 @@ export class AuthService {
   }
 
   logIn(credentials: Credentials): Observable<any> {
-    const httpOptions = {
-      headers: new HttpHeaders({
-        Authorization:
-          'Basic ' +
-          Buffer.from(`${credentials.email}:${credentials.password}`).toString(
-            'base64'
-          ),
-      }),
-    };
+    const headers = new HttpHeaders().set(
+      'Authorization',
+      'Basic ' +
+        Buffer.from(`${credentials.email}:${credentials.password}`).toString(
+          'base64'
+        )
+    );
+
     return this.http.post(
       `${environment.apiUrl}/api/v1/sessions`,
       {},
-      httpOptions
+      {
+        headers,
+      }
     );
   }
 

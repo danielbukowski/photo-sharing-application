@@ -11,13 +11,13 @@ export class RegistrationService {
   constructor(private http: HttpClient) {}
 
   registerAccount(registrationForm: RegistrationForm): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    
     return this.http.post(
       `${environment.apiUrl}/api/v3/accounts`,
       registrationForm,
       {
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
       }
     );
   }
