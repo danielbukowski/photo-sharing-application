@@ -14,7 +14,6 @@ export class LoginPageComponent implements OnInit {
   loginForm!: FormGroup;
 
   constructor(
-    private loginService: LoginService,
     private router: Router,
     private csrfToken: CsrfTokenService,
     private authService: AuthService,
@@ -29,7 +28,7 @@ export class LoginPageComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.loginService.logIn(this.loginForm.value).subscribe({
+    this.authService.logIn(this.loginForm.value).subscribe({
       next: () => {
         this.csrfToken.updateCsrfToken();
         this.authService.updateAuthentication();
