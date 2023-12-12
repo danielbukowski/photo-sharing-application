@@ -10,6 +10,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class LoginPageComponent implements OnInit {
   hasBadCredentials: WritableSignal<boolean> = signal(false);
+  isBeingProcessed: WritableSignal<boolean> = signal(false);
   loginForm!: FormGroup;
 
   constructor(
@@ -27,13 +28,16 @@ export class LoginPageComponent implements OnInit {
   }
 
   onSubmit(): void {
+    this.isBeingProcessed.set(true);
     this.authService.logIn(this.loginForm.value).subscribe({
       next: () => {
+        this.isBeingProcessed.set(false);
         this.csrfTokenService.updateCsrfToken();
         this.authService.updateAuthentication();
         this.router.navigate(['/home']);
       },
       error: () => {
+        this.isBeingProcessed.set(false);
         this.hasBadCredentials.set(true);
       },
     });
