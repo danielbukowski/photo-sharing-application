@@ -1,4 +1,4 @@
-export interface ImageDetailsPostRequest {
+export interface ImageUploaderRequest {
     isPrivate: boolean,
     title: string
 }

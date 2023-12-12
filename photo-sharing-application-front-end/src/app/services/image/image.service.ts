@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ImageDetailsPostRequest } from '../../models/image-details-post-request';
+import { ImageUploaderRequest } from '../../models/image-uploader-request';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -17,7 +17,7 @@ export class ImageService {
   }
 
   uploadImage(
-    imagePostRequest: ImageDetailsPostRequest,
+    imageUploaderRequest: ImageUploaderRequest,
     image: File
   ): Observable<any> {
     let formData = new FormData();
@@ -25,7 +25,7 @@ export class ImageService {
     formData.append('image', image);
     formData.append(
       'imageProperties',
-      new Blob([JSON.stringify(imagePostRequest)], {
+      new Blob([JSON.stringify(imageUploaderRequest)], {
         type: 'application/json',
       })
     );
