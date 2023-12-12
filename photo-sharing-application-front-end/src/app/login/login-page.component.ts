@@ -14,7 +14,7 @@ export class LoginPageComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private csrfToken: CsrfTokenService,
+    private csrfTokenService: CsrfTokenService,
     private authService: AuthService,
     private fb: FormBuilder
   ) {}
@@ -29,7 +29,7 @@ export class LoginPageComponent implements OnInit {
   onSubmit(): void {
     this.authService.logIn(this.loginForm.value).subscribe({
       next: () => {
-        this.csrfToken.updateCsrfToken();
+        this.csrfTokenService.updateCsrfToken();
         this.authService.updateAuthentication();
         this.router.navigate(['/home']);
       },
