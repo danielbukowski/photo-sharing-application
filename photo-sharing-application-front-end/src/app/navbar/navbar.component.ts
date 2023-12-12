@@ -12,7 +12,7 @@ export class NavbarComponent implements OnInit {
   isAuthenticated = computed(() => this.accountDetails() !== undefined);
 
   constructor(
-    public authService: AuthService,
+    private authService: AuthService,
     private router: Router
   ) {}
 
