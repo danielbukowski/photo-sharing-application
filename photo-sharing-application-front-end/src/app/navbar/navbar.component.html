@@ -68,7 +68,7 @@
       <ul class="flex flex-row font-medium items-center space-x-8">
         <li *ngIf="this.isAuthenticated(); else nonAuthenticatedView">
           <a
-            (click)="this.logoutService.logOut()"
+            (click)="this.logOut()"
             class="block hover:text-red-800 cursor-pointer"
             >Log out</a
           >

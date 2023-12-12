@@ -14,12 +14,5 @@ export class LogoutService {
     private router: Router
   ) {}
 
-  logOut(): void {
-    this.http.delete(`${environment.apiUrl}/api/v1/sessions`).subscribe({
-      next: () => {
-        this.authService.updateAuthentication();
-        this.router.navigate(['/home']);
-      },
-    });
-  }
+
 }

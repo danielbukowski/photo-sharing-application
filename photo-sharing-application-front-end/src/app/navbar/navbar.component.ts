@@ -2,6 +2,7 @@ import { Component, OnInit, Signal, computed, signal } from '@angular/core';
 import { LogoutService } from '../services/logout/logout.service';
 import { AuthService } from '../services/auth/auth.service';
 import { Account } from '../models/account';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
@@ -13,7 +14,8 @@ export class NavbarComponent implements OnInit {
 
   constructor(
     public logoutService: LogoutService,
-    public authService: AuthService
+    public authService: AuthService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -39,5 +41,10 @@ export class NavbarComponent implements OnInit {
     }
     document.getElementById('moon-icon')?.toggleAttribute('hidden');
     document.getElementById('sun-icon')?.toggleAttribute('hidden');
+  }
+
+  logOut(): void {
+    this.router.navigate(['home']);
+    this.authService.logOut();
   }
 }
