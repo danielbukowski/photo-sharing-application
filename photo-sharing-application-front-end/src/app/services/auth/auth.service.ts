@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Credentials } from 'src/app/models/credentials';
 import { Observable } from 'rxjs';
+import { Buffer } from 'buffer'
 
 @Injectable({
   providedIn: 'root',

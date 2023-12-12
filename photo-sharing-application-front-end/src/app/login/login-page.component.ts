@@ -1,5 +1,4 @@
 import { Component, OnInit, WritableSignal, signal } from '@angular/core';
-import { LoginService } from '../services/login/login.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth/auth.service';
 import { CsrfTokenService } from '../services/csrf-token/csrf-token.service';
