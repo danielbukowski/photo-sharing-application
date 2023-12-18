@@ -4,20 +4,14 @@ import { AuthService } from '../services/auth/auth.service';
 import { Observable, filter, map } from 'rxjs';
 import { toObservable } from '@angular/core/rxjs-interop';
 
-export const emailVerificationGuard: CanActivateFn =
-  (): Observable<boolean> => {
-    const router = inject(Router);
-    const authService = inject(AuthService);
-    const accountDetails$ = toObservable(authService.getAccountDetails());
+export const emailVerificationGuard: CanActivateFn = (): boolean => {
+  const router = inject(Router);
+  const authService = inject(AuthService);
+  const accountDetails = authService.getAccountDetails();
 
-    return accountDetails$.pipe(
-      filter((a) => a !== undefined),
-      map((a) => {
-        if (a?.isEmailVerified) {
-          return true;
-        }
-        router.navigate(['home']);
-        return false;
-      })
-    );
-  };
+  if (accountDetails()?.isEmailVerified) {
+    return true;
+  }
+  router.navigate(['home']);
+  return false;
+};
