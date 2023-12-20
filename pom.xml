@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.danielbukowski</groupId>
     <artifactId>photo-sharing</artifactId>
-    <version>0.13.1-SNAPSHOT</version>
+    <version>0.13.2-SNAPSHOT</version>
     <name>photo-sharing</name>
     <description>Photo Sharing REST API</description>
     <properties>
@@ -61,6 +61,12 @@
         <dependency>
             <groupId>org.springframework.session</groupId>
             <artifactId>spring-session-data-redis</artifactId>
+            <version>3.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-core</artifactId>
+            <version>3.2.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
