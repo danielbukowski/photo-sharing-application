@@ -21,6 +21,7 @@ import { ImageUploaderPageComponent } from './image-uploader/image-uploader-page
 import { ImageDetailPageComponent } from './image-detail/image-detail-page.component';
 import { AuthService } from './services/auth/auth.service';
 import { CsrfTokenService } from './services/csrf-token/csrf-token.service';
+import { PasswordResetPageComponent } from './password-reset/password-reset-page.component';
 
 export function initApp(
   authService: AuthService,
@@ -60,6 +61,7 @@ export function initApp(
     VerificationPageComponent,
     ImageUploaderPageComponent,
     ImageDetailPageComponent,
+    PasswordResetPageComponent
   ],
   imports: [
     BrowserModule,
