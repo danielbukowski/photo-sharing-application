@@ -24,7 +24,7 @@ export class PasswordService {
 
     return this.http.put(
       `${environment.apiUrl}/api/v3/accounts/password-reset`,
-      { newPassword },
+      newPassword,
       {
         headers,
         params: { token },
