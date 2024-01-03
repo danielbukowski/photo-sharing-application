@@ -9,6 +9,7 @@ import { VerificationPageComponent } from './verification/verification-page.comp
 import { ImageUploaderPageComponent } from './image-uploader/image-uploader-page.component';
 import { emailVerificationGuard } from './guards/email-verification.guard';
 import { ImageDetailPageComponent } from './image-detail/image-detail-page.component';
+import { PasswordResetPageComponent } from './password-reset/password-reset-page.component';
 
 const routes: Routes = [
   {
@@ -40,6 +41,10 @@ const routes: Routes = [
     path: 'image/:id',
     component: ImageDetailPageComponent
     ,
+  },
+  {
+    path: 'reset-password',
+    component: PasswordResetPageComponent
   },
   {
     path: '',

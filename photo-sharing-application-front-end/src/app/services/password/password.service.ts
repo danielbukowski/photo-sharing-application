@@ -18,4 +18,17 @@ export class PasswordService {
       { headers }
     );
   }
+
+  changePasswordByToken(token: string, newPassword: string): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+
+    return this.http.put(
+      `${environment.apiUrl}/api/v3/accounts/password-reset`,
+      newPassword,
+      {
+        headers,
+        params: { token },
+      }
+    );
+  }
 }

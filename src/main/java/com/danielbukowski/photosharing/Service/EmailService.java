@@ -76,12 +76,12 @@ public class EmailService {
         String text = """
                 Hi %s!<br><br>
                                 
-                You have request a password reset.<br>
-                This is your password reset token: "%s"<br><br>
+                You have requested a password reset.<br>
+                This is your link to complete your password reset: %s <br><br>
                                 
                 Best regards,
                 XYZ
-                """.formatted(nickname, passwordResetToken);
+                """.formatted(nickname, "http://localhost/reset-password?token=" + passwordResetToken);
         try {
             MimeMessage mimeMessage = emailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
