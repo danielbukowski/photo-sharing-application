@@ -13,6 +13,7 @@ import java.util.Objects;
 @Slf4j
 public class ImageValidator implements ConstraintValidator<Image, MultipartFile> {
 
+    private static final long MAX_IMAGE_SIZE = 20_971_520;
     public static final String JPEG = "JPEG";
     public static final String PNG = "PNG";
     public static final String JPG = "JPG";
@@ -21,9 +22,14 @@ public class ImageValidator implements ConstraintValidator<Image, MultipartFile>
     public boolean isValid(MultipartFile file, ConstraintValidatorContext constraintValidatorContext) {
         if (file == null) return false;
 
-        return isFileExtensionValid(file)
+        return IsUnderMaxImageSize(file)
+                && isFileExtensionValid(file)
                 && isContentTypeValid(file)
                 && isFileTypeValid(file);
+    }
+
+    private boolean IsUnderMaxImageSize(MultipartFile file) {
+        return file.getSize() < MAX_IMAGE_SIZE;
     }
 
     private boolean isFileExtensionValid(MultipartFile multipartFile) {

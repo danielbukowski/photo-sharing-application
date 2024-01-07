@@ -4,6 +4,7 @@ package com.danielbukowski.photosharing.Handler;
 import com.danielbukowski.photosharing.Dto.ExceptionResponse;
 import com.danielbukowski.photosharing.Dto.ValidationExceptionResponse;
 import com.danielbukowski.photosharing.Exception.*;
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -156,7 +158,12 @@ public class GlobalExceptionHandler {
         var responseBody = ExceptionResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.BAD_REQUEST.value())
-                .reason(ex.getMessage())
+                .reason(
+                       ex.getConstraintViolations()
+                               .stream()
+                               .map(ConstraintViolation::getMessageTemplate)
+                               .collect(Collectors.joining(","))
+                )
                 .path(ServletUriComponentsBuilder.fromCurrentRequest().toUriString())
                 .build();
 
