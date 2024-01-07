@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Image {
 
-    String message() default "Invalid file extension. Only [JPG and PNG] extensions are supported";
+    String message() default "Only images under 20 MB size with JPG or PNG extensions are supported.";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 
