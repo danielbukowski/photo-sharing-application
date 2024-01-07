@@ -5,12 +5,13 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-image-uploader-page',
-  templateUrl: './image-uploader-page.component.html'
+  templateUrl: './image-uploader-page.component.html',
 })
 export class ImageUploaderPageComponent implements OnInit {
   isBeingProcessed: WritableSignal<boolean> = signal(false);
   image!: File;
   ImageUploaderForm!: FormGroup;
+  generalError: WritableSignal<string> = signal('');
 
   constructor(
     private imageService: ImageService,
@@ -38,7 +39,12 @@ export class ImageUploaderPageComponent implements OnInit {
         next: () => {
           this.router.navigate(['/home']);
         },
-        error: () => {
+        error: (e) => {
+          if (e.status === 0) {
+            this.generalError.set('Internal Server Error');
+          } else {
+            this.generalError.set(e.error.reason);
+          }
           this.isBeingProcessed.set(false);
         },
       });
