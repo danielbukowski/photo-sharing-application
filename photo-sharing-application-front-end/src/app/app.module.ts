@@ -23,6 +23,7 @@ import { AuthService } from './services/auth/auth.service';
 import { CsrfTokenService } from './services/csrf-token/csrf-token.service';
 import { PasswordResetPageComponent } from './password-reset/password-reset-page.component';
 import { ErrorAlertComponent } from './shared/validation-alert/error-alert.component';
+import { SpinnerComponent } from './shared/spinner/spinner.component';
 
 export function initApp(
   authService: AuthService,
@@ -63,7 +64,8 @@ export function initApp(
     ImageUploaderPageComponent,
     ImageDetailPageComponent,
     PasswordResetPageComponent,
-    ErrorAlertComponent
+    ErrorAlertComponent,
+    SpinnerComponent
   ],
   imports: [
     BrowserModule,
