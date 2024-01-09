@@ -4,10 +4,10 @@ import { VerificationService } from '../services/verification/verification.servi
 
 @Component({
   selector: 'app-verifcation-page',
-  templateUrl: './verification-page.component.html'
+  templateUrl: './verification-page.component.html',
 })
 export class VerificationPageComponent implements OnInit {
-  verificationResponse: WritableSignal<string> = signal('');
+  messageResponse: WritableSignal<string> = signal('');
 
   constructor(
     private route: ActivatedRoute,
@@ -16,19 +16,19 @@ export class VerificationPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((queryParams) => {
-      setTimeout(() => this.verifyAccount(queryParams['token']), 1000);
+      setTimeout(() => this.verifyAccount(queryParams['token']), 2000);
     });
   }
 
   verifyAccount(token: string): void {
     this.verificationService.verifyAccountByToken(token).subscribe({
       next: () => {
-        this.verificationResponse.set(
+        this.messageResponse.set(
           'Your account has been successfully verified! C:'
         );
       },
       error: (e) => {
-        this.verificationResponse.set(e.error.reason);
+        this.messageResponse.set(e.error.reason);
       },
     });
   }
