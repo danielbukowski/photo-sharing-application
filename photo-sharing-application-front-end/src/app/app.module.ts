@@ -24,6 +24,7 @@ import { CsrfTokenService } from './services/csrf-token/csrf-token.service';
 import { PasswordResetPageComponent } from './password-reset/password-reset-page.component';
 import { ErrorAlertComponent } from './shared/validation-alert/error-alert.component';
 import { SpinnerComponent } from './shared/spinner/spinner.component';
+import { HomeImageGalleryComponent } from './home/home-image-gallery/home-image-gallery.component';
 
 export function initApp(
   authService: AuthService,
@@ -65,14 +66,15 @@ export function initApp(
     ImageDetailPageComponent,
     PasswordResetPageComponent,
     ErrorAlertComponent,
-    SpinnerComponent
+    SpinnerComponent,
+    HomeImageGalleryComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ],
   providers: [
     {
