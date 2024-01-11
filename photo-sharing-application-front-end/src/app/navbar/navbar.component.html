@@ -1,8 +1,8 @@
-<nav class="bg-white py-2 pl-60 shadow-md dark:bg-slate-900">
-  <div class="flex flex-wrap items-center justify-between p-3">
+<nav class="bg-white py-2 pl-60 max-lg:pl-0 shadow-md dark:bg-slate-900">
+  <div class="flex flex-wrap items-center justify-between">
     <div>
       <a class="flex items-center">
-        <span class="self-center text-2xl font-semibold whitespace-nowrap"
+        <span class="text-2xl font-semibold whitespace-nowrap"
           >Photo Sharing Application</span
         >
       </a>
@@ -16,17 +16,15 @@
             >Home</a
           >
         </li>
-        <li *ngIf="this.isAuthenticated()">
+        <li *ngIf="isAuthenticated()">
           <span
             [ngClass]="
-              !this.accountDetails()?.isEmailVerified
-                ? 'cursor-not-allowed'
-                : ''
+              !isEmailVerified() ? 'cursor-not-allowed' : ''
             "
           >
             <a
               [ngClass]="
-                !this.accountDetails()?.isEmailVerified
+                !isEmailVerified()
                   ? 'pointer-events-none text-gray-400'
                   : ''
               "
@@ -40,14 +38,11 @@
     </div>
     <div class="flex items-center">
       <div
-        *ngIf="
-          this.isAuthenticated() && !this.accountDetails()?.isEmailVerified
-        "
+        *ngIf="isAuthenticated() && !isEmailVerified()"
         class="p-3 mr-5 text-red-800 rounded-lg bg-red-200 dark:bg-gray-800 dark:text-red-400"
       >
         <span class="font-medium">Please verify your email address!</span>
       </div>
-
       <button
         (click)="changeTheme()"
         type="button"
@@ -64,12 +59,11 @@
           ></path>
         </svg>
       </button>
-
-      <ul class="flex flex-row font-medium items-center space-x-8">
-        <li *ngIf="this.isAuthenticated(); else nonAuthenticatedView">
+      <ul class="flex flex-row font-medium items-center space-x-8 mr-2">
+        <li *ngIf="isAuthenticated(); else nonAuthenticatedView">
           <a
-            (click)="this.logOut()"
-            class="block hover:text-red-800 cursor-pointer"
+            (click)="logOut()"
+            class="block hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer"
             >Log out</a
           >
         </li>
