@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ImageUploaderRequest } from '../../models/image-uploader-request';
 import { environment } from 'src/environments/environment';
+import { Page } from 'src/app/models/page';
 
 @Injectable({
   providedIn: 'root',
@@ -10,8 +11,8 @@ import { environment } from 'src/environments/environment';
 export class ImageService {
   constructor(private http: HttpClient) {}
 
-  getPageOfLatestImages(pageNumber: number): Observable<any> {
-    return this.http.get(`${environment.apiUrl}/api/v1/images`, {
+  getPageOfLatestImages(pageNumber: number): Observable<Page<string>> {
+    return this.http.get<Page<string>>(`${environment.apiUrl}/api/v1/images`, {
       params: { pageNumber },
     });
   }
@@ -19,7 +20,7 @@ export class ImageService {
   uploadImage(
     imageUploaderRequest: ImageUploaderRequest,
     image: File
-  ): Observable<any> {
+  ): Observable<unknown> {
     let formData = new FormData();
 
     formData.append('image', image);
@@ -36,7 +37,7 @@ export class ImageService {
     );
   }
 
-  getNumberOfLikesFromImage(imageId: string): Observable<any> {
+  getNumberOfLikesFromImage(imageId: string): Observable<unknown> {
     return this.http.get(
       `${environment.apiUrl}/api/v1/images/${imageId}/likes`
     );

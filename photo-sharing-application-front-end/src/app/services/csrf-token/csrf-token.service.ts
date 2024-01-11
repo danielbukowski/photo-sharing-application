@@ -15,11 +15,9 @@ export class CsrfTokenService {
   }
 
   updateCsrfToken(): void {
-    this.http
-      .get<any>(`${environment.apiUrl}/api/v1/csrf`)
-      .subscribe({
-        next: (d) => this.#token.set(d.data.token),
-        error: () => this.#token.set(''),
-      });
+    this.http.get<any>(`${environment.apiUrl}/api/v1/csrf`).subscribe({
+      next: (d) => this.#token.set(d.data.token),
+      error: () => this.#token.set(''),
+    });
   }
 }
