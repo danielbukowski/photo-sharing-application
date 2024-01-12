@@ -12,7 +12,6 @@ export class PasswordResetPageComponent implements OnInit {
   token: string = '';
   isBeingProcessed: WritableSignal<boolean> = signal(false);
   generalErrorMessage: WritableSignal<string> = signal('');
-  validationErrors: WritableSignal<string[]> = signal([]);
 
   constructor(
     private fb: FormBuilder,
@@ -39,8 +38,7 @@ export class PasswordResetPageComponent implements OnInit {
           this.router.navigate(['home']);
         },
         error: (e) => {
-          this.generalErrorMessage.set(e.error.reason);
-          this.validationErrors.set(e.error.fieldNames?.newPassword || []);
+          this.generalErrorMessage.set(e.error.reason || 'Internal Server Error');
           this.isBeingProcessed.set(false);
         },
       });
