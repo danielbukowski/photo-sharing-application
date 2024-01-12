@@ -6,5 +6,5 @@ import { Component, Input, WritableSignal, signal } from '@angular/core';
 })
 export class HomeImageComponent {
   isLoaded: WritableSignal<boolean> = signal(false);
-  @Input() imageId!: string;
+  @Input({ required: true }) imageId!: string;
 }

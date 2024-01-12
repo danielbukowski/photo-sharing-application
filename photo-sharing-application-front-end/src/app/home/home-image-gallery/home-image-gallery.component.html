@@ -1,1 +1,17 @@
-<p>home-image-gallery works!</p>
+<section
+  class="mx-6 bg-white p-2 rounded-lg dark:bg-slate-900 my-4"
+  *ngIf="imagePage$ | async as page"
+>
+  <ul class="inline-flex flex-wrap gap-4">
+    <li
+      class="flex-[auto]"
+      *ngFor="let imageId of page.data; trackBy: trackByImageId"
+    >
+      <app-home-image [imageId]="imageId"></app-home-image>
+    </li>
+  </ul>
+  <app-pagination
+    [page]="page"
+    (pageNumber)="updatePageContent($event)"
+  ></app-pagination>
+</section>
