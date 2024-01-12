@@ -5,15 +5,17 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-registration-page',
-  templateUrl: './registration-page.component.html'
+  templateUrl: './registration-page.component.html',
 })
 export class RegistrationPageComponent implements OnInit {
-  validationErrors = signal({
+  validationErrorMessageList: WritableSignal<
+    { nickname: string[]; email: string[]; password: string[] } | undefined
+  > = signal({
     nickname: [] as string[],
     email: [] as string[],
     password: [] as string[],
   });
-  generalError: WritableSignal<string> = signal('');
+  generalErrorMessage: WritableSignal<string> = signal('');
   isBeingProcessed: WritableSignal<boolean> = signal(false);
   registrationForm!: FormGroup;
 
@@ -32,12 +34,12 @@ export class RegistrationPageComponent implements OnInit {
   }
 
   private resetErrorMessages() {
-    this.validationErrors.set({
+    this.validationErrorMessageList.set({
       nickname: [],
       email: [],
       password: [],
     });
-    this.generalError.set('');
+    this.generalErrorMessage.set('');
   }
 
   onSubmit(): void {
@@ -49,9 +51,9 @@ export class RegistrationPageComponent implements OnInit {
         next: () => this.router.navigate(['/login']),
         error: (e) => {
           if (e.error.fieldNames) {
-            this.validationErrors.set({ ...e.error.fieldNames });
+            this.validationErrorMessageList.set({ ...e.error.fieldNames });
           } else {
-            this.generalError.set(e.error.reason);
+            this.generalErrorMessage.set(e.error.reason || 'Internal Server Error');
           }
           this.isBeingProcessed.set(false);
         },
