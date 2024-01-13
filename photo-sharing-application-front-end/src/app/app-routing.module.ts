@@ -39,12 +39,11 @@ const routes: Routes = [
   },
   {
     path: 'image/:id',
-    component: ImageDetailPageComponent
-    ,
+    component: ImageDetailPageComponent,
   },
   {
     path: 'reset-password',
-    component: PasswordResetPageComponent
+    component: PasswordResetPageComponent,
   },
   {
     path: '',
