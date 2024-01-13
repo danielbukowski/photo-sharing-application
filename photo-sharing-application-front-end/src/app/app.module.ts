@@ -25,6 +25,8 @@ import { PasswordResetPageComponent } from './password-reset/password-reset-page
 import { ErrorAlertComponent } from './shared/validation-alert/error-alert.component';
 import { SpinnerComponent } from './shared/spinner/spinner.component';
 import { HomeImageGalleryComponent } from './home/home-image-gallery/home-image-gallery.component';
+import { PaginationComponent } from './shared/pagination/pagination.component';
+import { HomeImageComponent } from './home/home-image/home-image.component';
 
 export function initApp(
   authService: AuthService,
@@ -68,6 +70,8 @@ export function initApp(
     ErrorAlertComponent,
     SpinnerComponent,
     HomeImageGalleryComponent,
+    PaginationComponent,
+    HomeImageComponent,
   ],
   imports: [
     BrowserModule,
