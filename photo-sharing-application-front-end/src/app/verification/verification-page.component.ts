@@ -28,7 +28,7 @@ export class VerificationPageComponent implements OnInit {
         );
       },
       error: (e) => {
-        this.messageResponse.set(e.error.reason);
+        this.messageResponse.set(e.error.reason || 'Internal Server Error');
       },
     });
   }

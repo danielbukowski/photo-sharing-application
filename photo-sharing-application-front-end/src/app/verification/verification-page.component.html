@@ -1,9 +1,9 @@
 <main
   class="flex justify-center items-center h-screen bg-gray-100 dark:bg-gray-900"
 >
-  <div class="shadow-2xl p-16 bg-white dark:bg-slate-900">
-    <div *ngIf="messageResponse() as messageResponse">
-      <p class="text-lg font-bold">{{ messageResponse }}</p>
+  <div class="shadow-2xl p-16 bg-white dark:bg-slate-900 w-full max-w-md">
+    <div *ngIf="messageResponse()">
+      <p class="text-lg font-bold text-center">{{ messageResponse() }}</p>
     </div>
     <app-spinner *ngIf="!messageResponse()"></app-spinner>
   </div>
