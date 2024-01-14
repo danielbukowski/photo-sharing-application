@@ -27,6 +27,7 @@ import { SpinnerComponent } from './shared/spinner/spinner.component';
 import { HomeImageGalleryComponent } from './home/home-image-gallery/home-image-gallery.component';
 import { PaginationComponent } from './shared/pagination/pagination.component';
 import { HomeImageComponent } from './home/home-image/home-image.component';
+import { ImageDetailCommentComponent } from './image-detail/image-detail-comment/image-detail-comment.component';
 
 export function initApp(
   authService: AuthService,
@@ -72,6 +73,7 @@ export function initApp(
     HomeImageGalleryComponent,
     PaginationComponent,
     HomeImageComponent,
+    ImageDetailCommentComponent,
   ],
   imports: [
     BrowserModule,
