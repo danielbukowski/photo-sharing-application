@@ -1,4 +1,4 @@
-<nav class="bg-white py-2 pl-60 max-lg:pl-0 shadow-md dark:bg-slate-900">
+<nav class="bg-white py-2 pl-60 max-lg:pl-0 shadow-md dark:bg-[#282828] dark:text-slate-300">
   <div class="flex flex-wrap items-center justify-between">
     <div>
       <a class="flex items-center">
@@ -12,7 +12,7 @@
         <li>
           <a
             routerLink="/home"
-            class="block hover:text-slate-700 dark:hover:text-slate-200"
+            class="block hover:text-slate-700 dark:hover:text-[#6200EE] dark:hover:shadow-[#6200EE] duration-300 ease-in-out transition-color"
             >Home</a
           >
         </li>
@@ -25,10 +25,10 @@
             <a
               [ngClass]="
                 !isEmailVerified()
-                  ? 'pointer-events-none text-gray-400'
+                  ? 'pointer-events-none opacity-50'
                   : ''
               "
-              class="block hover:text-slate-700 dark:hover:text-slate-200"
+              class="block hover:text-slate-700 dark:hover:text-[#6200EE] dark:hover:shadow-[#6200EE] duration-300 ease-in-out transition-color"
               routerLink="/add-image"
               >Add an image</a
             >
@@ -39,14 +39,14 @@
     <div class="flex items-center">
       <div
         *ngIf="isAuthenticated() && !isEmailVerified()"
-        class="p-3 mr-5 text-red-800 rounded-lg bg-red-200 dark:bg-gray-800 dark:text-red-400"
+        class="p-3 mr-5 text-red-800 rounded-lg bg-red-200 dark:bg-[#141414] dark:text-red-500"
       >
         <span class="font-medium">Please verify your email address!</span>
       </div>
       <button
         (click)="changeTheme()"
         type="button"
-        class="flex items-center w-9 h-9 mr-2 justify-center text-xs font-medium text-gray-700 bg-white border border-gray-200 rounded-lg toggle-dark-state-example hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-500 dark:bg-gray-800 focus:outline-none dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+        class="flex items-center w-9 h-9 mr-2 justify-center text-xs font-medium text-gray-700 bg-white border border-gray-200 rounded-lg toggle-dark-state-example hover:bg-gray-100 dark:bg-[#141414] focus:outline-none dark:text-gray-400 dark:border-gray-600 dark:hover:dark:bg-[#282828] dark:hover:bg-gray-700 duration-300 ease-in-out transition-color"
       >
         <svg id="moon-icon" class="w-3.5 h-3.5" viewBox="0 0 18 20">
           <path
@@ -63,7 +63,7 @@
         <li *ngIf="isAuthenticated(); else nonAuthenticatedView">
           <a
             (click)="logOut()"
-            class="block hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer"
+            class="block hover:text-slate-700 dark:hover:text-[#6200EE] dark:hover:shadow-[#6200EE] duration-300 ease-in-out transition-color cursor-pointer"
             >Log out</a
           >
         </li>
@@ -71,14 +71,14 @@
           <li>
             <a
               routerLink="/login"
-              class="block hover:text-slate-700 dark:hover:text-slate-200"
+              class="block hover:text-slate-700 dark:hover:text-[#6200EE] dark:hover:shadow-[#6200EE] duration-300 ease-in-out transition-color"
               >Log in</a
             >
           </li>
           <li>
             <a
               routerLink="/register"
-              class="block hover:text-slate-700 dark:hover:text-slate-200"
+              class="block hover:text-slate-700 dark:hover:text-[#6200EE] dark:hover:shadow-[#6200EE] duration-300 ease-in-out transition-color"
               >Register</a
             >
           </li>
