@@ -6,10 +6,10 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-login-page',
-  templateUrl: './login-page.component.html'
+  templateUrl: './login-page.component.html',
 })
 export class LoginPageComponent implements OnInit {
-  hasBadCredentials: WritableSignal<boolean> = signal(false);
+  errorMessage: WritableSignal<string> = signal('');
   isBeingProcessed: WritableSignal<boolean> = signal(false);
   loginForm!: FormGroup;
 
@@ -23,7 +23,7 @@ export class LoginPageComponent implements OnInit {
   ngOnInit(): void {
     this.loginForm = this.fb.group({
       email: ['', Validators.required],
-      password: ['', Validators.required]
+      password: ['', Validators.required],
     });
   }
 
@@ -34,11 +34,11 @@ export class LoginPageComponent implements OnInit {
         this.isBeingProcessed.set(false);
         this.csrfTokenService.updateCsrfToken();
         this.authService.updateAuthentication();
-        this.router.navigate(['/home']);
+        this.router.navigateByUrl('/home');
       },
       error: () => {
+        this.errorMessage.set('You have provided a wrong password or email');
         this.isBeingProcessed.set(false);
-        this.hasBadCredentials.set(true);
       },
     });
   }

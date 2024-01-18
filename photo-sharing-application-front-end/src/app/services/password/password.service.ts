@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
 export class PasswordService {
   constructor(private http: HttpClient) {}
 
-  sendPasswordResetRequest(email: string): Observable<any> {
+  sendPasswordResetRequest(email: string): Observable<unknown> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     return this.http.post(
@@ -19,7 +19,10 @@ export class PasswordService {
     );
   }
 
-  changePasswordByToken(token: string, newPassword: string): Observable<any> {
+  changePasswordByToken(
+    token: string,
+    newPassword: string
+  ): Observable<unknown> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     return this.http.put(

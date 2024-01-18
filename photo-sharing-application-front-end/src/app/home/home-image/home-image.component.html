@@ -1,0 +1,8 @@
+<img
+  class="cursor-pointer object-cover min-w-full max-w-sm max-h-52 align-middle rounded-md"
+  src="http://localhost:8081/api/v1/images/{{ imageId }}"
+  loading="lazy"
+  (load)="isLoaded.set(true)"
+  [routerLink]="['/image', imageId]"
+/>
+<app-spinner *ngIf="!isLoaded()"></app-spinner>

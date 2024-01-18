@@ -1,4 +1,12 @@
-import { Component, OnInit, Signal, WritableSignal, signal } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Signal,
+  TrackByFunction,
+  WritableSignal,
+  computed,
+  signal,
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Comment } from '../models/comment';
 import { Page } from '../models/page';
@@ -9,12 +17,16 @@ import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-image-detail-page',
-  templateUrl: './image-detail-page.component.html'
+  templateUrl: './image-detail-page.component.html',
 })
 export class ImageDetailPageComponent implements OnInit {
-  IdOfCurrentDisplayedImage: WritableSignal<string> = signal<string>('');
+  imageId: WritableSignal<string> = signal<string>('');
   accountDetails!: Signal<Account | undefined>;
+  isLoggedIn = computed(() => this.accountDetails() !== undefined);
+  isEmailVerified = computed(() => this.accountDetails()?.isEmailVerified);
   commentPage$!: Observable<Page<Comment>>;
+  isBeingProcessed: WritableSignal<boolean> = signal(false);
+  commentTextArea: string = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -25,43 +37,36 @@ export class ImageDetailPageComponent implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.subscribe({
       next: (params) => {
-        this.IdOfCurrentDisplayedImage.set(params.get('id') || '');
+        this.imageId.set(params.get('id') || '');
       },
     });
     this.accountDetails = this.authService.getAccountDetails();
     this.updatePageContent(0);
   }
 
-  private updatePageContent(pageNumber: number) {
+  updatePageContent(pageNumber: number): void {
     this.commentPage$ = this.commentService.getCommentsFromImage(
-      this.IdOfCurrentDisplayedImage(),
+      this.imageId(),
       pageNumber
     );
   }
 
-  addCommentToImage(textAreaElement: HTMLTextAreaElement): void {
-    if (textAreaElement.value === '') return;
-
+  addCommentToImage(): void {
+    this.isBeingProcessed.set(true);
     this.commentService
       .addCommentToImage(
-        textAreaElement.value,
-        this.IdOfCurrentDisplayedImage()
+        this.commentTextArea,
+        this.imageId()
       )
       .subscribe({
         next: () => {
-          textAreaElement.value = '';
+          this.commentTextArea = '';
+          this.isBeingProcessed.set(false);
         },
-        error: () => {},
+        error: () => {
+          this.isBeingProcessed.set(false);
+        },
       });
   }
 
-  fetchNextPageOfComments(currentPageNumber: number, isLast: boolean) {
-    if (isLast) return;
-    this.updatePageContent(currentPageNumber + 1);
-  }
-
-  fetchPreviousPageOfComments(currentPageNumber: number) {
-    if (currentPageNumber <= 0) return;
-    this.updatePageContent(currentPageNumber - 1);
-  }
 }

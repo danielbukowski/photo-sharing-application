@@ -10,9 +10,9 @@ import { environment } from 'src/environments/environment';
 export class RegistrationService {
   constructor(private http: HttpClient) {}
 
-  registerAccount(registrationForm: RegistrationForm): Observable<any> {
+  registerAccount(registrationForm: RegistrationForm): Observable<unknown> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    
+
     return this.http.post(
       `${environment.apiUrl}/api/v3/accounts`,
       registrationForm,

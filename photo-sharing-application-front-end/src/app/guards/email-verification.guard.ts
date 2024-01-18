@@ -1,17 +1,16 @@
-import { inject } from '@angular/core';
+import { Signal, inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth/auth.service';
-import { Observable, filter, map } from 'rxjs';
-import { toObservable } from '@angular/core/rxjs-interop';
+import { Account } from '../models/account';
 
 export const emailVerificationGuard: CanActivateFn = (): boolean => {
   const router = inject(Router);
   const authService = inject(AuthService);
-  const accountDetails = authService.getAccountDetails();
+  const accountDetails: Signal<Account | undefined> = authService.getAccountDetails();
 
   if (accountDetails()?.isEmailVerified) {
     return true;
   }
-  router.navigate(['home']);
+  router.navigateByUrl('/home');
   return false;
 };

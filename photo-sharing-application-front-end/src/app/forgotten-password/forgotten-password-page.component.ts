@@ -5,13 +5,13 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-forgotten-password-page',
-  templateUrl: './forgotten-password-page.component.html'
+  templateUrl: './forgotten-password-page.component.html',
 })
 export class ForgottenPasswordPageComponent {
-  validationError: WritableSignal<string> = signal('');
-  generalError: WritableSignal<string> = signal('');
+  validationErrorMessage: WritableSignal<string> = signal('');
+  generalErrorMessage: WritableSignal<string> = signal('');
   isBeingProcessed: WritableSignal<boolean> = signal(false);
-  forgetPasswordForm!: FormGroup;
+  forgottenPasswordForm!: FormGroup;
 
   constructor(
     private passwordService: PasswordService,
@@ -20,31 +20,30 @@ export class ForgottenPasswordPageComponent {
   ) {}
 
   ngOnInit(): void {
-    this.forgetPasswordForm = this.fb.group({
+    this.forgottenPasswordForm = this.fb.group({
       email: ['', Validators.required],
     });
   }
 
-  resetForm(): void {
-    this.forgetPasswordForm.reset();
-    this.validationError.set('');
-    this.generalError.set('');
+  private resetErrorMessages(): void {
+    this.validationErrorMessage.set('');
+    this.generalErrorMessage.set('');
   }
 
   onSubmit() {
     this.isBeingProcessed.set(true);
     this.passwordService
-      .sendPasswordResetRequest(this.forgetPasswordForm.value)
+      .sendPasswordResetRequest(this.forgottenPasswordForm.value)
       .subscribe({
         next: () => {
-          this.router.navigate(['/login']);
+          this.router.navigateByUrl('/login');
         },
         error: (e) => {
-          this.resetForm();
+          this.resetErrorMessages();
           if (e.error.fieldNames) {
-            this.validationError.set(e.error.fieldNames.email);
+            this.validationErrorMessage.set(e.error.fieldNames.email);
           } else {
-            this.generalError.set(e.error.reason);
+            this.generalErrorMessage.set(e.error.reason || 'Internal Server Error');
           }
           this.isBeingProcessed.set(false);
         },

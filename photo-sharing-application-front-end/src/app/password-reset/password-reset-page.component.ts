@@ -12,7 +12,7 @@ export class PasswordResetPageComponent implements OnInit {
   token: string = '';
   isBeingProcessed: WritableSignal<boolean> = signal(false);
   generalErrorMessage: WritableSignal<string> = signal('');
-  validationErrors: WritableSignal<string[]> = signal([]);
+  validationErrorMessageList: WritableSignal<string[]> = signal([]);
 
   constructor(
     private fb: FormBuilder,
@@ -30,17 +30,28 @@ export class PasswordResetPageComponent implements OnInit {
     });
   }
 
+  private resetErrorMessages(): void {
+    this.validationErrorMessageList.set([]);
+    this.generalErrorMessage.set('');
+  }
+
   onSubmit(): void {
     this.isBeingProcessed.set(true);
     this.passwordService
       .changePasswordByToken(this.token, this.passwordResetForm.value)
       .subscribe({
         next: () => {
-          this.router.navigate(['home']);
+          this.router.navigateByUrl('/home');
         },
         error: (e) => {
-          this.generalErrorMessage.set(e.error.reason);
-          this.validationErrors.set(e.error.fieldNames?.newPassword || []);
+          this.resetErrorMessages();
+          if (e.error.fieldNames?.newPassword) {
+            this.validationErrorMessageList.set(e.error.fieldNames.newPassword);
+          } else {
+            this.generalErrorMessage.set(e.error.reason || 'Internal Server Error');
+          }
+          console.log("wut");
+          
           this.isBeingProcessed.set(false);
         },
       });

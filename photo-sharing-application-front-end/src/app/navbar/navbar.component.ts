@@ -10,11 +10,9 @@ import { Router } from '@angular/router';
 export class NavbarComponent implements OnInit {
   accountDetails: Signal<Account | undefined> = signal(undefined);
   isAuthenticated = computed(() => this.accountDetails() !== undefined);
+  isEmailVerified = computed(() => this.accountDetails()?.isEmailVerified);
 
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
     this.initThemeButton();
@@ -42,7 +40,7 @@ export class NavbarComponent implements OnInit {
   }
 
   logOut(): void {
-    this.router.navigate(['home']);
     this.authService.logOut();
+    this.router.navigateByUrl('/home');
   }
 }

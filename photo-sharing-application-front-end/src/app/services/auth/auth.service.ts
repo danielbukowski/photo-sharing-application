@@ -25,7 +25,7 @@ export class AuthService {
     });
   }
 
-  logIn(credentials: Credentials): Observable<any> {
+  logIn(credentials: Credentials): Observable<unknown> {
     const headers = new HttpHeaders().set(
       'Authorization',
       'Basic ' +
@@ -46,6 +46,9 @@ export class AuthService {
   logOut(): void {
     this.http.delete(`${environment.apiUrl}/api/v1/sessions`).subscribe({
       next: () => {
+        this.#accountDetails.set(undefined);
+      },
+      error: () => {
         this.#accountDetails.set(undefined);
       },
     });

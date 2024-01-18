@@ -1,85 +1,63 @@
 <app-navbar></app-navbar>
-<div class="min-h-screen bg-white mx-14 dark:bg-gray-800">
+<div class="px-14 min-h-screen bg-white dark:bg-[#141414] dark:text-slate-300">
   <div>
-    <div
-      class="bg-gray-100 py-4 flex justify-center max-h-screen min-w-full dark:bg-slate-700"
-    >
+    <div class="flex justify-center items-center min-w-full min-h-[70vh]">
       <img
-        src="http://localhost:8081/api/v1/images/{{
-          this.IdOfCurrentDisplayedImage()
-        }}"
-        alt="main-image"
+        src="http://localhost:8081/api/v1/images/{{ imageId() }}"
+        class="max-h-[60vh] max-w-[80vw]"
+        alt="image"
       />
     </div>
-    <hr />
-    <div class="my-4 mx-6">
-      <div *ngIf="this.accountDetails()?.isEmailVerified">
-        <div class="my-2">
-          <h2 class="text-center">Type what you think about this image!</h2>
-        </div>
-        <textarea
-          name="comment-content"
-          id="comment-content"
-          rows="2"
-          maxlength="255"
-          class="border-2 text-black border-gray-300 w-full dark:bg-slate-800 dark:border-slate-700 focus:dark:outline focus:dark:outline-gray-300"
-          #commentContent
-        ></textarea>
+    <div class="flex flex-col mt-8 h-[20vh] justify-between">
+      <textarea
+        id="comment-content"
+        rows="3"
+        [placeholder]="
+          isEmailVerified()
+            ? 'Add a new comment'
+            : isLoggedIn()
+            ? 'Please verify your account to add a comment!'
+            : 'Please log in to add a comment'
+        "
+        [(ngModel)]="commentTextArea"
+        [ngClass]="
+          !isLoggedIn() || !isEmailVerified() ? 'font-bold text-center' : ''
+        "
+        [disabled]="!isLoggedIn() || !isEmailVerified()"
+        maxlength="255"
+        class="border-2 self-center max-w-3xl p-2 border-gray-100 dark:border-[#282828] dark:border-dark:bg-[#282828] w-full dark:bg-[#282828] focus:dark:outline"
+      ></textarea>
+      <div>
         <button
           type="submit"
-          (click)="addCommentToImage(commentContent)"
-          class="bg-white font-medium rounded-lg border-2 text-sm px-5 py-2.5 mx-auto block dark:bg-slate-800 dark:hover:bg-slate-700 dark:border-slate-700"
+          (click)="addCommentToImage()"
+          *ngIf="!isBeingProcessed()"
+          [disabled]="commentTextArea === ''"
+          [ngClass]="
+            commentTextArea === ''
+              ? 'cursor-not-allowed opacity-50'
+              : 'duration-500 ease-in-out transition-color border-blue-100 dark:hover:bg-[#6200EE] hover:bg-blue-100 hover:shadow-blue-100 shadow-sm dark:hover:shadow-[#6200EE]'
+          "
+          class="font-medium rounded-lg border-2 text-sm px-5 py-2.5 mx-auto block dark:border-[#6200EE]"
         >
-          Add your comment!
+          Comment
         </button>
+        <app-spinner *ngIf="isBeingProcessed()"></app-spinner>
       </div>
-      <div *ngIf="commentPage$ | async as commentPage">
-        <h3 class="text-center mt-3 mb-0">Users comments</h3>
-        <div class="mt-7 mb-2">
-          <div class="m-5 border-2" *ngFor="let comment of commentPage.data">
-            <div>
-              <p>{{ comment.authorEmail }}</p>
-            </div>
-            <div>
-              <p class="ml-2 py-2">{{ comment.content }}</p>
-            </div>
-          </div>
-        </div>
-        <div class="flex flex-col items-center">
-          <span class="text-sm text-gray-700 dark:text-gray-400">
-            Showing
-            <span class="font-semibold text-black dark:text-slate-300">
-              {{ commentPage.totalPages ? commentPage.currentPage + 1 : 0 }}
-            </span>
-            page out of
-            <span class="font-semibold text-black dark:text-slate-300">
-              {{ commentPage.totalPages }}
-            </span>
-            pages
-          </span>
-          <div class="inline-flex mt-2">
-            <button
-              (click)="
-                this.fetchPreviousPageOfComments(commentPage.currentPage)
-              "
-              class="bg-white hover:bg-gray-50 font-medium rounded-lg border-2 text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-slate-800 dark:hover:bg-slate-700 dark:border-slate-700"
-            >
-              Prev
-            </button>
-            <button
-              (click)="
-                this.fetchNextPageOfComments(
-                  commentPage.currentPage,
-                  commentPage.isLast
-                )
-              "
-              class="bg-white hover:bg-gray-50 font-medium rounded-lg border-2 text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-slate-800 dark:hover:bg-slate-700 dark:border-slate-700"
-            >
-              Next
-            </button>
-          </div>
-        </div>
-      </div>
+    </div>
+    <div *ngIf="commentPage$ | async as page" class="mt-10">
+      <ul *ngFor="let comment of page.data">
+        <li class="mb-5 mx-8">
+          <app-image-detail-comment
+            [content]="comment.content"
+            [email]="comment.authorEmail"
+          ></app-image-detail-comment>
+        </li>
+      </ul>
+      <app-pagination
+        [page]="page"
+        (pageNumber)="updatePageContent($event)"
+      ></app-pagination>
     </div>
   </div>
 </div>

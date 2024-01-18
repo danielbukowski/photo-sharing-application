@@ -22,6 +22,12 @@ import { ImageDetailPageComponent } from './image-detail/image-detail-page.compo
 import { AuthService } from './services/auth/auth.service';
 import { CsrfTokenService } from './services/csrf-token/csrf-token.service';
 import { PasswordResetPageComponent } from './password-reset/password-reset-page.component';
+import { ErrorAlertComponent } from './shared/validation-alert/error-alert.component';
+import { SpinnerComponent } from './shared/spinner/spinner.component';
+import { HomeImageGalleryComponent } from './home/home-image-gallery/home-image-gallery.component';
+import { PaginationComponent } from './shared/pagination/pagination.component';
+import { HomeImageComponent } from './home/home-image/home-image.component';
+import { ImageDetailCommentComponent } from './image-detail/image-detail-comment/image-detail-comment.component';
 
 export function initApp(
   authService: AuthService,
@@ -61,14 +67,20 @@ export function initApp(
     VerificationPageComponent,
     ImageUploaderPageComponent,
     ImageDetailPageComponent,
-    PasswordResetPageComponent
+    PasswordResetPageComponent,
+    ErrorAlertComponent,
+    SpinnerComponent,
+    HomeImageGalleryComponent,
+    PaginationComponent,
+    HomeImageComponent,
+    ImageDetailCommentComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ],
   providers: [
     {

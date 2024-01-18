@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
 export class VerificationService {
   constructor(private http: HttpClient) {}
 
-  verifyAccountByToken(token: string): Observable<any> {
+  verifyAccountByToken(token: string): Observable<unknown> {
     return this.http.post(
       `${environment.apiUrl}/api/v3/accounts/email-verification`,
       {},

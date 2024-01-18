@@ -11,7 +11,7 @@ export class ImageUploaderPageComponent implements OnInit {
   isBeingProcessed: WritableSignal<boolean> = signal(false);
   image!: File;
   ImageUploaderForm!: FormGroup;
-  generalError: WritableSignal<string> = signal('');
+  errorMessage: WritableSignal<string> = signal('');
 
   constructor(
     private imageService: ImageService,
@@ -37,14 +37,10 @@ export class ImageUploaderPageComponent implements OnInit {
       .uploadImage(this.ImageUploaderForm.value, this.image)
       .subscribe({
         next: () => {
-          this.router.navigate(['/home']);
+          this.router.navigateByUrl('/home');
         },
         error: (e) => {
-          if (e.status === 0) {
-            this.generalError.set('Internal Server Error');
-          } else {
-            this.generalError.set(e.error.reason);
-          }
+          this.errorMessage.set(e.error.reason || 'Internal Server Error');
           this.isBeingProcessed.set(false);
         },
       });
