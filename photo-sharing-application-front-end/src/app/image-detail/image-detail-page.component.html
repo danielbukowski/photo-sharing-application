@@ -1,8 +1,8 @@
 <app-navbar></app-navbar>
-<div class="bg-white mx-14 dark:bg-gray-800 min-h-screen">
+<div class="px-14 min-h-screen bg-white dark:bg-[#141414] dark:text-slate-300">
   <div>
     <div
-      class="bg-gray-100 flex justify-center items-center min-w-full min-h-[70vh]"
+      class="flex justify-center items-center min-w-full min-h-[70vh]"
     >
       <img
         src="http://localhost:8081/api/v1/images/{{ imageId() }}"
@@ -27,7 +27,7 @@
         "
         [disabled]="!isLoggedIn() || !isEmailVerified()"
         maxlength="255"
-        class="border-2 self-center max-w-3xl p-2 text-black border-gray-300 w-full dark:bg-slate-800 dark:border-slate-700 focus:dark:outline focus:dark:outline-gray-300"
+        class="border-2 self-center max-w-3xl p-2 border-gray-100 dark:border-[#282828] dark:border-dark:bg-[#282828] w-full dark:bg-[#282828] focus:dark:outline "
       ></textarea>
       <div>
         <button
@@ -35,8 +35,10 @@
           (click)="addCommentToImage()"
           *ngIf="!isBeingProcessed()"
           [disabled]="commentTextArea === ''"
-          [ngClass]="commentTextArea === '' ? 'cursor-not-allowed' : ''"
-          class="bg-white font-medium rounded-lg border-2 text-sm px-5 my-5 py-2.5 mx-auto block dark:bg-slate-800 dark:hover:bg-slate-700 dark:border-slate-700"
+          [ngClass]="commentTextArea === ''  ? 'cursor-not-allowed opacity-50'
+          : 'duration-500 ease-in-out transition-color border-blue-100 dark:hover:bg-[#6200EE] hover:bg-blue-100 hover:shadow-blue-100 shadow-sm dark:hover:shadow-[#6200EE]'
+      "
+          class="font-medium rounded-lg border-2 text-sm px-5 py-2.5 mx-auto block dark:border-[#6200EE]"
         >
           Comment
         </button>
