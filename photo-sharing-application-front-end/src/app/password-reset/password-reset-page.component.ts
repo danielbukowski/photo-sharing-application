@@ -41,7 +41,7 @@ export class PasswordResetPageComponent implements OnInit {
       .changePasswordByToken(this.token, this.passwordResetForm.value)
       .subscribe({
         next: () => {
-          this.router.navigate(['home']);
+          this.router.navigateByUrl('/home');
         },
         error: (e) => {
           this.resetErrorMessages();

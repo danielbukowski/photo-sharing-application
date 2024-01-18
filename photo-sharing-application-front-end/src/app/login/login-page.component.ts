@@ -34,7 +34,7 @@ export class LoginPageComponent implements OnInit {
         this.isBeingProcessed.set(false);
         this.csrfTokenService.updateCsrfToken();
         this.authService.updateAuthentication();
-        this.router.navigate(['/home']);
+        this.router.navigateByUrl('/home');
       },
       error: () => {
         this.errorMessage.set('You have provided a wrong password or email');

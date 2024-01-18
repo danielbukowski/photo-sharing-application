@@ -37,7 +37,7 @@ export class ImageUploaderPageComponent implements OnInit {
       .uploadImage(this.ImageUploaderForm.value, this.image)
       .subscribe({
         next: () => {
-          this.router.navigate(['/home']);
+          this.router.navigateByUrl('/home');
         },
         error: (e) => {
           this.errorMessage.set(e.error.reason || 'Internal Server Error');
