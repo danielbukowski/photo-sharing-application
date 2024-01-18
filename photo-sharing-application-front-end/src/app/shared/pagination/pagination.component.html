@@ -1,18 +1,22 @@
 <div class="flex flex-col items-center py-6">
   <div>
-    <p class="text-sm text-gray-700 dark:text-gray-400 text-center">
+    <p class="text-sm text-center">
       PAGE
       <span class="font-semibold text-black dark:text-slate-300">
         {{ page.currentPage ? page.currentPage + 1 : 1 }}
       </span>
-      of {{ page.totalPages === 0 ? (page.totalPages + 1) : page.totalPages}}
+      of {{ page.totalPages === 0 ? page.totalPages + 1 : page.totalPages }}
     </p>
   </div>
   <div class="flex">
     <button
-    [ngClass]="isPageFirst() ? 'cursor-not-allowed' : ''"
+      [ngClass]="
+        isPageFirst()
+          ? 'cursor-not-allowed opacity-50'
+          : 'duration-500 ease-in-out transition-color border-blue-100 dark:hover:bg-[#6200EE] hover:bg-blue-100 hover:shadow-blue-100 shadow-sm dark:hover:shadow-[#6200EE]'
+      "
       (click)="fetchPreviousPage()"
-      class="flex items-center justify-center px-5 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100  dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+      class="flex items-center justify-center px-5 h-8 me-3 border-2 text-sm font-medium rounded-lg dark:border-[#6200EE]"
     >
       <svg
         class="w-3.5 h-3.5 me-2 rtl:rotate-180"
@@ -30,9 +34,13 @@
       Previous
     </button>
     <button
-    [ngClass]="isPageLast() ? 'cursor-not-allowed' : ''"
+      [ngClass]="
+        isPageLast()
+          ? 'cursor-not-allowed opacity-50'
+          : 'duration-500 ease-in-out transition-color border-blue-100 dark:hover:bg-[#6200EE] hover:bg-blue-100 hover:shadow-blue-100 shadow-sm dark:hover:shadow-[#6200EE]'
+      "
       (click)="fetchNextPage()"
-      class="flex items-center justify-center px-5 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100  dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+      class="flex items-center justify-center px-5 h-8 me-3 border-2 text-sm font-medium rounded-lg dark:border-[#6200EE]"
     >
       Next
       <svg
@@ -50,5 +58,5 @@
       </svg>
     </button>
   </div>
-  <p class="text-sm">{{page.numberOfElements}} Entries</p>
+  <p class="text-sm">{{ page.numberOfElements }} Entries</p>
 </div>
