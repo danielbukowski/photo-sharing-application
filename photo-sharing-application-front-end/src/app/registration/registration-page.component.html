@@ -1,20 +1,20 @@
 <main
-  class="flex justify-center items-center min-h-screen bg-gray-50 dark:bg-gray-900"
+  class="flex justify-center items-center min-h-screen bg-white dark:bg-[#141414] dark:text-slate-300"
 >
-  <div
-    class="shadow-2xl p-14 bg-white dark:bg-slate-900 max-w-md w-full h-[34rem] max-h-max"
-  >
-    <h1 class="text-2xl font-bold p-6">Register your account! :)</h1>
-    <app-error-alert
-      *ngIf="generalErrorMessage()"
-      [errorMessage]="generalErrorMessage()"
-    ></app-error-alert>
+  <div class="max-w-sm w-full">
+    <h1 class="text-center text-2xl font-bold">Register your account! :)</h1>
+    <div class="h-12 my-1">
+      <app-error-alert
+        *ngIf="generalErrorMessage()"
+        [errorMessage]="generalErrorMessage()"
+      ></app-error-alert>
+    </div>
     <form
-      class="flex flex-col h-[60%] gap-y-3"
+      class="flex flex-col items-center gap-y-2"
       [formGroup]="registrationForm"
       (ngSubmit)="onSubmit()"
     >
-      <div class="relative">
+      <div class="relative mt-4">
         <input
           type="text"
           placeholder=" "
@@ -22,19 +22,19 @@
           formControlName="nickname"
           [ngClass]="
             validationErrorMessageList()?.nickname?.length
-              ? 'border-red-600'
+              ? 'border-red-500 dark:border-red-500'
               : ''
           "
-          class="font-medium block px-5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-lg border-2 appearance-none dark:bg-slate-800 dark:border-slate-700 focus:outline-none focus:ring-0 focus:black peer"
+          class="font-medium block px-5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-lg border-2 appearance-none dark:bg-[#282828] dark:border-[#141414] focus:outline-none focus:ring-0 focus:black peer"
           autocomplete="nickname"
         />
         <label
           for="nickname"
-          class="absolute ml-2 text-sm font-medium text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-slate-800 dark:border-slate-700 focus:dark:outline focus:dark:outline-gray-300 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:text-gray-400 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto"
+          class="absolute ml-2 text-sm font-medium text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-[#282828] focus:dark:outline px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:text-gray-400 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto"
           >Nickname</label
         >
       </div>
-      <div>
+      <div class="mx-auto h-3">
         <ul *ngIf="validationErrorMessageList()?.nickname?.length">
           <li
             *ngFor="let errorReason of validationErrorMessageList()?.nickname"
@@ -51,18 +51,20 @@
           id="email"
           formControlName="email"
           [ngClass]="
-            validationErrorMessageList()?.email?.length ? 'border-red-600' : ''
+            validationErrorMessageList()?.email?.length
+              ? 'border-red-500 dark:border-red-500'
+              : ''
           "
-          class="font-medium block px-5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-lg border-2 appearance-none dark:bg-slate-800 dark:border-slate-700 focus:outline-none focus:ring-0 focus:black peer"
+          class="font-medium block px-5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-lg border-2 appearance-none dark:bg-[#282828] dark:border-[#141414] focus:outline-none focus:ring-0 focus:black peer"
           autocomplete="email"
         />
         <label
           for="email"
-          class="absolute ml-2 text-sm font-medium text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-slate-800 dark:border-slate-700 focus:dark:outline focus:dark:outline-gray-300 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:text-gray-400 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto"
+          class="absolute ml-2 text-sm font-medium text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-[#282828] focus:dark:outline px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:text-gray-400 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto"
           >Email</label
         >
       </div>
-      <div>
+      <div class="mx-auto h-3">
         <ul *ngIf="validationErrorMessageList()?.email?.length">
           <li
             *ngFor="let errorReason of validationErrorMessageList()?.email"
@@ -80,19 +82,19 @@
           formControlName="password"
           [ngClass]="
             validationErrorMessageList()?.password?.length
-              ? 'border-red-600'
+              ? 'border-red-500 dark:border-red-500'
               : ''
           "
-          class="font-medium block px-5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-lg border-2 appearance-none dark:bg-slate-800 dark:border-slate-700 focus:outline-none focus:ring-0 focus:black peer"
+          class="font-medium block px-5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-lg border-2 appearance-none dark:bg-[#282828] dark:border-[#141414] focus:outline-none focus:ring-0 focus:black peer"
           autocomplete="new-password"
         />
         <label
           for="password"
-          class="absolute ml-2 text-sm font-medium text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-slate-800 dark:border-slate-700 focus:dark:outline focus:dark:outline-gray-300 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:text-gray-400 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto"
+          class="absolute ml-2 text-sm font-medium text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-[#282828] focus:dark:outline px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:text-gray-400 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto"
           >Password</label
         >
       </div>
-      <div>
+      <div class="mx-auto h-20">
         <ul *ngIf="validationErrorMessageList()?.password?.length">
           <li
             *ngFor="let errorReason of validationErrorMessageList()?.password"
@@ -109,10 +111,10 @@
           [disabled]="!registrationForm.valid"
           [ngClass]="
             !registrationForm.valid
-              ? 'cursor-not-allowed hover:bg-white'
-              : 'dark:hover:bg-slate-700'
+              ? 'cursor-not-allowed opacity-50'
+              : 'duration-500 ease-in-out transition-color border-blue-100 dark:hover:bg-[#6200EE] hover:bg-blue-100 hover:shadow-blue-100 shadow-sm dark:hover:shadow-[#6200EE]'
           "
-          class="bg-white hover:bg-gray-50 font-medium rounded-lg border-2 text-sm px-5 py-2.5 mx-auto dark:bg-slate-800 dark:border-slate-700"
+          class="font-medium rounded-lg border-2 text-sm px-5 py-2.5 mx-auto dark:border-[#6200EE]"
         >
           Create an account
         </button>
