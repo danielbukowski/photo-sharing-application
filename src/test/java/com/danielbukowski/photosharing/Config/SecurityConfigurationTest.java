@@ -19,7 +19,7 @@ public class SecurityConfigurationTest {
         return http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/api/v3/accounts").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/images/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v2/images/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v3/accounts/email-verification").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v3/accounts/password-reset").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/v3/accounts/password-reset/**").permitAll()

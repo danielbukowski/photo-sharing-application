@@ -62,7 +62,7 @@ class ImageControllerIT {
                 );
 
         //when
-        mockMvc.perform(get("/api/v1/images/{imageId}", imageId)
+        mockMvc.perform(get("/api/v2/images/{imageId}", imageId)
                 )
                 //then
                 .andExpect(status().is(200));
@@ -76,7 +76,7 @@ class ImageControllerIT {
                 .willThrow(new ImageNotFoundException(ExceptionMessageResponse.ACCOUNT_NOT_FOUND.getMessage()));
 
         //when
-        mockMvc.perform(get("/api/v1/images/{imageId}", imageId))
+        mockMvc.perform(get("/api/v2/images/{imageId}", imageId))
                 //then
                 .andExpect(status().is(404));
     }
@@ -87,7 +87,7 @@ class ImageControllerIT {
         var imageId = new UUID(1, 1);
 
         //when
-        mockMvc.perform(post("/api/v1/images/{imageId}/comments", imageId))
+        mockMvc.perform(post("/api/v2/images/{imageId}/comments", imageId))
                 //then
                 .andExpect(status().is(401));
     }
@@ -100,7 +100,7 @@ class ImageControllerIT {
         var newCommentRequest = new NewCommentRequest("cool");
 
         //when
-        mockMvc.perform(post("/api/v1/images/{imageId}/comments", imageId)
+        mockMvc.perform(post("/api/v2/images/{imageId}/comments", imageId)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newCommentRequest))
                 )
@@ -118,7 +118,7 @@ class ImageControllerIT {
                 .willThrow(ImageNotFoundException.class);
 
         //when
-        mockMvc.perform(post("/api/v1/images/{imageId}/comments", imageId)
+        mockMvc.perform(post("/api/v2/images/{imageId}/comments", imageId)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newCommentRequest))
                 )
@@ -136,14 +136,14 @@ class ImageControllerIT {
                 .willReturn(21L);
 
         //when
-        mockMvc.perform(post("/api/v1/images/{imageId}/comments", imageId)
+        mockMvc.perform(post("/api/v2/images/{imageId}/comments", imageId)
 
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newCommentRequest))
                 )
                 //then
                 .andExpect(status().is(201))
-                .andExpect(header().stringValues("location", "http://localhost/api/v1/images/%s/comments".formatted(imageId.toString())));
+                .andExpect(header().stringValues("location", "http://localhost/api/v2/images/%s/comments".formatted(imageId.toString())));
     }
 
     @Test
@@ -154,7 +154,7 @@ class ImageControllerIT {
         var newCommentRequest = new NewCommentRequest("");
 
         //when
-        mockMvc.perform(post("/api/v1/images/{imageId}/comments", imageId)
+        mockMvc.perform(post("/api/v2/images/{imageId}/comments", imageId)
 
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newCommentRequest))
@@ -173,7 +173,7 @@ class ImageControllerIT {
         var imageId = new UUID(1,1);
 
         //when
-        mockMvc.perform(get("/api/v1/images/{imageId}/comments", imageId)
+        mockMvc.perform(get("/api/v2/images/{imageId}/comments", imageId)
                 )
                 //then
                 .andExpect(status().is(200));
@@ -196,7 +196,7 @@ class ImageControllerIT {
                 );
 
         //when
-        mockMvc.perform(get("/api/v1/images/{imageId}/comments", imageId))
+        mockMvc.perform(get("/api/v2/images/{imageId}/comments", imageId))
                 //then
                 .andExpect(status().is(200));
     }
@@ -210,7 +210,7 @@ class ImageControllerIT {
                 .willThrow(ImageNotFoundException.class);
 
         //when
-        mockMvc.perform(get("/api/v1/images/{imageId}/comments", imageId)
+        mockMvc.perform(get("/api/v2/images/{imageId}/comments", imageId)
                         .param("pageNumber", String.valueOf(pageNumber))
                 )
                 //then
@@ -233,7 +233,7 @@ class ImageControllerIT {
                 );
 
         //when
-        mockMvc.perform(get("/api/v1/images")
+        mockMvc.perform(get("/api/v2/images")
                         .param("pageNumber", String.valueOf(pageNumber))
                 )
                 //then
@@ -256,7 +256,7 @@ class ImageControllerIT {
                 );
 
         //when
-        mockMvc.perform(get("/api/v1/images"))
+        mockMvc.perform(get("/api/v2/images"))
                 //then
                 .andExpect(status().is(200));
     }
@@ -267,7 +267,7 @@ class ImageControllerIT {
         var imageId = new UUID(4,4);
 
         //when
-        mockMvc.perform(post("/api/v1/images/{imageId}/likes", imageId))
+        mockMvc.perform(post("/api/v2/images/{imageId}/likes", imageId))
                 //then
                 .andExpect(status().is(401));
     }
@@ -279,7 +279,7 @@ class ImageControllerIT {
         var imageId = new UUID(4,4);
 
         //when
-        mockMvc.perform(post("/api/v1/images/{imageId}/likes", imageId))
+        mockMvc.perform(post("/api/v2/images/{imageId}/likes", imageId))
                 //then
                 .andExpect(status().is(403));
     }
@@ -291,7 +291,7 @@ class ImageControllerIT {
         var imageId = new UUID(4,4);
 
         //when
-        mockMvc.perform(post("/api/v1/images/{imageId}/likes", imageId))
+        mockMvc.perform(post("/api/v2/images/{imageId}/likes", imageId))
                 //then
                 .andExpect(status().is(201));
     }
@@ -303,7 +303,7 @@ class ImageControllerIT {
         var imageId = "I like uuids";
 
         //when
-        mockMvc.perform(post("/api/v1/images/{imageId}/likes", imageId))
+        mockMvc.perform(post("/api/v2/images/{imageId}/likes", imageId))
                 //then
                 .andExpect(status().is(400));
     }
@@ -314,7 +314,7 @@ class ImageControllerIT {
         var imageId = new UUID(4,4);
 
         //when
-        mockMvc.perform(get("/api/v1/images/{imageId}/likes", imageId))
+        mockMvc.perform(get("/api/v2/images/{imageId}/likes", imageId))
                 //then
                 .andExpect(status().is(200));
     }
@@ -322,7 +322,7 @@ class ImageControllerIT {
     @Test
     void getNumberOfLikesFromImage_ImageIdIsMissing_Returns400HttpStatusCode() throws Exception {
         //when
-        mockMvc.perform(get("/api/v1/images/{imageId}/likes", ""))
+        mockMvc.perform(get("/api/v2/images/{imageId}/likes", ""))
                 //then
                 .andExpect(status().is(400));
     }
@@ -333,7 +333,7 @@ class ImageControllerIT {
         var imageId = new UUID(4,4);
 
         //when
-        mockMvc.perform(delete("/api/v1/images/{imageId}/likes", imageId))
+        mockMvc.perform(delete("/api/v2/images/{imageId}/likes", imageId))
                 //then
                 .andExpect(status().is(401));
     }
@@ -345,7 +345,7 @@ class ImageControllerIT {
         var imageId = new UUID(4,4);
 
         //when
-        mockMvc.perform(delete("/api/v1/images/{imageId}/likes", imageId))
+        mockMvc.perform(delete("/api/v2/images/{imageId}/likes", imageId))
                 //then
                 .andExpect(status().is(403));
     }
@@ -357,7 +357,7 @@ class ImageControllerIT {
         var imageId = new UUID(4,4);
 
         //when
-        mockMvc.perform(delete("/api/v1/images/{imageId}/likes", imageId))
+        mockMvc.perform(delete("/api/v2/images/{imageId}/likes", imageId))
                 //then
                 .andExpect(status().is(204));
     }

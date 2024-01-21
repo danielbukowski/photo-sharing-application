@@ -243,7 +243,7 @@ public class AccountController {
                 .created(
                         ServletUriComponentsBuilder
                                 .fromCurrentContextPath()
-                                .path("/api/v1/images/%s".formatted(imageId))
+                                .path("/api/v2/images/%s".formatted(imageId))
                                 .build()
                                 .toUri()
                 ).build();

@@ -24,7 +24,7 @@ import java.util.UUID;
 @RestController
 @AllArgsConstructor
 @Validated
-@RequestMapping("api/v1/images")
+@RequestMapping("api/v2/images")
 public class ImageController {
 
     private final ImageService imageService;
@@ -83,7 +83,7 @@ public class ImageController {
                 .created(
                         ServletUriComponentsBuilder
                                 .fromCurrentContextPath()
-                                .path("api/v1/images/%s/comments".formatted(imageId))
+                                .path("api/v2/images/%s/comments".formatted(imageId))
                                 .build()
                                 .toUri()
                 ).build();
@@ -159,7 +159,7 @@ public class ImageController {
         return ResponseEntity.created(
                         ServletUriComponentsBuilder
                                 .fromCurrentContextPath()
-                                .path("api/v1/images/%s/likes".formatted(imageId))
+                                .path("api/v2/images/%s/likes".formatted(imageId))
                                 .build()
                                 .toUri()
                 )
