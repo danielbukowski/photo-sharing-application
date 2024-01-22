@@ -9,8 +9,8 @@ import com.danielbukowski.photosharing.Exception.ImageException;
 import com.danielbukowski.photosharing.Exception.ImageNotFoundException;
 import com.danielbukowski.photosharing.Mapper.ImageMapper;
 import com.danielbukowski.photosharing.Repository.ImageRepository;
-import com.danielbukowski.photosharing.Util.EncryptionUtils;
-import com.danielbukowski.photosharing.Util.ImageUtils;
+import com.danielbukowski.photosharing.Util.EncryptionUtil;
+import com.danielbukowski.photosharing.Util.ImageUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,9 +45,9 @@ class ImageServiceTest {
     @Mock
     private S3Service s3Service;
     @Mock
-    private ImageUtils imageUtils;
+    private ImageUtil imageUtil;
     @Mock
-    private EncryptionUtils encryptionUtils;
+    private EncryptionUtil encryptionUtil;
 
     private final ZonedDateTime now = ZonedDateTime.of(
             2023,
@@ -88,7 +88,7 @@ class ImageServiceTest {
                 .build();
         given(imageRepository.findById(imageId))
                 .willReturn(Optional.of(image));
-        given(imageUtils.hasAccessToImage(account, image))
+        given(imageUtil.hasAccessToImage(account, image))
                 .willReturn(false);
 
         //when
@@ -118,13 +118,13 @@ class ImageServiceTest {
         given(s3Service.getImageFromS3(new UUID(2, 2),
                 new UUID(1, 1)))
                 .willReturn(data);
-        given(encryptionUtils.decrypt(data))
+        given(encryptionUtil.decrypt(data))
                 .willReturn(data);
-        given(imageUtils.decompressImage(any()))
+        given(imageUtil.decompressImage(any()))
                 .willReturn(data);
         given(imageMapper.fromImageToImageDto(data, image))
                 .willReturn(ImageDto.builder().build());
-        given(imageUtils.hasAccessToImage(account, image))
+        given(imageUtil.hasAccessToImage(account, image))
                 .willReturn(true);
 
         //when
@@ -156,9 +156,9 @@ class ImageServiceTest {
         given(imageRepository.save(any()))
                 .willReturn(savedImageWithId);
 
-        given(encryptionUtils.encrypt(any()))
+        given(encryptionUtil.encrypt(any()))
                 .willReturn(data);
-        given(imageUtils.compressImage(any()))
+        given(imageUtil.compressImage(any()))
                 .willReturn(data);
 
         //when
@@ -262,7 +262,7 @@ class ImageServiceTest {
         var account = Account.builder().build();
         given(imageRepository.findById(imageId))
                 .willReturn(Optional.of(image));
-        given(imageUtils.hasAccessToImage(account, image))
+        given(imageUtil.hasAccessToImage(account, image))
                 .willReturn(false);
 
         //when
@@ -289,7 +289,7 @@ class ImageServiceTest {
                 .build();
         given(imageRepository.findById(imageId))
                 .willReturn(Optional.of(image));
-        given(imageUtils.hasAccessToImage(account, image))
+        given(imageUtil.hasAccessToImage(account, image))
                 .willReturn(true);
 
         //when
@@ -316,7 +316,7 @@ class ImageServiceTest {
                 .build();
         given(imageRepository.findById(imageId))
                 .willReturn(Optional.of(image));
-        given(imageUtils.hasAccessToImage(account, image))
+        given(imageUtil.hasAccessToImage(account, image))
                 .willReturn(true);
 
         //when
@@ -380,7 +380,7 @@ class ImageServiceTest {
                 .build();
         given(imageRepository.findById(imageId))
                 .willReturn(Optional.of(image));
-        given(imageUtils.hasAccessToImage(account, image))
+        given(imageUtil.hasAccessToImage(account, image))
                 .willReturn(true);
 
         //when
@@ -419,7 +419,7 @@ class ImageServiceTest {
         var account = Account.builder().build();
         given(imageRepository.findById(imageId))
                 .willReturn(Optional.of(image));
-        given(imageUtils.hasAccessToImage(account, image))
+        given(imageUtil.hasAccessToImage(account, image))
                 .willReturn(false);
 
         //when
@@ -453,7 +453,7 @@ class ImageServiceTest {
 
         given(imageRepository.findById(imageId))
                 .willReturn(Optional.of(image));
-        given(imageUtils.hasAccessToImage(account, image))
+        given(imageUtil.hasAccessToImage(account, image))
                 .willReturn(true);
 
         //when

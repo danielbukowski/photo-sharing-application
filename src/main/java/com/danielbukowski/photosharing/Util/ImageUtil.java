@@ -14,7 +14,7 @@ import java.util.zip.Inflater;
 
 @Slf4j
 @Component
-public class ImageUtils {
+public class ImageUtil {
 
     private static final int BUFFER_SIZE = 1024 * 4;
 

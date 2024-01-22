@@ -9,7 +9,7 @@ import com.danielbukowski.photosharing.Exception.ImageNotFoundException;
 import com.danielbukowski.photosharing.Mapper.CommentMapper;
 import com.danielbukowski.photosharing.Repository.CommentRepository;
 import com.danielbukowski.photosharing.Repository.ImageRepository;
-import com.danielbukowski.photosharing.Util.ImageUtils;
+import com.danielbukowski.photosharing.Util.ImageUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -39,7 +39,7 @@ class CommentServiceTest {
     @Mock
     private CommentMapper commentMapper;
     @Mock
-    private ImageUtils imageUtils;
+    private ImageUtil imageUtil;
 
     @Test
     void SaveCommentToImage_ImageDoesNotExist_ThrowsImageNotFoundException(){
@@ -76,7 +76,7 @@ class CommentServiceTest {
                 .build();
         given(imageRepository.findById(imageId))
                 .willReturn(Optional.of(image));
-        given(imageUtils.hasAccessToImage(account, image))
+        given(imageUtil.hasAccessToImage(account, image))
                 .willReturn(false);
 
         //when
@@ -105,7 +105,7 @@ class CommentServiceTest {
                 .build();
         given(imageRepository.findById(imageId))
                 .willReturn(Optional.of(image));
-        given(imageUtils.hasAccessToImage(account, image))
+        given(imageUtil.hasAccessToImage(account, image))
                 .willReturn(true);
         given(commentRepository.save(any()))
                 .willReturn(Comment.builder().id(3L).build());
@@ -152,7 +152,7 @@ class CommentServiceTest {
                         )
                         .build())
                 );
-        given(imageUtils.hasAccessToImage(eq(account), any(Image.class)))
+        given(imageUtil.hasAccessToImage(eq(account), any(Image.class)))
                 .willReturn(false);
 
         //when
@@ -190,7 +190,7 @@ class CommentServiceTest {
                                 .content("huh")
                                 .build())
                 ));
-        given(imageUtils.hasAccessToImage(eq(account), any(Image.class)))
+        given(imageUtil.hasAccessToImage(eq(account), any(Image.class)))
                 .willReturn(true);
 
         //when

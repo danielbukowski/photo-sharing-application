@@ -10,8 +10,8 @@ import com.danielbukowski.photosharing.Exception.ImageException;
 import com.danielbukowski.photosharing.Exception.ImageNotFoundException;
 import com.danielbukowski.photosharing.Mapper.ImageMapper;
 import com.danielbukowski.photosharing.Repository.ImageRepository;
-import com.danielbukowski.photosharing.Util.EncryptionUtils;
-import com.danielbukowski.photosharing.Util.ImageUtils;
+import com.danielbukowski.photosharing.Util.EncryptionUtil;
+import com.danielbukowski.photosharing.Util.ImageUtil;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -39,21 +39,21 @@ public class ImageService {
     private final ImageRepository imageRepository;
     private final ImageMapper imageMapper;
     private final S3Service s3Service;
-    private final ImageUtils imageUtils;
-    private final EncryptionUtils encryptionUtils;
+    private final ImageUtil imageUtil;
+    private final EncryptionUtil encryptionUtil;
 
     @Cacheable(cacheNames = "images", key = "#imageId", unless = "#result.isPrivate")
     public ImageDto getImageById(UUID imageId, Account account) {
         var image = imageRepository.findById(imageId)
                 .orElseThrow(() -> new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage()));
 
-        if (!imageUtils.hasAccessToImage(account, image))
+        if (!imageUtil.hasAccessToImage(account, image))
             throw new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage());
 
         log.info("Getting an image with id {}", imageId);
         var imageData =
-                imageUtils.decompressImage(
-                        encryptionUtils.decrypt(
+                imageUtil.decompressImage(
+                        encryptionUtil.decrypt(
                                 s3Service.getImageFromS3(
                                         image.getAccount().getId(),
                                         image.getId()
@@ -82,8 +82,8 @@ public class ImageService {
                 .build());
 
         byte[] decompressedImage =
-                encryptionUtils.encrypt(
-                        imageUtils.compressImage(
+                encryptionUtil.encrypt(
+                        imageUtil.compressImage(
                                 image.getBytes()
                         )
                 );
@@ -156,7 +156,7 @@ public class ImageService {
         var image = imageRepository.findById(imageId)
                 .orElseThrow(() -> new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage()));
 
-        if (!imageUtils.hasAccessToImage(account, image))
+        if (!imageUtil.hasAccessToImage(account, image))
             throw new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage());
 
         if (image.getLikes().stream().anyMatch(a -> a.equals(account)))
@@ -170,7 +170,7 @@ public class ImageService {
         var image = imageRepository.findById(imageId)
                 .orElseThrow(() -> new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage()));
 
-        if (!imageUtils.hasAccessToImage(account, image))
+        if (!imageUtil.hasAccessToImage(account, image))
             throw new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage());
 
         log.info("Getting number of likes from an image with id {}", imageId);
@@ -182,7 +182,7 @@ public class ImageService {
         var image = imageRepository.findById(imageId)
                 .orElseThrow(() -> new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage()));
 
-        if (!imageUtils.hasAccessToImage(account, image))
+        if (!imageUtil.hasAccessToImage(account, image))
             throw new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage());
 
         log.info("Removing like from an image with id {} by an account with id {}", imageId, account.getId());

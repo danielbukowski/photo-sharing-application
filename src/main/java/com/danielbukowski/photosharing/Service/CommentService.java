@@ -9,7 +9,7 @@ import com.danielbukowski.photosharing.Exception.ImageNotFoundException;
 import com.danielbukowski.photosharing.Mapper.CommentMapper;
 import com.danielbukowski.photosharing.Repository.CommentRepository;
 import com.danielbukowski.photosharing.Repository.ImageRepository;
-import com.danielbukowski.photosharing.Util.ImageUtils;
+import com.danielbukowski.photosharing.Util.ImageUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -29,14 +29,14 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final ImageRepository imageRepository;
     private final CommentMapper commentMapper;
-    private final ImageUtils imageUtils;
+    private final ImageUtil imageUtil;
 
     @Transactional
-    public Long saveCommentToImage(NewCommentRequest newCommentRequest, UUID imageId, Account account) {
+    public UUID saveCommentToImage(NewCommentRequest newCommentRequest, UUID imageId, Account account) {
         var image = imageRepository.findById(imageId)
                 .orElseThrow(() -> new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage()));
 
-        if (!imageUtils.hasAccessToImage(account, image))
+        if (!imageUtil.hasAccessToImage(account, image))
             throw new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage());
 
         log.info("Saving a comment to to an image with id {}", imageId);
@@ -53,7 +53,7 @@ public class CommentService {
         var image = imageRepository.findById(imageId)
                 .orElseThrow(() -> new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage()));
 
-        if (!imageUtils.hasAccessToImage(account, image))
+        if (!imageUtil.hasAccessToImage(account, image))
             throw new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage());
 
         log.info("Getting comments from an image with id {}", imageId);
