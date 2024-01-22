@@ -1,5 +1,5 @@
 CREATE TABLE comments (
-    comment_id BIGINT GENERATED ALWAYS AS IDENTITY,
+    comment_id UUID DEFAULT gen_random_uuid(),
     content VARCHAR(255) NOT NULL,
     image_id UUID NOT NULL,
     account_id UUID NOT NULL,
