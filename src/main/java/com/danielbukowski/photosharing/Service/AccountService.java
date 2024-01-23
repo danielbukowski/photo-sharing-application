@@ -105,9 +105,7 @@ public class AccountService {
                 .biography(account.getBiography())
                 .roles(roles)
                 .permissions(permissions)
-                .isEmailVerified(account.isEmailVerified())
-                .numberOfUploadedImages(imageRepository.getImagesByAccountId(account.getId()).size())
-                .isLocked(account.isLocked());
+                .isEmailVerified(account.isEmailVerified());
 
         for (GrantedAuthority authority : account.getAuthorities()) {
             if (authority.getAuthority().startsWith("ROLE_")) {
