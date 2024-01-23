@@ -30,7 +30,6 @@ public class ImageController {
     private final ImageService imageService;
     private final CommentService commentService;
 
-
     @Operation(
             summary = "Return an image",
             responses = {
@@ -75,9 +74,9 @@ public class ImageController {
     )
     @PostMapping("/{imageId}/comments")
     @PreAuthorize("hasAuthority('USER:CREATE')")
-    public ResponseEntity<?> saveCommentToImage(@AuthenticationPrincipal Account account,
-                                                @PathVariable UUID imageId,
-                                                @Valid @RequestBody NewCommentRequest newCommentRequest) {
+    public ResponseEntity<Void> saveCommentToImage(@AuthenticationPrincipal Account account,
+                                                   @PathVariable UUID imageId,
+                                                   @Valid @RequestBody NewCommentRequest newCommentRequest) {
         commentService.saveCommentToImage(newCommentRequest, imageId, account);
         return ResponseEntity
                 .created(
@@ -153,8 +152,8 @@ public class ImageController {
     )
     @PostMapping("/{imageId}/likes")
     @PreAuthorize("hasAuthority('USER:UPDATE')")
-    public ResponseEntity<?> addLikeToImage(@AuthenticationPrincipal Account account,
-                                            @PathVariable UUID imageId) {
+    public ResponseEntity<Void> addLikeToImage(@AuthenticationPrincipal Account account,
+                                               @PathVariable UUID imageId) {
         imageService.addLikeToImage(imageId, account);
         return ResponseEntity.created(
                         ServletUriComponentsBuilder
@@ -180,8 +179,8 @@ public class ImageController {
             }
     )
     @GetMapping("/{imageId}/likes")
-    public ResponseEntity<?> getNumberOfLikesFromImage(@AuthenticationPrincipal Account account,
-                                                       @PathVariable UUID imageId) {
+    public ResponseEntity<SimpleDataResponse<Map<String, Integer>>> getNumberOfLikesFromImage(@AuthenticationPrincipal Account account,
+                                                                                              @PathVariable UUID imageId) {
         return ResponseEntity.ok(
                 new SimpleDataResponse<>(
                         Map.of("likes", imageService.getNumberOfLikesFromImage(imageId, account))
@@ -209,8 +208,8 @@ public class ImageController {
     )
     @DeleteMapping("/{imageId}/likes")
     @PreAuthorize("hasAuthority('USER:DELETE')")
-    public ResponseEntity<?> removeLikeFromImage(@AuthenticationPrincipal Account account,
-                                                 @PathVariable UUID imageId) {
+    public ResponseEntity<Void> removeLikeFromImage(@AuthenticationPrincipal Account account,
+                                                    @PathVariable UUID imageId) {
         imageService.removeLikeFromImage(imageId, account);
         return ResponseEntity
                 .noContent()

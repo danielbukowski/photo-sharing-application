@@ -45,7 +45,7 @@ public class AccountController {
             })
     @GetMapping
     @PreAuthorize("hasAuthority('USER:READ')")
-    public ResponseEntity<?> getAccount(@AuthenticationPrincipal Account account) {
+    public ResponseEntity<SimpleDataResponse<AccountDto>> getAccount(@AuthenticationPrincipal Account account) {
         return ResponseEntity.ok(
                 new SimpleDataResponse<>(accountService.getAccountDetails(account))
         );
@@ -67,8 +67,8 @@ public class AccountController {
     )
     @PutMapping
     @PreAuthorize("hasAuthority('USER:UPDATE')")
-    public ResponseEntity<?> updateAccount(@AuthenticationPrincipal Account account,
-                                           @RequestBody @Valid AccountUpdateRequest accountUpdateRequest) {
+    public ResponseEntity<Void> updateAccount(@AuthenticationPrincipal Account account,
+                                              @RequestBody @Valid AccountUpdateRequest accountUpdateRequest) {
         accountService.updateAccount(account, accountUpdateRequest);
         return ResponseEntity
                 .noContent()
@@ -89,7 +89,7 @@ public class AccountController {
             }
     )
     @PostMapping
-    public ResponseEntity<?> createAccount(@RequestBody @Valid AccountRegisterRequest accountRegisterRequest) {
+    public ResponseEntity<Void> createAccount(@RequestBody @Valid AccountRegisterRequest accountRegisterRequest) {
         UUID accountId = accountService.createAccount(accountRegisterRequest);
         return ResponseEntity
                 .created(
@@ -115,7 +115,7 @@ public class AccountController {
             }
     )
     @PostMapping("/email-verification")
-    public ResponseEntity<?> verifyAccountByEmailVerificationToken(@RequestParam UUID token) {
+    public ResponseEntity<Void> verifyAccountByEmailVerificationToken(@RequestParam UUID token) {
         emailVerificationTokenService.verifyEmailVerificationToken(token);
         return ResponseEntity
                 .noContent()
@@ -137,7 +137,7 @@ public class AccountController {
             }
     )
     @PutMapping("/email-verification")
-    public ResponseEntity<?> resendEmailVerificationToken(@AuthenticationPrincipal Account account) {
+    public ResponseEntity<Void> resendEmailVerificationToken(@AuthenticationPrincipal Account account) {
         emailVerificationTokenService.resendEmailVerificationToken(account);
         return ResponseEntity
                 .noContent()
@@ -160,8 +160,8 @@ public class AccountController {
     )
     @DeleteMapping
     @PreAuthorize("hasAuthority('USER:DELETE')")
-    public ResponseEntity<?> deleteAccount(@AuthenticationPrincipal Account account,
-                                           HttpServletRequest request) {
+    public ResponseEntity<Void> deleteAccount(@AuthenticationPrincipal Account account,
+                                              HttpServletRequest request) {
         accountService.deleteAccountById(account.getId());
         request.getSession().invalidate();
         return ResponseEntity
@@ -187,8 +187,8 @@ public class AccountController {
     )
     @PatchMapping("/password")
     @PreAuthorize("hasAuthority('USER:UPDATE')")
-    public ResponseEntity<?> changeAccountPassword(@AuthenticationPrincipal Account account,
-                                                   @Valid @RequestBody PasswordChangeRequest passwordChangeRequest) {
+    public ResponseEntity<Void> changeAccountPassword(@AuthenticationPrincipal Account account,
+                                                      @Valid @RequestBody PasswordChangeRequest passwordChangeRequest) {
         accountService.changeAccountPassword(account, passwordChangeRequest);
         return ResponseEntity
                 .noContent()
@@ -207,8 +207,8 @@ public class AccountController {
     )
     @GetMapping("/images")
     @PreAuthorize("hasAuthority('USER:READ')")
-    public ResponseEntity<?> getImagesFromAccount(@AuthenticationPrincipal Account account,
-                                                  @RequestParam(required = false, defaultValue = "0") Integer pageNumber) {
+    public ResponseEntity<SimplePageResponse<UUID>> getImagesFromAccount(@AuthenticationPrincipal Account account,
+                                                                         @RequestParam(required = false, defaultValue = "0") Integer pageNumber) {
         pageNumber = Integer.max(0, pageNumber);
         return ResponseEntity.ok(
                 imageService.getIdsOfLatestImagesFromAccount(pageNumber, account)
@@ -235,9 +235,9 @@ public class AccountController {
     )
     @PostMapping("/images")
     @PreAuthorize("hasAuthority('USER:CREATE')")
-    public ResponseEntity<?> saveImageToAccount(@AuthenticationPrincipal Account account,
-                                                @RequestPart @Valid @Image MultipartFile image,
-                                                @RequestPart @Valid ImagePropertiesRequest imageProperties) {
+    public ResponseEntity<Void> saveImageToAccount(@AuthenticationPrincipal Account account,
+                                                   @RequestPart @Valid @Image MultipartFile image,
+                                                   @RequestPart @Valid ImagePropertiesRequest imageProperties) {
         UUID imageId = imageService.saveImageToAccount(image, account, imageProperties);
         return ResponseEntity
                 .created(
@@ -265,8 +265,8 @@ public class AccountController {
     )
     @DeleteMapping("/images/{imageId}")
     @PreAuthorize("hasAuthority('USER:DELETE')")
-    public ResponseEntity<?> deleteImageFromAccount(@AuthenticationPrincipal Account account,
-                                                    @PathVariable UUID imageId) {
+    public ResponseEntity<Void> deleteImageFromAccount(@AuthenticationPrincipal Account account,
+                                                       @PathVariable UUID imageId) {
         imageService.deleteImageFromAccount(account.getId(), imageId);
         return ResponseEntity
                 .noContent()
@@ -287,7 +287,7 @@ public class AccountController {
             }
     )
     @PostMapping("/password-reset")
-    public ResponseEntity<?> createPasswordResetToken(@RequestBody @Valid PasswordResetEmailRequest passwordResetEmailRequest) {
+    public ResponseEntity<Void> createPasswordResetToken(@RequestBody @Valid PasswordResetEmailRequest passwordResetEmailRequest) {
         passwordResetTokenService.createPasswordResetToken(passwordResetEmailRequest);
         return ResponseEntity
                 .noContent()
@@ -308,8 +308,8 @@ public class AccountController {
             }
     )
     @PutMapping("/password-reset")
-    public ResponseEntity<?> changePasswordByPasswordResetToken(@RequestParam UUID token,
-                                                                @RequestBody @Valid PasswordResetTokenRequest passwordResetTokenRequest) {
+    public ResponseEntity<Void> changePasswordByPasswordResetToken(@RequestParam UUID token,
+                                                                   @RequestBody @Valid PasswordResetTokenRequest passwordResetTokenRequest) {
         passwordResetTokenService.changePasswordByPasswordResetTokenId(token, passwordResetTokenRequest);
         return ResponseEntity
                 .noContent()

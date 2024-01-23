@@ -26,7 +26,7 @@ public class SessionController {
             }
     )
     @PostMapping
-    public ResponseEntity<?> logIn() {
+    public ResponseEntity<Void> logIn() {
         return ResponseEntity
                 .noContent()
                 .build();
@@ -43,7 +43,7 @@ public class SessionController {
             }
     )
     @DeleteMapping
-    public ResponseEntity<?> logOut(HttpServletRequest httpRequest) {
+    public ResponseEntity<Void> logOut(HttpServletRequest httpRequest) {
         httpRequest.getSession().invalidate();
         SecurityContextHolder.clearContext();
         return ResponseEntity

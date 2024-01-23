@@ -25,7 +25,7 @@ import static com.danielbukowski.photosharing.Enum.ExceptionMessageResponse.IMAG
 @Slf4j
 public class CommentService {
 
-    private static final int PAGE_SIZE = 20;
+    private final static int PAGE_SIZE = 20;
     private final CommentRepository commentRepository;
     private final ImageRepository imageRepository;
     private final CommentMapper commentMapper;
