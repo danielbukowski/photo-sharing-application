@@ -44,6 +44,8 @@ export class ImageDetailPageComponent implements OnInit {
     this.updatePageContent(0);
   }
 
+  trackByCommentId: TrackByFunction<string> = (index, commentId: string) => commentId;
+
   updatePageContent(pageNumber: number): void {
     this.commentPage$ = this.commentService.getCommentsFromImage(
       this.imageId(),

@@ -46,7 +46,7 @@
       </div>
     </div>
     <div *ngIf="commentPage$ | async as page" class="mt-10">
-      <ul *ngFor="let comment of page.data">
+      <ul *ngFor="let comment of page.data; trackBy: trackByCommentId">
         <li class="mb-5 mx-8">
           <app-image-detail-comment
             [content]="comment.content"
