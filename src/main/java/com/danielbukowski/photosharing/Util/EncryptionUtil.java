@@ -15,10 +15,10 @@ import java.security.spec.KeySpec;
 @Component
 public class EncryptionUtil {
 
-    private final static  String ALGORITHM = "AES";
-    private final static int ALGORITHM_KEY_SIZE = 256;
-    private final static int IV_BYTE_LENGTH = 12;
-    private final static int PBKDF2_ITERATIONS = 8931;
+    private static final String ALGORITHM = "AES";
+    private static final int ALGORITHM_KEY_SIZE = 256;
+    private static final int IV_BYTE_LENGTH = 12;
+    private static final int PBKDF2_ITERATIONS = 8931;
     private final SecretKey key;
     private final EncryptionProperties encryptionProperties;
 
