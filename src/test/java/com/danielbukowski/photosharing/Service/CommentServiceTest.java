@@ -108,13 +108,15 @@ class CommentServiceTest {
         given(imageUtil.hasAccessToImage(account, image))
                 .willReturn(true);
         given(commentRepository.save(any()))
-                .willReturn(Comment.builder().id(3L).build());
+                .willReturn(Comment.builder().id(
+                        new UUID(3, 3)
+                ).build());
 
         //when
         var actualId = commentService.saveCommentToImage(newCommentRequest, imageId, account);
 
         //then
-        assertEquals(3L, actualId);}
+        assertEquals(new UUID(3, 3), actualId);}
 
     @Test
     void GetCommentsFromImage_ImageDoesNotExist_ThrowsImageNotFoundException() {

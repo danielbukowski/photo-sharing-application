@@ -133,7 +133,7 @@ class ImageControllerIT {
         var imageId = new UUID(1, 1);
         var newCommentRequest = new NewCommentRequest("cool");
         given(commentService.saveCommentToImage(eq(newCommentRequest), eq(imageId), any()))
-                .willReturn(21L);
+                .willReturn(new UUID(21,21));
 
         //when
         mockMvc.perform(post("/api/v2/images/{imageId}/comments", imageId)
