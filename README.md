@@ -1,5 +1,5 @@
 # Photo Sharing Application
-The project is a full-stack application which allows to create accounts on which you can save your images as available only to you or available to other users. 
+A project built in Spring Boot and Angular, that allows you to create accounts on which you can save your images.
 
 
 ## Status
@@ -37,29 +37,11 @@ In Progess
 - Tailwind CSS
 
 
-## Implemented Features
-
-- Registering an account
-- Email verification
-- Caching images in Redis
-- Saving images in S3
-- Image validation
-- CRUD operations on the account entity
-- CRD operations on the image entity
-- Changing password without authentication
-- Comments to the image entity
-- Likes to the image entity
-- Roles and permissions
-- Sessions in Redis
-- Encryption with AES 
-- Image compression and decompression
-- Sending messages via email
-- Simple logging
-
-
 ## Screenshots
 
-![database_schema](https://github.com/danielbukowski/photo-sharing-application/assets/82054911/27a50a13-d2ef-4df1-a57e-0697bb512ced)
+![database_schema](https://github.com/danielbukowski/photo-sharing-application/assets/82054911/36f29c45-237f-4d23-a301-0459f2334483)
+
+![OpenAPI](https://github.com/danielbukowski/photo-sharing-application/assets/82054911/2dc96d19-c869-4ba5-b4bd-84e3a5655b4e)
 
 
 ## Running the application
@@ -86,12 +68,3 @@ Start the project
 ```
 
 ![init-bash-script](https://github.com/danielbukowski/photo-sharing-application/assets/82054911/9ffd787e-7a6a-4eec-ad2f-36ffbfe716f0)
-
-
-## Running Tests!
-
-To run tests, run the following command
-
-```bash
-  ./mvnw clean test
-```
