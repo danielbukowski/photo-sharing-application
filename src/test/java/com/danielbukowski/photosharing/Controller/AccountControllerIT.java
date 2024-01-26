@@ -198,7 +198,7 @@ class AccountControllerIT {
                 .andExpect(
                         jsonPath(
                                 "$.fieldNames.email",
-                                Matchers.contains("must be a well-formed email address")
+                                Matchers.contains("The email address is not a well formed e-mail address")
 
                         ));
     }

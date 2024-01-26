@@ -163,7 +163,7 @@ class ImageControllerIT {
                 .andExpect(status().is(400))
                 .andExpect(jsonPath(
                         "$.fieldNames.content[0]",
-                        is("Should not be blank"))
+                        is("Not be blank"))
                 );
     }
 
