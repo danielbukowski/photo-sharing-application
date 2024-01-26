@@ -17,7 +17,7 @@ public class SessionController {
 
     @SecurityRequirement(name = "Basic auth")
     @Operation(
-            summary = "Create a valid session",
+            summary = "Creates a valid session",
             responses = {
                     @ApiResponse(
                             responseCode = "204",
@@ -34,7 +34,7 @@ public class SessionController {
 
     @SecurityRequirement(name = "Basic auth")
     @Operation(
-            summary = "Delete a valid session",
+            summary = "Deletes a valid session",
             responses = {
                     @ApiResponse(
                             responseCode = "204",

@@ -36,7 +36,7 @@ public class AccountController {
 
     @SecurityRequirement(name = "Basic auth")
     @Operation(
-            summary = "Return details about an account",
+            summary = "Returns details about an account",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
@@ -53,7 +53,7 @@ public class AccountController {
 
     @SecurityRequirement(name = "Basic auth")
     @Operation(
-            summary = "Update an account",
+            summary = "Updates an account",
             responses = {
                     @ApiResponse(
                             responseCode = "204",
@@ -76,7 +76,7 @@ public class AccountController {
     }
 
     @Operation(
-            summary = "Create an account",
+            summary = "Creates an account",
             responses = {
                     @ApiResponse(
                             responseCode = "201",
@@ -102,7 +102,7 @@ public class AccountController {
     }
 
     @Operation(
-            summary = "Verify an account by an email verification token",
+            summary = "Verifies an account by an email verification token",
             responses = {
                     @ApiResponse(
                             responseCode = "204",
@@ -124,7 +124,7 @@ public class AccountController {
 
     @SecurityRequirement(name = "Basic auth")
     @Operation(
-            summary = "Resend an email verification token",
+            summary = "Resends an email verification token",
             responses = {
                     @ApiResponse(
                             responseCode = "204",
@@ -146,7 +146,7 @@ public class AccountController {
 
     @SecurityRequirement(name = "Basic auth")
     @Operation(
-            summary = "Delete an account",
+            summary = "Deletes an account",
             responses = {
                     @ApiResponse(
                             responseCode = "204",
@@ -171,7 +171,7 @@ public class AccountController {
 
     @SecurityRequirement(name = "Basic auth")
     @Operation(
-            summary = "Change a password",
+            summary = "Changes a password",
             responses = {
                     @ApiResponse(
                             responseCode = "204",
@@ -197,11 +197,11 @@ public class AccountController {
 
     @SecurityRequirement(name = "Basic auth")
     @Operation(
-            summary = "Return a list of owned images in form of ids",
+            summary = "Returns a list of owned images in form of ids",
             responses = {
                     @ApiResponse(
                             responseCode = "201",
-                            description = "A list of images in form of ids have been returned"
+                            description = "A list of images in form of ids has been returned"
                     )
             }
     )
@@ -217,7 +217,7 @@ public class AccountController {
 
     @SecurityRequirement(name = "Basic auth")
     @Operation(
-            summary = "Save an image to an account",
+            summary = "Saves an image to an account",
             responses = {
                     @ApiResponse(
                             responseCode = "201",
@@ -251,7 +251,7 @@ public class AccountController {
 
     @SecurityRequirement(name = "Basic auth")
     @Operation(
-            summary = "Delete an image from an account",
+            summary = "Deletes an image from an account",
             responses = {
                     @ApiResponse(
                             responseCode = "204",
@@ -274,7 +274,7 @@ public class AccountController {
     }
 
     @Operation(
-            summary = "Create a password reset token",
+            summary = "Creates a password reset token",
             responses = {
                     @ApiResponse(
                             responseCode = "204",
@@ -295,7 +295,7 @@ public class AccountController {
     }
 
     @Operation(
-            summary = "Change a password by a password reset token",
+            summary = "Changes a password by a password reset token",
             responses = {
                     @ApiResponse(
                             responseCode = "204",

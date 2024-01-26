@@ -31,7 +31,7 @@ public class ImageController {
     private final CommentService commentService;
 
     @Operation(
-            summary = "Return an image",
+            summary = "Returns an image",
             responses = {
                     @ApiResponse(
                             responseCode = "201",
@@ -56,7 +56,7 @@ public class ImageController {
 
     @SecurityRequirement(name = "Basic auth")
     @Operation(
-            summary = "Save a comment to an image",
+            summary = "Saves a comment to an image",
             responses = {
                     @ApiResponse(
                             responseCode = "201",
@@ -89,7 +89,7 @@ public class ImageController {
     }
 
     @Operation(
-            summary = "Return a page of comments from an image",
+            summary = "Returns a page of comments from an image",
             responses = {
                     @ApiResponse(
                             responseCode = "201",
@@ -112,11 +112,11 @@ public class ImageController {
     }
 
     @Operation(
-            summary = "Return a page of latest images in form of ids",
+            summary = "Returns a page of latest images in form of ids",
             responses = {
                     @ApiResponse(
                             responseCode = "201",
-                            description = "A page of latest images in form of ids have been returned"
+                            description = "A page of latest images in form of ids has been returned"
                     )
             }
     )
@@ -130,7 +130,7 @@ public class ImageController {
 
     @SecurityRequirement(name = "Basic auth")
     @Operation(
-            summary = "Add a like to an image",
+            summary = "Adds a like to an image",
             responses = {
                     @ApiResponse(
                             responseCode = "201",
@@ -166,7 +166,7 @@ public class ImageController {
     }
 
     @Operation(
-            summary = "Return a number of likes of an image",
+            summary = "Returns a number of likes of an image",
             responses = {
                     @ApiResponse(
                             responseCode = "201",
@@ -190,7 +190,7 @@ public class ImageController {
 
     @SecurityRequirement(name = "Basic auth")
     @Operation(
-            summary = "Delete a like from an image",
+            summary = "Deletes a like from an image",
             responses = {
                     @ApiResponse(
                             responseCode = "201",
