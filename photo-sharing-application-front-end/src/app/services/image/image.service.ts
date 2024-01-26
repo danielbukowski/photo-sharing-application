@@ -12,7 +12,7 @@ export class ImageService {
   constructor(private http: HttpClient) {}
 
   getPageOfLatestImages(pageNumber: number): Observable<Page<string>> {
-    return this.http.get<Page<string>>(`${environment.apiUrl}/api/v1/images`, {
+    return this.http.get<Page<string>>(`${environment.apiUrl}/api/v2/images`, {
       params: { pageNumber },
     });
   }
@@ -39,7 +39,7 @@ export class ImageService {
 
   getNumberOfLikesFromImage(imageId: string): Observable<unknown> {
     return this.http.get(
-      `${environment.apiUrl}/api/v1/images/${imageId}/likes`
+      `${environment.apiUrl}/api/v2/images/${imageId}/likes`
     );
   }
 }

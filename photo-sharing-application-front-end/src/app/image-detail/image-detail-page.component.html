@@ -3,7 +3,7 @@
   <div>
     <div class="flex justify-center items-center min-w-full min-h-[70vh]">
       <img
-        src="http://localhost:8081/api/v1/images/{{ imageId() }}"
+        src="http://localhost:8081/api/v2/images/{{ imageId() }}"
         class="max-h-[60vh] max-w-[80vw]"
         alt="image"
       />
@@ -46,11 +46,11 @@
       </div>
     </div>
     <div *ngIf="commentPage$ | async as page" class="mt-10">
-      <ul *ngFor="let comment of page.data">
+      <ul *ngFor="let comment of page.data; trackBy: trackByCommentId">
         <li class="mb-5 mx-8">
           <app-image-detail-comment
             [content]="comment.content"
-            [email]="comment.authorEmail"
+            [wroteBy]="comment.wroteBy"
           ></app-image-detail-comment>
         </li>
       </ul>

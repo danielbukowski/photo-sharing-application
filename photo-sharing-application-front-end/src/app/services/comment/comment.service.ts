@@ -16,7 +16,7 @@ export class CommentService {
     imageId: string
   ): Observable<unknown> {
     return this.http.post(
-      `${environment.apiUrl}/api/v1/images/${imageId}/comments`,
+      `${environment.apiUrl}/api/v2/images/${imageId}/comments`,
       { content: commentContent }
     );
   }
@@ -26,7 +26,7 @@ export class CommentService {
     pageNumber: number
   ): Observable<Page<Comment>> {
     return this.http.get<Page<Comment>>(
-      `${environment.apiUrl}/api/v1/images/${imageId}/comments`,
+      `${environment.apiUrl}/api/v2/images/${imageId}/comments`,
       { params: { pageNumber } }
     );
   }

@@ -7,5 +7,5 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 })
 export class ImageDetailCommentComponent {
   @Input({ required: true }) content!: string;
-  @Input({ required: true }) email!: string;
+  @Input({ required: true }) wroteBy!: string;
 }

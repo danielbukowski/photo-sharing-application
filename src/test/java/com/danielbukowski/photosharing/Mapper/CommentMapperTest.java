@@ -25,7 +25,8 @@ class CommentMapperTest {
 
         //then
         assertEquals(comment.getContent(), actualCommentDto.content());
-        assertEquals(comment.getAccount().getEmail(), actualCommentDto.authorEmail());
+        assertEquals(comment.getAccount().getNickname(), actualCommentDto.wroteBy());
+        assertEquals(comment.getId(), actualCommentDto.commentId());
     }
 
 }

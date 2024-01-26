@@ -1,4 +1,4 @@
 export interface ImageUploaderRequest {
-    isPrivate: boolean,
-    title: string
+  isPrivate: boolean;
+  title: string;
 }

@@ -24,15 +24,14 @@ import java.util.UUID;
 @RestController
 @AllArgsConstructor
 @Validated
-@RequestMapping("api/v1/images")
+@RequestMapping("api/v2/images")
 public class ImageController {
 
     private final ImageService imageService;
     private final CommentService commentService;
 
-
     @Operation(
-            summary = "Return an image",
+            summary = "Returns an image",
             responses = {
                     @ApiResponse(
                             responseCode = "201",
@@ -57,7 +56,7 @@ public class ImageController {
 
     @SecurityRequirement(name = "Basic auth")
     @Operation(
-            summary = "Save a comment to an image",
+            summary = "Saves a comment to an image",
             responses = {
                     @ApiResponse(
                             responseCode = "201",
@@ -75,22 +74,22 @@ public class ImageController {
     )
     @PostMapping("/{imageId}/comments")
     @PreAuthorize("hasAuthority('USER:CREATE')")
-    public ResponseEntity<?> saveCommentToImage(@AuthenticationPrincipal Account account,
-                                                @PathVariable UUID imageId,
-                                                @Valid @RequestBody NewCommentRequest newCommentRequest) {
+    public ResponseEntity<Void> saveCommentToImage(@AuthenticationPrincipal Account account,
+                                                   @PathVariable UUID imageId,
+                                                   @Valid @RequestBody NewCommentRequest newCommentRequest) {
         commentService.saveCommentToImage(newCommentRequest, imageId, account);
         return ResponseEntity
                 .created(
                         ServletUriComponentsBuilder
                                 .fromCurrentContextPath()
-                                .path("api/v1/images/%s/comments".formatted(imageId))
+                                .path("api/v2/images/%s/comments".formatted(imageId))
                                 .build()
                                 .toUri()
                 ).build();
     }
 
     @Operation(
-            summary = "Return a page of comments from an image",
+            summary = "Returns a page of comments from an image",
             responses = {
                     @ApiResponse(
                             responseCode = "201",
@@ -113,11 +112,11 @@ public class ImageController {
     }
 
     @Operation(
-            summary = "Return a page of latest images in form of ids",
+            summary = "Returns a page of latest images in form of ids",
             responses = {
                     @ApiResponse(
                             responseCode = "201",
-                            description = "A page of latest images in form of ids have been returned"
+                            description = "A page of latest images in form of ids has been returned"
                     )
             }
     )
@@ -131,7 +130,7 @@ public class ImageController {
 
     @SecurityRequirement(name = "Basic auth")
     @Operation(
-            summary = "Add a like to an image",
+            summary = "Adds a like to an image",
             responses = {
                     @ApiResponse(
                             responseCode = "201",
@@ -153,13 +152,13 @@ public class ImageController {
     )
     @PostMapping("/{imageId}/likes")
     @PreAuthorize("hasAuthority('USER:UPDATE')")
-    public ResponseEntity<?> addLikeToImage(@AuthenticationPrincipal Account account,
-                                            @PathVariable UUID imageId) {
+    public ResponseEntity<Void> addLikeToImage(@AuthenticationPrincipal Account account,
+                                               @PathVariable UUID imageId) {
         imageService.addLikeToImage(imageId, account);
         return ResponseEntity.created(
                         ServletUriComponentsBuilder
                                 .fromCurrentContextPath()
-                                .path("api/v1/images/%s/likes".formatted(imageId))
+                                .path("api/v2/images/%s/likes".formatted(imageId))
                                 .build()
                                 .toUri()
                 )
@@ -167,7 +166,7 @@ public class ImageController {
     }
 
     @Operation(
-            summary = "Return a number of likes of an image",
+            summary = "Returns a number of likes of an image",
             responses = {
                     @ApiResponse(
                             responseCode = "201",
@@ -180,8 +179,8 @@ public class ImageController {
             }
     )
     @GetMapping("/{imageId}/likes")
-    public ResponseEntity<?> getNumberOfLikesFromImage(@AuthenticationPrincipal Account account,
-                                                       @PathVariable UUID imageId) {
+    public ResponseEntity<SimpleDataResponse<Map<String, Integer>>> getNumberOfLikesFromImage(@AuthenticationPrincipal Account account,
+                                                                                              @PathVariable UUID imageId) {
         return ResponseEntity.ok(
                 new SimpleDataResponse<>(
                         Map.of("likes", imageService.getNumberOfLikesFromImage(imageId, account))
@@ -191,7 +190,7 @@ public class ImageController {
 
     @SecurityRequirement(name = "Basic auth")
     @Operation(
-            summary = "Delete a like from an image",
+            summary = "Deletes a like from an image",
             responses = {
                     @ApiResponse(
                             responseCode = "201",
@@ -209,8 +208,8 @@ public class ImageController {
     )
     @DeleteMapping("/{imageId}/likes")
     @PreAuthorize("hasAuthority('USER:DELETE')")
-    public ResponseEntity<?> removeLikeFromImage(@AuthenticationPrincipal Account account,
-                                                 @PathVariable UUID imageId) {
+    public ResponseEntity<Void> removeLikeFromImage(@AuthenticationPrincipal Account account,
+                                                    @PathVariable UUID imageId) {
         imageService.removeLikeFromImage(imageId, account);
         return ResponseEntity
                 .noContent()

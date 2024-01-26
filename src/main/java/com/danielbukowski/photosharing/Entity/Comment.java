@@ -4,8 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Objects;
-
-import static jakarta.persistence.GenerationType.*;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -18,12 +17,12 @@ public class Comment {
 
     @Id
     @GeneratedValue(
-            strategy = IDENTITY
+            strategy = GenerationType.UUID
     )
     @Column(
             name = "comment_id"
     )
-    private Long id;
+    private UUID id;
 
     @Column(
             nullable = false

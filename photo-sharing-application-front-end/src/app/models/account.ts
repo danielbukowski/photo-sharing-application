@@ -1,5 +1,10 @@
 export interface Account {
-    email: string,
-    nickname: string,
-    isEmailVerified: boolean
+  accountId: string;
+  nickname: string;
+  email: string;
+  biography?: string;
+  isEmailVerified: boolean;
+  accountVerifiedAt?: string;
+  roles: string[];
+  permissions: string[];
 }

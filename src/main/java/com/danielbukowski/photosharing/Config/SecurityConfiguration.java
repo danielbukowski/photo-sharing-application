@@ -39,7 +39,7 @@ public class SecurityConfiguration {
         return http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(POST, "/api/v3/accounts").permitAll()
-                        .requestMatchers(GET, "/api/v1/images/**").permitAll()
+                        .requestMatchers(GET, "/api/v2/images/**").permitAll()
                         .requestMatchers(POST, "/api/v3/accounts/email-verification").permitAll()
                         .requestMatchers(POST, "/api/v3/accounts/password-reset").permitAll()
                         .requestMatchers(PUT, "/api/v3/accounts/password-reset/**").permitAll()

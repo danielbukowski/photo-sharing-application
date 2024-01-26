@@ -13,10 +13,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
-class ImageUtilsTest {
+class ImageUtilTest {
 
     @InjectMocks
-    private ImageUtils imageUtils;
+    private ImageUtil imageUtil;
 
     @Test
     void HasAccessToImage_ImageIsPrivateAndAccountIsNull_ReturnsFalse() {
@@ -30,7 +30,7 @@ class ImageUtilsTest {
         Account account = null;
 
         //when
-        var result = imageUtils.hasAccessToImage(account, image);
+        var result = imageUtil.hasAccessToImage(account, image);
 
         //then
         assertFalse(result);
@@ -50,7 +50,7 @@ class ImageUtilsTest {
                 .build();
 
         //when
-        var result = imageUtils.hasAccessToImage(account, image);
+        var result = imageUtil.hasAccessToImage(account, image);
 
         //then
         assertFalse(result);
@@ -70,7 +70,7 @@ class ImageUtilsTest {
                 .build();
 
         //when
-        var result = imageUtils.hasAccessToImage(account, image);
+        var result = imageUtil.hasAccessToImage(account, image);
 
         //then
         assertTrue(result);
@@ -88,7 +88,7 @@ class ImageUtilsTest {
         Account account = null;
 
         //when
-        var result = imageUtils.hasAccessToImage(account, image);
+        var result = imageUtil.hasAccessToImage(account, image);
 
         //then
         assertTrue(result);
@@ -108,7 +108,7 @@ class ImageUtilsTest {
                 .build();
 
         //when
-        var result = imageUtils.hasAccessToImage(account, image);
+        var result = imageUtil.hasAccessToImage(account, image);
 
         //then
         assertTrue(result);
@@ -128,7 +128,7 @@ class ImageUtilsTest {
                 .build();
 
         //when
-        var result = imageUtils.hasAccessToImage(account, image);
+        var result = imageUtil.hasAccessToImage(account, image);
 
         //then
         assertTrue(result);

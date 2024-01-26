@@ -17,7 +17,7 @@ public class SessionController {
 
     @SecurityRequirement(name = "Basic auth")
     @Operation(
-            summary = "Create a valid session",
+            summary = "Creates a valid session",
             responses = {
                     @ApiResponse(
                             responseCode = "204",
@@ -26,7 +26,7 @@ public class SessionController {
             }
     )
     @PostMapping
-    public ResponseEntity<?> logIn() {
+    public ResponseEntity<Void> logIn() {
         return ResponseEntity
                 .noContent()
                 .build();
@@ -34,7 +34,7 @@ public class SessionController {
 
     @SecurityRequirement(name = "Basic auth")
     @Operation(
-            summary = "Delete a valid session",
+            summary = "Deletes a valid session",
             responses = {
                     @ApiResponse(
                             responseCode = "204",
@@ -43,7 +43,7 @@ public class SessionController {
             }
     )
     @DeleteMapping
-    public ResponseEntity<?> logOut(HttpServletRequest httpRequest) {
+    public ResponseEntity<Void> logOut(HttpServletRequest httpRequest) {
         httpRequest.getSession().invalidate();
         SecurityContextHolder.clearContext();
         return ResponseEntity
