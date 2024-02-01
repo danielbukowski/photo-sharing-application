@@ -3,7 +3,7 @@ A project built in Spring Boot and Angular, that allows you to create accounts o
 
 
 ## Status
-In Progess
+Canceled
 
 
 ## Technologies used
